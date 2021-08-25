@@ -1,0 +1,88 @@
+﻿@page
+@model RubyMine.Pages.Projects.CreateModel
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Create</title>
+</head>
+<body>
+
+<h4>User</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group form-check">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="User.Admin" /> @Html.DisplayNameFor(model => model.User.Admin)
+                </label>
+            </div>
+            <div class="form-group">
+                <label asp-for="User.LastLoginOn" class="control-label"></label>
+                <input asp-for="User.LastLoginOn" class="form-control" />
+                <span asp-validation-for="User.LastLoginOn" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="User.AuthSourceId" class="control-label"></label>
+                <input asp-for="User.AuthSourceId" class="form-control" />
+                <span asp-validation-for="User.AuthSourceId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="User.CreatedOn" class="control-label"></label>
+                <input asp-for="User.CreatedOn" class="form-control" />
+                <span asp-validation-for="User.CreatedOn" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="User.UpdatedOn" class="control-label"></label>
+                <input asp-for="User.UpdatedOn" class="form-control" />
+                <span asp-validation-for="User.UpdatedOn" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="User.Type" class="control-label"></label>
+                <input asp-for="User.Type" class="form-control" />
+                <span asp-validation-for="User.Type" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="User.IdentityUrl" class="control-label"></label>
+                <input asp-for="User.IdentityUrl" class="form-control" />
+                <span asp-validation-for="User.IdentityUrl" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="User.Salt" class="control-label"></label>
+                <input asp-for="User.Salt" class="form-control" />
+                <span asp-validation-for="User.Salt" class="text-danger"></span>
+            </div>
+            <div class="form-group form-check">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="User.MustChangePasswd" /> @Html.DisplayNameFor(model => model.User.MustChangePasswd)
+                </label>
+            </div>
+            <div class="form-group">
+                <label asp-for="User.PasswdChangedOn" class="control-label"></label>
+                <input asp-for="User.PasswdChangedOn" class="form-control" />
+                <span asp-validation-for="User.PasswdChangedOn" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-page="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
+</body>
+</html>

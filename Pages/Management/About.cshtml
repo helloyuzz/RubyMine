@@ -1,0 +1,56 @@
+﻿@page
+@model RubyMine.Pages.Management.AboutModel
+@{
+    Layout = "~/Pages/Shared/_ManagementLayout.cshtml";
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Create</title>
+</head>
+<body>
+    <div class="row bg-title">
+        <div class="col">
+            <div class="row border-1 border-ccc bg-title pt-1 pb-1 ps-1 fw-bold">
+                退出
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col p-0">
+            <table class="table border-1 border-ccc table-hover border-top-0">
+                <thead>
+                    <tr>
+                        <th class="p-0 ps-1 pt-1 pb-1">
+
+                        </th>
+                        <th class="p-0 ps-1 pt-1 pb-1">
+                        </th>
+                        <th class="p-0 ps-1 pt-1 pb-1">
+                        </th>
+                        <th class="p-0 ps-1 pt-1 pb-1">
+                        </th>
+                        <th class="p-0 ps-1 pt-1 pb-1"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>是否退出RubyMine后台管理系统？</td>
+                        <td>
+                    </tr>
+                    <tr>
+                        <td><button>是</button></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    @section Scripts {
+        @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    }
+</body>
+</html>

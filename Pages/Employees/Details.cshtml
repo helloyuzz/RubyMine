@@ -1,0 +1,119 @@
+﻿@page
+@model RubyMine.Pages.Employees.DetailsModel
+@using RubyMine.Models;
+@using RubyMine.Models.CustomModels;
+@{
+    // Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Details</title>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col">
+                <div class="row border-1 border-ccc bg-title">
+                    <div class="col ps-1">
+                        <span class="m-1 p-0">@Html.Raw(RMUtils.ParseUserName(null, Model.User))</span>
+                    </div>
+                    <div class="col-1 mt-1 fs-7 text-right"><i class="fas fa-plus fa-xs"></i>&nbsp;新建帐号</div>
+                </div>
+                <div class="row border-1 border-ccc border-top-0 p-2">
+
+                </div>
+            </div>&nbsp;
+            <div class="col-3">
+                <div class="row border-1 border-ccc bg-title">
+                    <div class="col">
+                        <span class="m-1 p-0">员工信息</span>
+                    </div>
+                </div>
+                <div class="row border-1 border-ccc border-top-0 pt-3 fs-7 bg-light">
+                    <div>
+                        <h4>@Html.Raw(RMUtils.ParseUserName(null,Model.User))</h4>
+                        <hr />
+                        <dl class="row">
+                            <dt class="col-sm-3">
+                                @Html.DisplayNameFor(model => model.User.Login)
+                            </dt>
+                            <dd class="col-sm-9">
+                                @Html.DisplayFor(model => model.User.Login)
+                            </dd>
+                            <dt class="col-sm-3">姓名</dt>
+                            <dd class="col-sm-9">
+                                @Html.DisplayFor(model => model.User.Lastname)@Html.DisplayFor(model => model.User.Firstname)
+                            </dd>
+                            <dt class="col-sm-3">
+                                @Html.DisplayNameFor(model => model.User.Admin)
+                            </dt>
+                            <dd class="col-sm-9">
+                                @Html.DisplayFor(model => model.User.Admin)
+                            </dd>
+                            <dt class="col-sm-3">
+                                @Html.DisplayNameFor(model => model.User.Status)
+                            </dt>
+                            <dd class="col-sm-9">
+                                @Html.Raw(RMUtils.ParseUserStatus(Model.User.Status))
+                            </dd>
+                            <dt class="col-sm-3">
+                                @Html.DisplayNameFor(model => model.User.LastLoginOn)
+                            </dt>
+                            <dd class="col-sm-9">
+                                @Html.Raw(RMUtils.PraseDateTime(Model.User.LastLoginOn))
+                            </dd>
+                            <dt class="col-sm-3">
+                                @Html.DisplayNameFor(model => model.User.CreatedOn)
+                            </dt>
+                            <dd class="col-sm-9">
+                                @Html.Raw(RMUtils.PraseDateTime(Model.User.CreatedOn))
+                            </dd>
+                            <dt class="col-sm-3">
+                                @Html.DisplayNameFor(model => model.User.UpdatedOn)
+                            </dt>
+                            <dd class="col-sm-9">
+                                @Html.Raw(RMUtils.PraseDateTime(Model.User.UpdatedOn))
+                            </dd>
+                            <dt class="col-sm-3">
+                                @Html.DisplayNameFor(model => model.User.Type)
+                            </dt>
+                            <dd class="col-sm-9">
+                                @Html.DisplayFor(model => model.User.Type)
+                            </dd>
+                            <dt class="col-sm-3">
+                                @Html.DisplayNameFor(model => model.User.MailNotification)
+                            </dt>
+                            <dd class="col-sm-9">
+                                @Html.Raw(RMUtils.ParseMailNotification(Model.User.MailNotification))
+                            </dd>
+                            <dt class="col-sm-3">
+                                @Html.DisplayNameFor(model => model.User.PasswdChangedOn)
+                            </dt>
+                            <dd class="col-sm-9">
+                                @Html.Raw(RMUtils.PraseDateTime(Model.User.PasswdChangedOn))
+                            </dd>
+                            @foreach (CustomField1 field1 in Model.User.CustomFields) {
+
+                                <dt class="col-sm-3">
+                                    @Html.Raw(field1.Name);
+                                </dt>
+                                <dd class="col-sm-9">
+                                    @Html.Raw(field1.CustomValue.Value);
+                                </dd>
+                            }
+                        </dl>
+                    </div>
+                    <div>
+                        <a asp-page="./Edit" asp-route-id="@Model.User.Id">Edit</a> |
+                        <a asp-page="./Index">Back to List</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

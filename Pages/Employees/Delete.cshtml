@@ -1,0 +1,133 @@
+﻿@page
+@model RubyMine.Pages.Employees.DeleteModel
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Delete</title>
+</head>
+<body>
+
+<h3>Are you sure you want to delete this?</h3>
+<div>
+    <h4>User</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.User.Login)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.User.Login)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.User.HashedPassword)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.User.HashedPassword)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.User.Firstname)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.User.Firstname)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.User.Lastname)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.User.Lastname)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.User.Admin)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.User.Admin)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.User.Status)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.User.Status)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.User.LastLoginOn)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.User.LastLoginOn)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.User.Language)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.User.Language)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.User.AuthSourceId)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.User.AuthSourceId)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.User.CreatedOn)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.User.CreatedOn)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.User.UpdatedOn)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.User.UpdatedOn)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.User.Type)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.User.Type)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.User.IdentityUrl)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.User.IdentityUrl)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.User.MailNotification)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.User.MailNotification)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.User.Salt)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.User.Salt)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.User.MustChangePasswd)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.User.MustChangePasswd)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.User.PasswdChangedOn)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.User.PasswdChangedOn)
+        </dd>
+    </dl>
+    
+    <form method="post">
+        <input type="hidden" asp-for="User.Id" />
+        <input type="submit" value="Delete" class="btn btn-danger" /> |
+        <a asp-page="./Index">Back to List</a>
+    </form>
+</div>
+</body>
+</html>

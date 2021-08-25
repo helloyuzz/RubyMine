@@ -1,0 +1,155 @@
+﻿@page
+@model RubyMine.Pages.Employees.IndexModel
+@using RubyMine.Models;
+@using RubyMine.Models.CustomModels; 
+
+@{
+    //Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Index</title>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col">
+                <div class="row border-1 border-ccc bg-title">
+                    <div class="col ps-1">
+                        <span class="m-1 p-0">项目列表</span>
+                    </div>
+                    <div class="col-1 mt-1 fs-7 text-right"><i class="fas fa-plus fa-xs"></i>&nbsp;新建帐号</div>
+                </div>
+                <div class="row border-1 border-ccc border-top-0 p-2">
+                    <table class="table table-hover lh-1 fs-7 border-1 border-ccc">
+                        <thead>
+                            <tr>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.RMUser[0].Id)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.RMUser[0].Login)
+                                </th>
+                                <th>
+                                    员工姓名
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.RMUser[0].Status)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.RMUser[0].Admin)
+                                </th>
+                                @foreach (CustomField1 customField in Model.RMUser[0].CustomFields) {
+                                    <th>
+                                        @Html.DisplayName(customField.Name)
+                                    </th>
+                                }
+                                <th>
+                                    @Html.DisplayNameFor(model => model.RMUser[0].CreatedOn)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.RMUser[0].UpdatedOn)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.RMUser[0].MailNotification)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.RMUser[0].LastLoginOn)
+                                </th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model.RMUser) {
+                                <tr>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Id)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Login)
+                                    </td>
+                                    <td>
+                                        <a asp-page="./Details" asp-route-id="@item.Id">
+                                            @Html.DisplayFor(modelItem => item.Lastname)@Html.DisplayFor(modelItem => item.Firstname)
+                                        </a>
+                                    </td>
+                                    <td>
+                                        @Html.Raw(RMUtils.ParseUserStatus(item.Status)) 
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Admin)
+                                    </td>
+                                    @foreach (CustomField1 customField1 in item.CustomFields) {
+                                        <td>
+                                            @if (customField1.CustomValue != null) {
+                                                @Html.Raw(customField1.CustomValue.Value)
+                                            }
+                                        </td>
+                                    }
+                                    <td>
+                                        @Html.Raw(item.CreatedOn.Value.ToString("yyyy-MM-dd HH:mm:ss"))
+                                    </td>
+                                    <td>
+                                        @Html.Raw(item.UpdatedOn.Value.ToString("yyyy-MM-dd HH:mm:ss"))
+                                    </td>
+                                    <td>
+                                        @Html.Raw(RMUtils.ParseMailNotification(item.MailNotification))
+                                    </td>
+                                    <td>
+                                        @Html.Raw(item.LastLoginOn.Value.ToString("yyyy-MM-dd HH:mm:ss"))
+                                    </td>
+                                    <td>
+                                        <a asp-page="./Edit" asp-route-id="@item.Id">Edit</a> |
+                                        <a asp-page="./Details" asp-route-id="@item.Id">Details</a> |
+                                        <a asp-page="./Delete" asp-route-id="@item.Id">Delete</a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>&nbsp;
+            <div class="col-3">
+                <div class="row border-1 border-ccc bg-title">
+                    <div class="col">
+                        <span class="m-1 p-0">员工查询</span>
+                    </div>
+                </div>
+                <div class="row border-1 border-ccc border-top-0 pt-3 fs-7 bg-light">
+                    <div class="input-group mb-3 ps-3">
+                        <span class="bg-eee">按条件检索员工信息：</span>
+                    </div>
+                    <div class="input-group mb-1 pr-4">
+                        <span class="input-group-text fs-7" id="basic-addon1">名称</span>
+                        <input type="text" class="form-control fs-7 mr-4" placeholder="请输入员工姓名" aria-label="Username" aria-describedby="basic-addon1">
+                    </div>
+                    <div class="input-group mb-1 pr-4">
+                        <label class="input-group-text fs-7" for="inputGroupSelect01">部门</label>
+                        <select class="form-select fs-7 mr-4" id="inputGroupSelect01">
+                            <option selected>所有部门</option>
+                            <option value="1">产品部</option>
+                            <option value="2">研发部</option>
+                            <option value="1">实施部</option>
+                        </select>
+                    </div>
+                    <div class="input-group mb-3 pr-4">
+                        <label class="input-group-text fs-7" for="inputGroupSelect01">状态</label>
+                        <select class="form-select fs-7 mr-4" id="inputGroupSelect01">
+                            <option selected>全部状态</option>
+                            <option value="1">激活的</option>
+                            <option value="2">已锁定</option>
+                        </select>
+                    </div>
+                    <div class="input-group mb-3">
+                        <button type="button" class="btn btn-success btn-sm ps-4 pr-4 fs-7">筛选</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

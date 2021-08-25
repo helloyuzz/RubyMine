@@ -1,0 +1,173 @@
+﻿@page
+@model RubyMine.Pages.Projects.IndexModel
+@using RubyMine.Models;
+@using RubyMine.Models.CustomModels;
+
+@{
+    //    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Index</title>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col">
+                <div class="row border-1 border-ccc bg-title">
+                    <div class="col ps-2">
+                        <nav aria-label="breadcrumb">
+                            <ol class="breadcrumb m-0">
+                                <li class="breadcrumb-item"><a asp-page="/Projects/Index" class="text-decoration-none text-dark">医院列表</a></li>
+                            </ol>
+                        </nav>
+                    </div>
+                    @*<div class="col-1 mt-1 fs-7 text-right"><a href="#aaa" class="text-decoration-none text-secondary" title="权限未开放，请联系管理员"><img src="~/images/add.png">快速登记</a></div>*@
+                </div>
+                <div class="row border-1 border-ccc border-top-0 p-2">
+                    <table class="table table-hover lh-1 fs-7 border-1 border-ccc">
+                        <thead>
+                            <tr>
+                                <th>编号</th>
+                                <th width="20%">项目名称</th>
+                                <th>需求</th>
+                                <th>线上问题</th>
+                                <th>HIS对接</th>
+                                <th>人员科室</th>
+                                <th>设备对接</th>
+                                <th>单点登录</th>
+                                @foreach (CustomField1 customField in Model.RMProjects[0].CustomFields) {
+                                    @if (customField.Description.Contains("hide")) continue;
+                                    <th>
+                                        @Html.DisplayName(customField.Name)
+                                    </th>
+                                }
+                                <th>实施人员</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model.RMProjects) {
+                                <tr>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Id)
+                                    </td>
+                                    <td id="item_@item.Id">
+                                        <div class="dropdown" onmousemove="changeStyle('dropdownMenuLink_@item.Id','inline-flex');" onmouseout="changeStyle('dropdownMenuLink_@item.Id','none');">
+                                            <a asp-page="./Details" asp-route-id="@item.Id" target="_blank">
+                                               @Html.DisplayFor(modelItem => item.Firstname)
+                                            </a>&nbsp;
+                                            <a class="btn btn-secondary m-0 p-0 fs-7 bg-transparent border-0 text-primary" href="#" role="button" id="dropdownMenuLink_@item.Id" data-bs-toggle="dropdown" aria-expanded="false" style="display:none;">
+                                                <img src="~/images/add.png" />
+                                            </a>
+                                            <ul class="dropdown-menu shadow" style="width:198px;" aria-labelledby="dropdownMenuLink">
+                                                <li class="fs-7 pt-1 pb-1 ps-2 fw-bold">@Html.DisplayFor(modelItem => item.Lastname)@Html.DisplayFor(modelItem => item.Firstname)&nbsp;&gt;&nbsp;登记</li>
+                                                <li><hr class="dropdown-divider"></li>
+                                                <li><a class="dropdown-item fs-7" href="#">需求</a></li>
+                                                <li><a class="dropdown-item fs-7" href="#">线上问题</a></li>
+                                                <li><a class="dropdown-item fs-7" href="#">临时修改</a></li>
+                                                <li><hr class="dropdown-divider"></li>
+                                                <li><a class="dropdown-item fs-7" href="#">版本升级</a></li>
+                                                <li><a class="dropdown-item fs-7" href="#">远程连接地址</a></li>
+                                                <li><hr class="dropdown-divider"></li>
+                                                <li><a class="dropdown-item fs-7" href="#">HIS对接</a></li>
+                                                <li><a class="dropdown-item fs-7" href="#">设备对接</a></li>
+                                                <li><hr class="dropdown-divider"></li>
+                                                <li><a class="dropdown-item fs-7" href="#">人员科室对接</a></li>
+                                                <li><a class="dropdown-item fs-7" href="#">单点登录对接</a></li>
+                                            </ul>
+                                        </div>
+                                    </td>
+                                    <td><a class="text-decoration-none" asp-page="./Details" asp-route-id="@item.Id" asp-route-tracker="requirement" target="_blank">@Html.DisplayFor(modelItem => item.IssueNumber)</a></td>
+                                    <td><a class="text-decoration-none" asp-page="./Details" asp-route-id="@item.Id" asp-route-tracker="bug" target="_blank">@Html.Raw(item.BugNumber)</a></td>
+                                    <td><a class="text-decoration-none" asp-page="./Details" asp-route-id="@item.Id" asp-route-tracker="his" target="_blank">@Html.Raw(item.HisNumber)</a></td>
+                                    <td><a class="text-decoration-none" asp-page="./Details" asp-route-id="@item.Id" asp-route-tracker="dept" target="_blank">@Html.Raw(item.DeptNumber)</a></td>
+                                    <td><a class="text-decoration-none" asp-page="./Details" asp-route-id="@item.Id" asp-route-tracker="device" target="_blank">@Html.Raw(item.DeviceNumber)</a></td>
+                                    <td><a class="text-decoration-none" asp-page="./Details" asp-route-id="@item.Id" asp-route-tracker="portal" target="_blank">@Html.Raw(item.PortalNumber)</a></td>
+                                    @foreach (CustomField1 customField1 in item.CustomFields) {
+                                        @if (customField1.Description.Contains("hide")) continue;
+                                        <td>
+                                            @if (customField1.CustomValue != null) {
+                                                @Html.Raw(RMUtils.ParseCustomField(customField1))
+                                            }
+                                        </td>
+                                    }
+                                    <td><a asp-page="/Employees/Details" asp-route-id="@item.Employee?.Id" target="_blank">@Html.Raw(RMUtils.ParseUserName(item.Employee))</a></td>
+                                    <td align="center">
+                                        @*<a asp-page="./Edit" asp-route-id="@item.Id">Edit</a> |*@
+                                        @*<a asp-page="./Details" asp-route-id="@item.Id" target="_blank">登记</a>*@
+
+                                        
+                                        @*|<a asp-page="./Delete" asp-route-id="@item.Id">Delete</a>*@
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                    <div class="row fs-7 ps-3">
+                        合计：@Model.RMProjects.Count
+                    </div>
+                </div>
+            </div>&nbsp;
+            <div class="col-3">
+                <div class="row border-1 border-ccc bg-title">
+                    <div class="col">
+                        <span class="m-1 p-0">项目查询</span>
+                    </div>
+                </div>
+                <div class="row border-1 border-ccc border-top-0 pt-3 fs-7">
+                    <div class="input-group mb-3 ps-3">
+                        <span class="bg-eee">按条件检索所有项目：</span>
+                    </div>
+                    <div class="input-group mb-1 pr-4">
+                        <label class="input-group-text fs-7" for="inputGroupSelect01">类型</label>
+                        <select class="form-select fs-7 mr-4" id="inputGroupSelect01">
+                            <option selected>全部</option>
+                            <option value="1">CSSD</option>
+                            <option value="2">内镜</option>
+                        </select>
+                    </div>
+                    <div class="input-group mb-3 pr-4">
+                        <label class="input-group-text fs-7" for="inputGroupSelect01">阶段</label>
+                        <select class="form-select fs-7 mr-4" id="inputGroupSelect01">
+                            <option selected>全部</option>
+                            <option value="1">售前</option>
+                            <option value="2">实施</option>
+                        </select>
+                    </div>
+                    <div class="input-group mb-3">
+                        <button type="button" class="btn btn-success btn-sm ps-4 pr-4 fs-7">筛选</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Modal -->
+    <div class="modal fade" id="createPopup" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="staticBackdropLabel">Modal title</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    ...
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary">Understood</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        function changeStyle(id, value) {
+            document.getElementById(id).style.display = value;
+        }
+    </script>
+</body>
+</html>

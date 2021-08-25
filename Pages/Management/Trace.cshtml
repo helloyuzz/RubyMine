@@ -1,0 +1,74 @@
+﻿@page
+@model RubyMine.Pages.Management.TraceModel
+
+@{
+    Layout = "~/Pages/Shared/_ManagementLayout.cshtml";
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Create</title>
+</head>
+<body>
+    <div class="row bg-title">
+        <div class="col">
+            <div class="row border-1 border-ccc bg-title pt-1 pb-1 ps-1 fw-bold">
+                跟踪标签
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col p-0">
+            <table class="table border-1 border-ccc table-hover border-top-0">
+                <thead>
+                    <tr>
+                        <th class="p-0 ps-1 pt-1 pb-1">
+                            @Html.DisplayNameFor(model => model.Tracker[0].Id)
+                        </th>
+                        <th class="p-0 ps-1 pt-1 pb-1">
+                            @Html.DisplayNameFor(model => model.Tracker[0].Name)
+                        </th>
+                        <th class="p-0 ps-1 pt-1 pb-1">
+                            @Html.DisplayNameFor(model => model.Tracker[0].Description)
+                        </th>
+                        <th class="p-0 ps-1 pt-1 pb-1">
+                            @Html.DisplayNameFor(model => model.Tracker[0].Position)
+                        </th>
+                        <th class="p-0 ps-1 pt-1 pb-1">操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.Tracker) {
+                        <tr>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Id)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Name)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Description)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Position)
+                            </td>
+                            <td>
+                                <a asp-page="./Edit" asp-route-id="@item.Id">Edit</a> |
+                                <a asp-page="./Details" asp-route-id="@item.Id">Details</a> |
+                                <a asp-page="./Delete" asp-route-id="@item.Id">Delete</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    @section Scripts {
+        @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    }
+</body>
+</html>

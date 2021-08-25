@@ -1,0 +1,232 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - RubyMine</title>
+    <link href="~/lib/bootstrap-5.0.2-dist/css/bootstrap.css" rel="stylesheet">
+    @*<script src="~/lib/bootstrap-5.0.2-dist/js/bootstrap.min.js"></script>*@
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+    <script src="https://kit.fontawesome.com/64adc7381d.js" crossorigin="anonymous"></script>
+    @*<script src="~/lib/jquery-3.6.0/dist/jquery.min.js"></script>*@
+    <link rel="stylesheet" href="~/css/site.css" />
+    <style>
+        #mydiv {
+            position: absolute;
+            z-index: 9;
+            background-color: #f1f1f1;
+            text-align: center;
+            border: 1px solid #d3d3d3;
+            left: 80%;
+            top: 600px;
+        }
+
+        #mydivheader {
+            padding: 10px;
+            cursor: move;
+            z-index: 10;
+            background-color: #2196F3;
+            color: #fff;
+        }
+    </style>
+    @{
+        string htmlUrl = Context.Request.Path.Value;
+        htmlUrl = htmlUrl.Substring(htmlUrl.LastIndexOf("/") + 1);
+
+        switch (htmlUrl) {
+            case "Project":
+                ViewData["nav_Project"] = "active";
+                break;
+            case "Trace":
+                ViewData["nav_Trace"] = "active";
+                break;
+            case "User":
+                ViewData["nav_User"] = "active";
+                break;
+            case "CustomField":
+                ViewData["nav_CustomField"] = "active";
+                break;
+            case "Role":
+                ViewData["nav_Role"] = "active";
+                break;
+            case "IssueStatus":
+                ViewData["nav_IssueStatus"] = "active";
+                break;
+            case "Flow":
+                ViewData["nav_Flow"] = "active";
+                break;
+            case "Common":
+                ViewData["nav_Common"] = "active";
+                break;
+            case "Enum":
+                ViewData["nav_Enum"] = "active";
+                break;
+            case "About":
+                ViewData["nav_About"] = "active";
+                break;
+        }
+    }
+</head>
+<body class="overflow-hidden">
+    @*<div id="mydiv" class="shadow rounded-circle">
+        <div id="mydivheader" class="shadow rounded-circle">
+            <p>Move</p>
+        </div>
+    </div>*@
+    <header>
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-dark border-bottom box-shadow mb-3 lh-sm shadow">
+            <div class="container-fluid bg-success">
+                <a class="navbar-brand  text-white" href="#temp">RubyMine</a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                        aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between pr-0">
+                    <div class="row w-100 ml-0 mr-0">
+                        <div class="col">
+                            <ul class="navbar-nav flex-grow-1">
+                                <li class="nav-item">
+                                    <a class="nav-link text-white fs-7 @ViewData["nav_Index"]" asp-area="" asp-page="/Index">主页</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-white fs-7 @ViewData["nav_Products"]" asp-area="" asp-page="/Products/Index">公司产品</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-white fs-7 @ViewData["nav_Projects"]" asp-area="" asp-page="/Projects/Index">医院列表</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-white fs-7 @ViewData["nav_Requirements"]" asp-area="" asp-page="/Requirements/Index">需求跟踪</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-white fs-7  @ViewData["nav_Leaks"]" asp-area="" asp-page="/Leaks/Index">缺陷列表</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-white fs-7 @ViewData["nav_Plans"]" asp-area="" asp-page="/Plans/Index">研发计划</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-white fs-7 @ViewData["nav_Clocks"]" asp-area="" asp-page="/Clocks/Index">工时填写</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-white fs-7 @ViewData["nav_Wiki"]" asp-area="" asp-page="/Wiki/Index">Wiki</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-white fs-7 @ViewData["nav_Documents"]" asp-area="" asp-page="/Documents/Index">文档附件</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-white fs-7 @ViewData["nav_Helps"]" asp-area="" asp-page="/Helps/Index">使用帮助</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-white fs-7 @ViewData["nav_Privacy"]" asp-area="" asp-page="/Privacy">Privacy</a>
+                                </li>
+                            </ul>
+                        </div>                        
+                        <div class="col-2 d-flex">
+                            <ul class="navbar-nav flex-grow-1 justify-content-end">
+                                @*<li class="nav-item">
+                                    <a class="nav-link text-white fs-7" asp-area="" asp-page="/Privacy">rubymine</a>
+                                </li>*@
+                                <li class="nav-item">
+                                    <a class="nav-link text-white fs-7 fw-bold" href="#temp"><i class="fas fa-align-justify"></i>&nbsp;系统设置</a>
+                                </li>
+                                @*<li class="nav-item">
+                                    <a class="nav-link text-white fs-7" asp-area="" asp-page="/Privacy">退出</a>
+                                </li>*@
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <div class="row fs-7 pr-3 ps-4">
+        <div class="col-2 border-1 border-ccc pb-3 bg-light">
+            <div class="row border-bottom bg-title p-1 mb-2 ps-2">
+                <div class="col fw-bold">
+                    系统设置&nbsp;<img src="~/images/edit.png" />
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <div class="nav-pills flex-column lh-lg" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+                        <a class="nav-link text-dark m-0 p-1 @ViewData["nav_Project"]" asp-area="" asp-page="/Management/Project"><img src="~/images/projects.png" />&nbsp;项目</a>
+                        <a class="nav-link text-dark m-0 p-1 @ViewData["nav_Trace"]" asp-area="" asp-page="/Management/Trace"><img src="~/images/ticket.png" />&nbsp;跟踪标签</a>
+                        <a class="nav-link text-dark m-0 p-1 @ViewData["nav_User"]" asp-area="" asp-page="/Management/User"><img src="~/images/group.png" />&nbsp;用户</a>
+                        <a class="nav-link text-dark m-0 p-1 @ViewData["nav_CustomField"]" asp-area="" asp-page="/Management/CustomField"><img src="~/images/true.png" />&nbsp;自定义字段</a>
+                        <a class="nav-link text-dark m-0 p-1 @ViewData["nav_Role"]" asp-area="" asp-page="/Management/Role"><img src="~/images/database_key.png" />&nbsp;角色和权限</a>
+                        <a class="nav-link text-dark m-0 p-1 @ViewData["nav_IssueStatus"]" asp-area="" asp-page="/Management/IssueStatus"><img src="~/images/ticket_edit.png" />&nbsp;问题状态</a>
+                        <a class="nav-link text-dark m-0 p-1 @ViewData["nav_Flow"]" asp-area="" asp-page="/Management/Flow"><img src="~/images/ticket_go.png" />&nbsp;工作流程</a>
+                        <a class="nav-link text-dark m-0 p-1 @ViewData["nav_Common"]" asp-area="" asp-page="/Management/Common"><img src="~/images/changeset.png" />&nbsp;通用</a>
+                        <a class="nav-link text-dark m-0 p-1 @ViewData["nav_Enum"]" asp-area="" asp-page="/Management/Enum"><img src="~/images/text_list_bullets.png" />&nbsp;枚举值</a>
+                        <a class="nav-link text-dark m-0 p-1 @ViewData["nav_About"]" asp-area="" asp-page="/Management/About"><img src="~/images/report.png" />&nbsp;退出</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <main role="main" class="ps-3 pr-3">
+                @RenderBody()
+            </main>
+        </div>
+        <div class="col-2 bg-title border-1 border-ccc m-0">
+        </div>
+    </div>
+
+        <footer class="border-top footer text-muted lh-middle">
+            <div class="container-fluid fs-7">
+                RubyMine @@ Powered by Jack Sparrow - <a asp-area="" asp-page="/Privacy">Privacy</a>
+            </div>
+        </footer>
+
+        <script src="~/lib/jquery/dist/jquery.min.js"></script>
+        <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+        <script src="~/js/site.js" asp-append-version="true"></script>
+
+        @await RenderSectionAsync("Scripts", required: false)
+
+        <script>
+            //Make the DIV element draggagle:
+            dragElement(document.getElementById("mydiv"));
+
+            function dragElement(elmnt) {
+                var pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+                if (document.getElementById(elmnt.id + "header")) {
+                    /* if present, the header is where you move the DIV from:*/
+                    document.getElementById(elmnt.id + "header").onmousedown = dragMouseDown;
+                } else {
+                    /* otherwise, move the DIV from anywhere inside the DIV:*/
+                    elmnt.onmousedown = dragMouseDown;
+                }
+
+                function dragMouseDown(e) {
+                    e = e || window.event;
+                    e.preventDefault();
+                    // get the mouse cursor position at startup:
+                    pos3 = e.clientX;
+                    pos4 = e.clientY;
+                    document.onmouseup = closeDragElement;
+                    // call a function whenever the cursor moves:
+                    document.onmousemove = elementDrag;
+                }
+
+                function elementDrag(e) {
+                    e = e || window.event;
+                    e.preventDefault();
+                    // calculate the new cursor position:
+                    pos1 = pos3 - e.clientX;
+                    pos2 = pos4 - e.clientY;
+                    pos3 = e.clientX;
+                    pos4 = e.clientY;
+                    // set the element's new position:
+                    elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+                    elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+                }
+
+                function closeDragElement() {
+                    /* stop moving when mouse button is released:*/
+                    document.onmouseup = null;
+                    document.onmousemove = null;
+                }
+            }
+        </script>
+</body>
+</html>

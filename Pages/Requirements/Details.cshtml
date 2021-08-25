@@ -1,0 +1,184 @@
+﻿@page
+@model RubyMine.Pages.Requirements.DetailsModel
+
+@{
+    //Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Details</title>
+</head>
+<body>
+
+    <div>
+        <h4>Issue</h4>
+        <hr />
+        <dl class="row">
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.Issue.TrackerId)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Issue.TrackerId)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.Issue.ProjectId)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Issue.ProjectId)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.Issue.Subject)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Issue.Subject)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.Issue.Description)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Issue.Description)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.Issue.DueDate)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Issue.DueDate)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.Issue.CategoryId)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Issue.CategoryId)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.Issue.StatusId)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Issue.StatusId)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.Issue.AssignedToId)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Issue.AssignedToId)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.Issue.PriorityId)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Issue.PriorityId)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.Issue.FixedVersionId)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Issue.FixedVersionId)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.Issue.AuthorId)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Issue.AuthorId)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.Issue.LockVersion)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Issue.LockVersion)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.Issue.CreatedOn)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Issue.CreatedOn)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.Issue.UpdatedOn)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Issue.UpdatedOn)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.Issue.StartDate)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Issue.StartDate)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.Issue.DoneRatio)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Issue.DoneRatio)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.Issue.EstimatedHours)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Issue.EstimatedHours)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.Issue.ParentId)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Issue.ParentId)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.Issue.RootId)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Issue.RootId)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.Issue.Lft)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Issue.Lft)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.Issue.Rgt)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Issue.Rgt)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.Issue.IsPrivate)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Issue.IsPrivate)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.Issue.ClosedOn)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Issue.ClosedOn)
+            </dd>
+        </dl>
+    </div>
+    <div>
+        <a asp-page="./Edit" asp-route-id="@Model.Issue.Id">Edit</a> |
+        <a asp-page="./Index">Back to List</a>
+    </div>
+    <div class="offcanvas offcanvas-end" data-bs-scroll="true" tabindex="-1" id="offcanvasExample" aria-labelledby="offcanvasExampleLabel">
+        <div class="offcanvas-header bg-title border-1 border-ccc">
+            <h5 class="offcanvas-title" id="offcanvasExampleLabel">问题编辑</h5>
+            <i class="fas fa-window-close fa-lg text-secondary" style="cursor:pointer" data-bs-dismiss="offcanvas" aria-label="Close"></i>
+        </div>
+        <div class="offcanvas-body">
+            <div class="row">
+                <div class="col">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                        <label class="form-check-label" for="flexCheckDefault">
+                            需求
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

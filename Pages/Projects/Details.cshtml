@@ -1,0 +1,1077 @@
+﻿@page
+@model RubyMine.Pages.Projects.DetailsModel
+@using RubyMine.Models;
+@using RubyMine.Models.CustomModels;
+
+@{
+    //Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Details</title>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col">
+                <div class="row border-1 border-ccc bg-title">
+                    <div class="col ps-2">
+                        <nav aria-label="breadcrumb">
+                            <ol class="breadcrumb m-0">
+                                <li class="breadcrumb-item"><a asp-page="/Projects/Index" class="text-decoration-none">项目列表</a></li>
+                                <li class="breadcrumb-item active" aria-current="page">@Html.DisplayFor(model => model.User.Lastname)@Html.DisplayFor(model => model.User.Firstname)</li>
+                            </ol>
+                        </nav>
+                    </div>
+                    <div class="col-1 mt-1 fs-7 text-right">
+                        <div class="col align-content-end">
+                            <div class="dropdown">
+                                <a class="btn btn-secondary dropdown-toggle m-0 p-0 fs-7 bg-transparent border-0 text-success" href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="fas fa-plus fa-xs fs-7"></i>&nbsp;登记问题
+                                </a>
+                                <ul class="dropdown-menu shadow" aria-labelledby="dropdownMenuLink">
+                                    <li><a class="dropdown-item m-0 p-0 ps-1 fs-7 text-primary" href="#">需求</a></li>
+                                    <li><a class="dropdown-item m-0 p-0 ps-1 fs-7 text-primary" href="#">线上问题</a></li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li><a class="dropdown-item m-0 p-0 ps-1 fs-7" href="#">版本升级</a></li>
+                                    <li><a class="dropdown-item m-0 p-0 ps-1 fs-7" href="#">临时修改</a></li>
+                                    <li><a class="dropdown-item m-0 p-0 ps-1 fs-7" href="#">远程连接地址</a></li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li><a class="dropdown-item m-0 p-0 ps-1 fs-7" href="#">HIS对接</a></li>
+                                    <li><a class="dropdown-item m-0 p-0 ps-1 fs-7" href="#">设备对接</a></li>
+                                    <li><a class="dropdown-item m-0 p-0 ps-1 fs-7" href="#">人员科室对接</a></li>
+                                    <li><a class="dropdown-item m-0 p-0 ps-1 fs-7" href="#">单点登录对接</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            @{ 
+                int int_Requirement = Model.Issue.Count(t => t.TrackerId.Equals(Model.db_Tracker.FirstOrDefault(k => k.TrackerKey.Equals(TrackerMappingKey.requirement)).TrackerId));
+                int int_Bug = Model.Issue.Count(t => t.TrackerId.Equals(Model.db_Tracker.FirstOrDefault(k => k.TrackerKey.Equals(TrackerMappingKey.bug)).TrackerId));
+                int int_Maintain = Model.Issue.Count(t => t.TrackerId.Equals(Model.db_Tracker.FirstOrDefault(k => k.TrackerKey.Equals(TrackerMappingKey.maintain)).TrackerId));
+                int int_Temp = Model.Issue.Count(t => t.TrackerId.Equals(Model.db_Tracker.FirstOrDefault(k => k.TrackerKey.Equals(TrackerMappingKey.temp)).TrackerId));
+                int int_Remote = Model.Issue.Count(t => t.TrackerId.Equals(Model.db_Tracker.FirstOrDefault(k => k.TrackerKey.Equals(TrackerMappingKey.remote)).TrackerId));
+                int int_Document = Model.Issue.Count(t => t.TrackerId.Equals(Model.db_Tracker.FirstOrDefault(k => k.TrackerKey.Equals(TrackerMappingKey.temp)).TrackerId));
+                int int_His = Model.Issue.Count(t => t.TrackerId.Equals(Model.db_Tracker.FirstOrDefault(k => k.TrackerKey.Equals(TrackerMappingKey.his)).TrackerId));
+                int int_Device = Model.Issue.Count(t => t.TrackerId.Equals(Model.db_Tracker.FirstOrDefault(k => k.TrackerKey.Equals(TrackerMappingKey.device)).TrackerId));
+                int int_Dept = Model.Issue.Count(t => t.TrackerId.Equals(Model.db_Tracker.FirstOrDefault(k => k.TrackerKey.Equals(TrackerMappingKey.dept)).TrackerId));
+                int int_Portal = Model.Issue.Count(t => t.TrackerId.Equals(Model.db_Tracker.FirstOrDefault(k => k.TrackerKey.Equals(TrackerMappingKey.portal)).TrackerId));
+
+                string html_Requirement = int_Requirement > 0 ? "(" + int_Requirement + ")" : "";
+                string html_Bug = int_Bug > 0 ? "(" + int_Bug + ")" : "";
+                string html_Maintain = int_Maintain > 0 ? "(" + int_Maintain + ")" : "";
+                string html_Temp = int_Temp > 0 ? "(" + int_Temp + ")" : "";
+                string html_Remote = int_Remote > 0 ? "(" + int_Remote + ")" : "";
+                string html_Document = int_Document > 0 ? "(" + int_Document + ")" : "";
+                string html_His = int_His > 0 ? "(" + int_His + ")" : "";
+                string html_Device = int_Device > 0 ? "(" + int_Device + ")" : "";
+                string html_Dept = int_Dept > 0 ? "(" + int_Dept + ")" : "";
+                string html_Portal = int_Portal > 0 ? "(" + int_Portal + ")" : "";
+            }
+                <div class="row border-1 border-ccc border-top-0 p-2">
+                    <ul class="nav nav-tabs border-bottom-0" id="myTab" role="tablist">
+                        @*需求*@
+                        <li class="nav-item mr-1" role="presentation">
+                            <button class="nav-link fs-7 rounded-0 m-0 p-1 text-dark bg-eee active" id="requirement-tab" data-bs-toggle="tab" data-bs-target="#requirement" type="button" role="tab" aria-controls="requirement" aria-selected="true">需求<span class="text-primary">@Html.Raw(html_Requirement)</span></button>
+                        </li>
+                        @*缺陷*@
+                        <li class="nav-item mr-1" role="presentation">
+                            <button class="nav-link fs-7 rounded-0 m-0 p-1 text-dark bg-eee" id="bug-tab" data-bs-toggle="tab" data-bs-target="#bug" type="button" role="tab" aria-controls="bug" aria-selected="false">缺陷<span class="text-danger">@Html.Raw(html_Bug)</span></button>
+                        </li>
+                        @*维护记录*@
+                        <li class="nav-item mr-1" role="presentation">
+                            <button class="nav-link fs-7 rounded-0 m-0 p-1 text-dark bg-eee" id="maintain-tab" data-bs-toggle="tab" data-bs-target="#maintain" type="button" role="tab" aria-controls="maintain" aria-selected="false">版本升级 @Html.Raw(html_Maintain)</button>
+                        </li>
+                        @*临改记录*@
+                        <li class="nav-item mr-1" role="presentation">
+                            <button class="nav-link fs-7 rounded-0 m-0 p-1 text-dark bg-eee" id="temp-tab" data-bs-toggle="tab" data-bs-target="#temp" type="button" role="tab" aria-controls="temp" aria-selected="false">临时修改 @Html.Raw(html_Temp)</button>
+                        </li>
+                        @*文档*@
+                        <li class="nav-item mr-1" role="presentation">
+                            <button class="nav-link fs-7 rounded-0 m-0 p-1 text-dark bg-eee" id="remote-tab" data-bs-toggle="tab" data-bs-target="#remote" type="button" role="tab" aria-controls="remote" aria-selected="false">远程地址 @Html.Raw(html_Remote)</button>
+                        </li>
+                        @*远程方式*@
+                        <li class="nav-item mr-1" role="presentation">
+                            <button class="nav-link fs-7 rounded-0 m-0 p-1 text-dark bg-eee" id="document-tab" data-bs-toggle="tab" data-bs-target="#document" type="button" role="tab" aria-controls="document" aria-selected="false">文档管理 @Html.Raw(html_Temp)</button>
+                        </li>
+                        @*his对接*@
+                        <li class="nav-item mr-1" role="presentation">
+                            <button class="nav-link fs-7 rounded-0 m-0 p-1 text-dark bg-eee" id="his-tab" data-bs-toggle="tab" data-bs-target="#his" type="button" role="tab" aria-controls="his" aria-selected="false">HIS对接 @Html.Raw(html_His)</button>
+                        </li>
+                        @*设备对接*@
+                        <li class="nav-item mr-1" role="presentation">
+                            <button class="nav-link fs-7 rounded-0 m-0 p-1 text-dark bg-eee" id="device-tab" data-bs-toggle="tab" data-bs-target="#device" type="button" role="tab" aria-controls="device" aria-selected="false">设备对接 @Html.Raw(html_Device)</button>
+                        </li>
+                        @*人员科室*@
+                        <li class="nav-item mr-1" role="presentation">
+                            <button class="nav-link fs-7 rounded-0 m-0 p-1 text-dark bg-eee" id="dept-tab" data-bs-toggle="tab" data-bs-target="#dept" type="button" role="tab" aria-controls="dept" aria-selected="false">人员科室 @Html.Raw(html_Dept)</button>
+                        </li>
+                        @*门户集成*@
+                        <li class="nav-item mr-1" role="presentation">
+                            <button class="nav-link fs-7 rounded-0 m-0 p-1 text-dark bg-eee" id="portal-tab" data-bs-toggle="tab" data-bs-target="#portal" type="button" role="tab" aria-controls="portal" aria-selected="false">单点登录 @Html.Raw(html_Portal)</button>
+                        </li>
+                    </ul>
+                    <div class="tab-content p-0" id="myTabContent">
+                        @*需求*@
+                        <div class="tab-pane fade m-0 show active" id="requirement" role="tabpanel" aria-labelledby="requirement-tab">
+                            <table class="table table-hover lh-1 fs-7 border-1 border-ccc m-0">
+                                <thead>
+                                    <tr>
+                                        <th>
+                                            @Html.DisplayNameFor(model => model.Issue[0].Id)
+                                        </th>
+                                        <th>
+                                            @Html.DisplayNameFor(model => model.Issue[0].TrackerId)
+                                        </th>
+                                        <th>
+                                            @Html.DisplayNameFor(model => model.Issue[0].ProjectId)
+                                        </th>
+                                        <th width="40%">
+                                            @Html.DisplayNameFor(model => model.Issue[0].Subject)
+                                        </th>
+                                        <th>
+                                            @Html.DisplayNameFor(model => model.Issue[0].StatusId)
+                                        </th>
+                                        <th>
+                                            @Html.DisplayNameFor(model => model.Issue[0].PriorityId)
+                                        </th>
+                                        <th>
+                                            @Html.DisplayNameFor(model => model.Issue[0].AuthorId)
+                                        </th>
+                                        <th>
+                                            @Html.DisplayNameFor(model => model.Issue[0].AssignedToId)
+                                        </th>
+                                        <th>
+                                            @Html.DisplayNameFor(model => model.Issue[0].CreatedOn)
+                                        </th>
+                                        <th>
+                                            @Html.DisplayNameFor(model => model.Issue[0].IsPrivate)
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in Model.Issue.Where(t => t.TrackerId == Model.db_Tracker.FirstOrDefault(k => k.TrackerKey.Equals(TrackerMappingKey.requirement)).TrackerId)) {
+                                        <tr>
+                                            <td>
+                                                <a asp-page="./Details" asp-route-id="@item.Id">@Html.DisplayFor(modelItem => item.Id)</a>
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.Tracker.Name)
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.Project.Name)
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.Subject)
+                                            </td>
+                                            <td>
+                                                <div class="btn-group m-0 p-0">
+                                                    <a class="btn btn-sm btn-link m-0 p-0 fs-7 lh-0" data-bs-toggle="dropdown">@Html.DisplayFor(modelItem => item.Status.Name)</a>
+                                                    <ul class="dropdown-menu shadow fs-7">
+                                                        <li><a class="dropdown-item disabled lh-0 text-dark" href="#">更改[@Html.DisplayFor(modelItem => item.Id)]为:</a></li>
+                                                        <li><hr class="dropdown-divider"></li>
+                                                        <li><a class="dropdown-item" href="#">新建</a></li>
+                                                        <li><hr class="dropdown-divider"></li>
+                                                        <li><a class="dropdown-item" href="#">Copy Text</a></li>
+                                                    </ul>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="btn-group m-0 p-0">
+                                                    <a class="btn btn-sm btn-link m-0 p-0 fs-7 lh-0" data-bs-toggle="dropdown">@Html.DisplayFor(modelItem => item.Priority.Name)</a>
+                                                    <ul class="dropdown-menu shadow fs-7">
+                                                        <li><a class="dropdown-item lh-0" href="#">所有</a></li>
+                                                        <li><hr class="dropdown-divider"></li>
+                                                        <li><a class="dropdown-item" href="#">普通</a></li>
+                                                        <li><a class="dropdown-item" href="#">Something else here</a></li>
+                                                        <li><hr class="dropdown-divider"></li>
+                                                        <li><a class="dropdown-item" href="#">Copy Text</a></li>
+                                                    </ul>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.Author.Lastname)@Html.DisplayFor(modelItem => item.Author.Firstname)
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.AssignedTo.Lastname)@Html.DisplayFor(modelItem => item.AssignedTo.Firstname)
+                                            </td>
+                                            <td>
+                                                @Html.Raw(RMUtils.ParseDate(item.CreatedOn, true))
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.IsPrivate)
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                        @*缺陷*@
+                        <div class="tab-pane fade m-0" id="bug" role="tabpanel" aria-labelledby="bug-tab">
+                            <table class="table table-hover lh-1 fs-7 border-1 border-ccc m-0">
+                                <thead>
+                                    <tr>
+                                        <th>
+                                            @Html.DisplayNameFor(model => model.Issue[0].Id)
+                                        </th>
+                                        <th>
+                                            @Html.DisplayNameFor(model => model.Issue[0].TrackerId)
+                                        </th>
+                                        <th>
+                                            @Html.DisplayNameFor(model => model.Issue[0].ProjectId)
+                                        </th>
+                                        <th width="40%">
+                                            @Html.DisplayNameFor(model => model.Issue[0].Subject)
+                                        </th>
+                                        <th>
+                                            @Html.DisplayNameFor(model => model.Issue[0].StatusId)
+                                        </th>
+                                        <th>
+                                            @Html.DisplayNameFor(model => model.Issue[0].PriorityId)
+                                        </th>
+                                        <th>
+                                            @Html.DisplayNameFor(model => model.Issue[0].AuthorId)
+                                        </th>
+                                        <th>
+                                            @Html.DisplayNameFor(model => model.Issue[0].AssignedToId)
+                                        </th>
+                                        <th>
+                                            @Html.DisplayNameFor(model => model.Issue[0].CreatedOn)
+                                        </th>
+                                        <th>
+                                            @Html.DisplayNameFor(model => model.Issue[0].IsPrivate)
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in Model.Issue.Where(t => t.TrackerId == Model.db_Tracker.FirstOrDefault(k => k.TrackerKey.Equals(TrackerMappingKey.bug)).TrackerId)) {
+                                        <tr>
+                                            <td>
+                                                <a asp-page="./Details" asp-route-id="@item.Id">@Html.DisplayFor(modelItem => item.Id)</a>
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.Tracker.Name)
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.Project.Name)
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.Subject)
+                                            </td>
+                                            <td>
+                                                <div class="btn-group m-0 p-0">
+                                                    <a class="btn btn-sm btn-link m-0 p-0 fs-7 lh-0" data-bs-toggle="dropdown">@Html.DisplayFor(modelItem => item.Status.Name)</a>
+                                                    <ul class="dropdown-menu shadow fs-7">
+                                                        <li><a class="dropdown-item disabled lh-0 text-dark" href="#">更改[@Html.DisplayFor(modelItem => item.Id)]为:</a></li>
+                                                        <li><hr class="dropdown-divider"></li>
+                                                        <li><a class="dropdown-item" href="#">新建</a></li>
+                                                        <li><hr class="dropdown-divider"></li>
+                                                        <li><a class="dropdown-item" href="#">Copy Text</a></li>
+                                                    </ul>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="btn-group m-0 p-0">
+                                                    <a class="btn btn-sm btn-link m-0 p-0 fs-7 lh-0" data-bs-toggle="dropdown">@Html.DisplayFor(modelItem => item.Priority.Name)</a>
+                                                    <ul class="dropdown-menu shadow fs-7">
+                                                        <li><a class="dropdown-item lh-0" href="#">所有</a></li>
+                                                        <li><hr class="dropdown-divider"></li>
+                                                        <li><a class="dropdown-item" href="#">普通</a></li>
+                                                        <li><a class="dropdown-item" href="#">Something else here</a></li>
+                                                        <li><hr class="dropdown-divider"></li>
+                                                        <li><a class="dropdown-item" href="#">Copy Text</a></li>
+                                                    </ul>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.Author.Lastname)@Html.DisplayFor(modelItem => item.Author.Firstname)
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.AssignedTo.Lastname)@Html.DisplayFor(modelItem => item.AssignedTo.Firstname)
+                                            </td>
+                                            <td>
+                                                @Html.Raw(RMUtils.ParseDate(item.CreatedOn, true))
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.IsPrivate)
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                        @*维护记录*@
+                        <div class="tab-pane fade m-0" id="maintain" role="tabpanel" aria-labelledby="maintain-tab">
+                            <table class="table table-hover lh-1 fs-7 border-1 border-ccc m-0">
+                                <thead>
+                                    <tr>
+                                        <th>
+                                            @Html.DisplayNameFor(model => model.Issue[0].Id)
+                                        </th>
+                                        <th>
+                                            @Html.DisplayNameFor(model => model.Issue[0].ProjectId)
+                                        </th>
+                                        <th>
+                                            @Html.DisplayNameFor(model => model.Issue[0].TrackerId)
+                                        </th>
+                                        <th>
+                                            @Html.DisplayNameFor(model => model.Issue[0].AuthorId)
+                                        </th>
+                                        @foreach (CustomField customField1 in Model.db_CustomFields.Where(t => t.Description.Contains("maintain"))) {
+                                            <th>
+                                                @Html.DisplayName(customField1.Name)
+                                            </th>
+                                        }
+                                        <th>
+                                            @Html.DisplayNameFor(model => model.Issue[0].CreatedOn)
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in Model.Issue.Where(t => t.TrackerId == Model.db_Tracker.FirstOrDefault(k => k.TrackerKey.Equals(TrackerMappingKey.maintain)).TrackerId)) {
+                                        <tr>
+                                            <td>
+                                                <a asp-page="./Details" asp-route-id="@item.Id">@Html.DisplayFor(modelItem => item.Id)</a>
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.Project.Name)
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.Tracker.Name)
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.Author.Lastname)@Html.DisplayFor(modelItem => item.Author.Firstname)
+                                            </td>
+                                            @foreach (CustomField1 customField1 in item.CustomFields.Where(t => t.Description.Contains("maintain"))) {
+                                                <td>
+                                                    @if (customField1.CustomValue != null) {
+                                                        @Html.Raw(customField1.CustomValue.Value)
+                                                    }
+                                                </td>
+                                            }
+                                            <td>
+                                                @Html.Raw(RMUtils.ParseDate(item.CreatedOn, true))
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                        @*临改记录*@
+                        <div class="tab-pane fade m-0" id="temp" role="tabpanel" aria-labelledby="temp-tab">
+                            <table class="table table-hover lh-1 fs-7 border-1 border-ccc m-0">
+                                <thead>
+                                    <tr>
+                                        <th>
+                                            @Html.DisplayNameFor(model => model.Issue[0].Id)
+                                        </th>
+                                        <th>
+                                            @Html.DisplayNameFor(model => model.Issue[0].TrackerId)
+                                        </th>
+                                        <th>
+                                            @Html.DisplayNameFor(model => model.Issue[0].ProjectId)
+                                        </th>
+                                        <th>
+                                            @Html.DisplayNameFor(model => model.Issue[0].AuthorId)
+                                        </th>
+                                        <th width="40%">
+                                            @Html.DisplayNameFor(model => model.Issue[0].Subject)
+                                        </th>
+                                        <th>
+                                            @Html.DisplayNameFor(model => model.Issue[0].StatusId)
+                                        </th>
+                                        <th>
+                                            @Html.DisplayNameFor(model => model.Issue[0].PriorityId)
+                                        </th>
+                                        <th>
+                                            @Html.DisplayNameFor(model => model.Issue[0].AssignedToId)
+                                        </th>
+                                        <th>
+                                            @Html.DisplayNameFor(model => model.Issue[0].CreatedOn)
+                                        </th>
+                                        <th>
+                                            @Html.DisplayNameFor(model => model.Issue[0].IsPrivate)
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    temp                                    @foreach (var item in Model.Issue.Where(t => t.TrackerId == Model.db_Tracker.FirstOrDefault(k => k.TrackerKey.Equals(TrackerMappingKey.temp)).TrackerId)) {
+                                        <tr>
+                                            <td>
+                                                <a asp-page="./Details" asp-route-id="@item.Id">@Html.DisplayFor(modelItem => item.Id)</a>
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.Tracker.Name)
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.Project.Name)
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.Subject)
+                                            </td>
+                                            <td>
+                                                <div class="btn-group m-0 p-0">
+                                                    <a class="btn btn-sm btn-link m-0 p-0 fs-7 lh-0" data-bs-toggle="dropdown">@Html.DisplayFor(modelItem => item.Status.Name)</a>
+                                                    <ul class="dropdown-menu shadow fs-7">
+                                                        <li><a class="dropdown-item disabled lh-0 text-dark" href="#">更改[@Html.DisplayFor(modelItem => item.Id)]为:</a></li>
+                                                        <li><hr class="dropdown-divider"></li>
+                                                        <li><a class="dropdown-item" href="#">新建</a></li>
+                                                        <li><hr class="dropdown-divider"></li>
+                                                        <li><a class="dropdown-item" href="#">Copy Text</a></li>
+                                                    </ul>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="btn-group m-0 p-0">
+                                                    <a class="btn btn-sm btn-link m-0 p-0 fs-7 lh-0" data-bs-toggle="dropdown">@Html.DisplayFor(modelItem => item.Priority.Name)</a>
+                                                    <ul class="dropdown-menu shadow fs-7">
+                                                        <li><a class="dropdown-item lh-0" href="#">所有</a></li>
+                                                        <li><hr class="dropdown-divider"></li>
+                                                        <li><a class="dropdown-item" href="#">普通</a></li>
+                                                        <li><a class="dropdown-item" href="#">Something else here</a></li>
+                                                        <li><hr class="dropdown-divider"></li>
+                                                        <li><a class="dropdown-item" href="#">Copy Text</a></li>
+                                                    </ul>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.Author.Lastname)@Html.DisplayFor(modelItem => item.Author.Firstname)
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.AssignedTo.Lastname)@Html.DisplayFor(modelItem => item.AssignedTo.Firstname)
+                                            </td>
+                                            <td>
+                                                @Html.Raw(RMUtils.ParseDate(item.CreatedOn, true))
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.IsPrivate)
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                        @*文档*@
+                        <div class="tab-pane fade m-0" id="document" role="tabpanel" aria-labelledby="document-tab">
+                            <table class="table table-hover lh-1 fs-7 border-1 border-ccc m-0">
+                                <thead>
+                                    <tr>
+                                        <th>
+                                            @Html.DisplayNameFor(model => model.Issue[0].Id)
+                                        </th>
+                                        <th>
+                                            @Html.DisplayNameFor(model => model.Issue[0].TrackerId)
+                                        </th>
+                                        <th>
+                                            @Html.DisplayNameFor(model => model.Issue[0].ProjectId)
+                                        </th>
+                                        <th>
+                                            @Html.DisplayNameFor(model => model.Issue[0].AuthorId)
+                                        </th>
+                                        <th width="40%">
+                                            @Html.DisplayNameFor(model => model.Issue[0].Subject)
+                                        </th>
+                                        <th>
+                                            @Html.DisplayNameFor(model => model.Issue[0].StatusId)
+                                        </th>
+                                        <th>
+                                            @Html.DisplayNameFor(model => model.Issue[0].PriorityId)
+                                        </th>
+                                        <th>
+                                            @Html.DisplayNameFor(model => model.Issue[0].AssignedToId)
+                                        </th>
+                                        <th>
+                                            @Html.DisplayNameFor(model => model.Issue[0].CreatedOn)
+                                        </th>
+                                        <th>
+                                            @Html.DisplayNameFor(model => model.Issue[0].IsPrivate)
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in Model.Issue.Where(t => t.TrackerId == Model.db_Tracker.FirstOrDefault(k => k.TrackerKey.Equals(TrackerMappingKey.maintain)).TrackerId)) {
+                                        <tr>
+                                            <td>
+                                                <a asp-page="./Details" asp-route-id="@item.Id">@Html.DisplayFor(modelItem => item.Id)</a>
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.Tracker.Name)
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.Project.Name)
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.Subject)
+                                            </td>
+                                            <td>
+                                                <div class="btn-group m-0 p-0">
+                                                    <a class="btn btn-sm btn-link m-0 p-0 fs-7 lh-0" data-bs-toggle="dropdown">@Html.DisplayFor(modelItem => item.Status.Name)</a>
+                                                    <ul class="dropdown-menu shadow fs-7">
+                                                        <li><a class="dropdown-item disabled lh-0 text-dark" href="#">更改[@Html.DisplayFor(modelItem => item.Id)]为:</a></li>
+                                                        <li><hr class="dropdown-divider"></li>
+                                                        <li><a class="dropdown-item" href="#">新建</a></li>
+                                                        <li><hr class="dropdown-divider"></li>
+                                                        <li><a class="dropdown-item" href="#">Copy Text</a></li>
+                                                    </ul>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="btn-group m-0 p-0">
+                                                    <a class="btn btn-sm btn-link m-0 p-0 fs-7 lh-0" data-bs-toggle="dropdown">@Html.DisplayFor(modelItem => item.Priority.Name)</a>
+                                                    <ul class="dropdown-menu shadow fs-7">
+                                                        <li><a class="dropdown-item lh-0" href="#">所有</a></li>
+                                                        <li><hr class="dropdown-divider"></li>
+                                                        <li><a class="dropdown-item" href="#">普通</a></li>
+                                                        <li><a class="dropdown-item" href="#">Something else here</a></li>
+                                                        <li><hr class="dropdown-divider"></li>
+                                                        <li><a class="dropdown-item" href="#">Copy Text</a></li>
+                                                    </ul>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.Author.Lastname)@Html.DisplayFor(modelItem => item.Author.Firstname)
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.AssignedTo.Lastname)@Html.DisplayFor(modelItem => item.AssignedTo.Firstname)
+                                            </td>
+                                            <td>
+                                                @Html.Raw(RMUtils.ParseDate(item.CreatedOn, true))
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.IsPrivate)
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                        @*远程方式*@
+                        <div class="tab-pane fade m-0" id="remote" role="tabpanel" aria-labelledby="remote-tab">
+                            <table class="table table-hover lh-1 fs-7 border-1 border-ccc m-0">
+                                <thead>
+                                    <tr>
+                                        <th>
+                                            @Html.DisplayNameFor(model => model.Issue[0].Id)
+                                        </th>
+                                        <th>
+                                            @Html.DisplayNameFor(model => model.Issue[0].TrackerId)
+                                        </th>
+                                        <th>
+                                            @Html.DisplayNameFor(model => model.Issue[0].ProjectId)
+                                        </th>
+                                        <th>
+                                            @Html.DisplayNameFor(model => model.Issue[0].AuthorId)
+                                        </th>
+                                        <th width="40%">
+                                            @Html.DisplayNameFor(model => model.Issue[0].Subject)
+                                        </th>
+                                        <th>
+                                            @Html.DisplayNameFor(model => model.Issue[0].StatusId)
+                                        </th>
+                                        <th>
+                                            @Html.DisplayNameFor(model => model.Issue[0].PriorityId)
+                                        </th>
+                                        <th>
+                                            @Html.DisplayNameFor(model => model.Issue[0].AssignedToId)
+                                        </th>
+                                        <th>
+                                            @Html.DisplayNameFor(model => model.Issue[0].CreatedOn)
+                                        </th>
+                                        <th>
+                                            @Html.DisplayNameFor(model => model.Issue[0].IsPrivate)
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in Model.Issue.Where(t => t.TrackerId == Model.db_Tracker.FirstOrDefault(k => k.TrackerKey.Equals(TrackerMappingKey.remote)).TrackerId)) {
+                                        <tr>
+                                            <td>
+                                                <a asp-page="./Details" asp-route-id="@item.Id">@Html.DisplayFor(modelItem => item.Id)</a>
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.Tracker.Name)
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.Project.Name)
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.Subject)
+                                            </td>
+                                            <td>
+                                                <div class="btn-group m-0 p-0">
+                                                    <a class="btn btn-sm btn-link m-0 p-0 fs-7 lh-0" data-bs-toggle="dropdown">@Html.DisplayFor(modelItem => item.Status.Name)</a>
+                                                    <ul class="dropdown-menu shadow fs-7">
+                                                        <li><a class="dropdown-item disabled lh-0 text-dark" href="#">更改[@Html.DisplayFor(modelItem => item.Id)]为:</a></li>
+                                                        <li><hr class="dropdown-divider"></li>
+                                                        <li><a class="dropdown-item" href="#">新建</a></li>
+                                                        <li><hr class="dropdown-divider"></li>
+                                                        <li><a class="dropdown-item" href="#">Copy Text</a></li>
+                                                    </ul>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="btn-group m-0 p-0">
+                                                    <a class="btn btn-sm btn-link m-0 p-0 fs-7 lh-0" data-bs-toggle="dropdown">@Html.DisplayFor(modelItem => item.Priority.Name)</a>
+                                                    <ul class="dropdown-menu shadow fs-7">
+                                                        <li><a class="dropdown-item lh-0" href="#">所有</a></li>
+                                                        <li><hr class="dropdown-divider"></li>
+                                                        <li><a class="dropdown-item" href="#">普通</a></li>
+                                                        <li><a class="dropdown-item" href="#">Something else here</a></li>
+                                                        <li><hr class="dropdown-divider"></li>
+                                                        <li><a class="dropdown-item" href="#">Copy Text</a></li>
+                                                    </ul>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.Author.Lastname)@Html.DisplayFor(modelItem => item.Author.Firstname)
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.AssignedTo.Lastname)@Html.DisplayFor(modelItem => item.AssignedTo.Firstname)
+                                            </td>
+                                            <td>
+                                                @Html.Raw(RMUtils.ParseDate(item.CreatedOn, true))
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.IsPrivate)
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                        @*his对接*@
+                        <div class="tab-pane fade m-0" id="his" role="tabpanel" aria-labelledby="his-tab">
+                            <table class="table table-hover lh-1 fs-7 border-1 border-ccc m-0">
+                                <thead>
+                                    <tr>
+                                        <th>
+                                            @Html.DisplayNameFor(model => model.Issue[0].Id)
+                                        </th>
+                                        <th>
+                                            @Html.DisplayNameFor(model => model.Issue[0].TrackerId)
+                                        </th>
+                                        <th>
+                                            @Html.DisplayNameFor(model => model.Issue[0].ProjectId)
+                                        </th>
+                                        <th>
+                                            @Html.DisplayNameFor(model => model.Issue[0].AuthorId)
+                                        </th>
+                                        <th width="40%">
+                                            @Html.DisplayNameFor(model => model.Issue[0].Subject)
+                                        </th>
+                                        <th>
+                                            @Html.DisplayNameFor(model => model.Issue[0].StatusId)
+                                        </th>
+                                        <th>
+                                            @Html.DisplayNameFor(model => model.Issue[0].PriorityId)
+                                        </th>
+                                        <th>
+                                            @Html.DisplayNameFor(model => model.Issue[0].AssignedToId)
+                                        </th>
+                                        <th>
+                                            @Html.DisplayNameFor(model => model.Issue[0].CreatedOn)
+                                        </th>
+                                        <th>
+                                            @Html.DisplayNameFor(model => model.Issue[0].IsPrivate)
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in Model.Issue.Where(t => t.TrackerId == Model.db_Tracker.FirstOrDefault(k => k.TrackerKey.Equals(TrackerMappingKey.his)).TrackerId)) {
+                                        <tr>
+                                            <td>
+                                                <a asp-page="./Details" asp-route-id="@item.Id">@Html.DisplayFor(modelItem => item.Id)</a>
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.Tracker.Name)
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.Project.Name)
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.Subject)
+                                            </td>
+                                            <td>
+                                                <div class="btn-group m-0 p-0">
+                                                    <a class="btn btn-sm btn-link m-0 p-0 fs-7 lh-0" data-bs-toggle="dropdown">@Html.DisplayFor(modelItem => item.Status.Name)</a>
+                                                    <ul class="dropdown-menu shadow fs-7">
+                                                        <li><a class="dropdown-item disabled lh-0 text-dark" href="#">更改[@Html.DisplayFor(modelItem => item.Id)]为:</a></li>
+                                                        <li><hr class="dropdown-divider"></li>
+                                                        <li><a class="dropdown-item" href="#">新建</a></li>
+                                                        <li><hr class="dropdown-divider"></li>
+                                                        <li><a class="dropdown-item" href="#">Copy Text</a></li>
+                                                    </ul>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="btn-group m-0 p-0">
+                                                    <a class="btn btn-sm btn-link m-0 p-0 fs-7 lh-0" data-bs-toggle="dropdown">@Html.DisplayFor(modelItem => item.Priority.Name)</a>
+                                                    <ul class="dropdown-menu shadow fs-7">
+                                                        <li><a class="dropdown-item lh-0" href="#">所有</a></li>
+                                                        <li><hr class="dropdown-divider"></li>
+                                                        <li><a class="dropdown-item" href="#">普通</a></li>
+                                                        <li><a class="dropdown-item" href="#">Something else here</a></li>
+                                                        <li><hr class="dropdown-divider"></li>
+                                                        <li><a class="dropdown-item" href="#">Copy Text</a></li>
+                                                    </ul>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.Author.Lastname)@Html.DisplayFor(modelItem => item.Author.Firstname)
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.AssignedTo.Lastname)@Html.DisplayFor(modelItem => item.AssignedTo.Firstname)
+                                            </td>
+                                            <td>
+                                                @Html.Raw(RMUtils.ParseDate(item.CreatedOn, true))
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.IsPrivate)
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                        @*设备对接*@
+                        <div class="tab-pane fade m-0" id="device" role="tabpanel" aria-labelledby="device-tab">
+                            <table class="table table-hover lh-1 fs-7 border-1 border-ccc m-0">
+                                <thead>
+                                    <tr>
+                                        <th>
+                                            @Html.DisplayNameFor(model => model.Issue[0].Id)
+                                        </th>
+                                        <th>
+                                            @Html.DisplayNameFor(model => model.Issue[0].TrackerId)
+                                        </th>
+                                        <th>
+                                            @Html.DisplayNameFor(model => model.Issue[0].ProjectId)
+                                        </th>
+                                        <th>
+                                            @Html.DisplayNameFor(model => model.Issue[0].AuthorId)
+                                        </th>
+                                        <th width="40%">
+                                            @Html.DisplayNameFor(model => model.Issue[0].Subject)
+                                        </th>
+                                        <th>
+                                            @Html.DisplayNameFor(model => model.Issue[0].StatusId)
+                                        </th>
+                                        <th>
+                                            @Html.DisplayNameFor(model => model.Issue[0].PriorityId)
+                                        </th>
+                                        <th>
+                                            @Html.DisplayNameFor(model => model.Issue[0].AssignedToId)
+                                        </th>
+                                        <th>
+                                            @Html.DisplayNameFor(model => model.Issue[0].CreatedOn)
+                                        </th>
+                                        <th>
+                                            @Html.DisplayNameFor(model => model.Issue[0].IsPrivate)
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in Model.Issue.Where(t => t.TrackerId == Model.db_Tracker.FirstOrDefault(k => k.TrackerKey.Equals(TrackerMappingKey.device)).TrackerId)) {
+                                        <tr>
+                                            <td>
+                                                <a asp-page="./Details" asp-route-id="@item.Id">@Html.DisplayFor(modelItem => item.Id)</a>
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.Tracker.Name)
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.Project.Name)
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.Subject)
+                                            </td>
+                                            <td>
+                                                <div class="btn-group m-0 p-0">
+                                                    <a class="btn btn-sm btn-link m-0 p-0 fs-7 lh-0" data-bs-toggle="dropdown">@Html.DisplayFor(modelItem => item.Status.Name)</a>
+                                                    <ul class="dropdown-menu shadow fs-7">
+                                                        <li><a class="dropdown-item disabled lh-0 text-dark" href="#">更改[@Html.DisplayFor(modelItem => item.Id)]为:</a></li>
+                                                        <li><hr class="dropdown-divider"></li>
+                                                        <li><a class="dropdown-item" href="#">新建</a></li>
+                                                        <li><hr class="dropdown-divider"></li>
+                                                        <li><a class="dropdown-item" href="#">Copy Text</a></li>
+                                                    </ul>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="btn-group m-0 p-0">
+                                                    <a class="btn btn-sm btn-link m-0 p-0 fs-7 lh-0" data-bs-toggle="dropdown">@Html.DisplayFor(modelItem => item.Priority.Name)</a>
+                                                    <ul class="dropdown-menu shadow fs-7">
+                                                        <li><a class="dropdown-item lh-0" href="#">所有</a></li>
+                                                        <li><hr class="dropdown-divider"></li>
+                                                        <li><a class="dropdown-item" href="#">普通</a></li>
+                                                        <li><a class="dropdown-item" href="#">Something else here</a></li>
+                                                        <li><hr class="dropdown-divider"></li>
+                                                        <li><a class="dropdown-item" href="#">Copy Text</a></li>
+                                                    </ul>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.Author.Lastname)@Html.DisplayFor(modelItem => item.Author.Firstname)
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.AssignedTo.Lastname)@Html.DisplayFor(modelItem => item.AssignedTo.Firstname)
+                                            </td>
+                                            <td>
+                                                @Html.Raw(RMUtils.ParseDate(item.CreatedOn, true))
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.IsPrivate)
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                        @*人员科室*@
+                        <div class="tab-pane fade m-0" id="dept" role="tabpanel" aria-labelledby="dept-tab">
+                            <table class="table table-hover lh-1 fs-7 border-1 border-ccc m-0">
+                                <thead>
+                                    <tr>
+                                        <th>
+                                            @Html.DisplayNameFor(model => model.Issue[0].Id)
+                                        </th>
+                                        <th>
+                                            @Html.DisplayNameFor(model => model.Issue[0].TrackerId)
+                                        </th>
+                                        <th>
+                                            @Html.DisplayNameFor(model => model.Issue[0].ProjectId)
+                                        </th>
+                                        <th>
+                                            @Html.DisplayNameFor(model => model.Issue[0].AuthorId)
+                                        </th>
+                                        <th width="40%">
+                                            @Html.DisplayNameFor(model => model.Issue[0].Subject)
+                                        </th>
+                                        <th>
+                                            @Html.DisplayNameFor(model => model.Issue[0].StatusId)
+                                        </th>
+                                        <th>
+                                            @Html.DisplayNameFor(model => model.Issue[0].PriorityId)
+                                        </th>
+                                        <th>
+                                            @Html.DisplayNameFor(model => model.Issue[0].AssignedToId)
+                                        </th>
+                                        <th>
+                                            @Html.DisplayNameFor(model => model.Issue[0].CreatedOn)
+                                        </th>
+                                        <th>
+                                            @Html.DisplayNameFor(model => model.Issue[0].IsPrivate)
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in Model.Issue.Where(t => t.TrackerId == Model.db_Tracker.FirstOrDefault(k => k.TrackerKey.Equals(TrackerMappingKey.dept)).TrackerId)) {
+                                        <tr>
+                                            <td>
+                                                <a asp-page="./Details" asp-route-id="@item.Id">@Html.DisplayFor(modelItem => item.Id)</a>
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.Tracker.Name)
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.Project.Name)
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.Subject)
+                                            </td>
+                                            <td>
+                                                <div class="btn-group m-0 p-0">
+                                                    <a class="btn btn-sm btn-link m-0 p-0 fs-7 lh-0" data-bs-toggle="dropdown">@Html.DisplayFor(modelItem => item.Status.Name)</a>
+                                                    <ul class="dropdown-menu shadow fs-7">
+                                                        <li><a class="dropdown-item disabled lh-0 text-dark" href="#">更改[@Html.DisplayFor(modelItem => item.Id)]为:</a></li>
+                                                        <li><hr class="dropdown-divider"></li>
+                                                        <li><a class="dropdown-item" href="#">新建</a></li>
+                                                        <li><hr class="dropdown-divider"></li>
+                                                        <li><a class="dropdown-item" href="#">Copy Text</a></li>
+                                                    </ul>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="btn-group m-0 p-0">
+                                                    <a class="btn btn-sm btn-link m-0 p-0 fs-7 lh-0" data-bs-toggle="dropdown">@Html.DisplayFor(modelItem => item.Priority.Name)</a>
+                                                    <ul class="dropdown-menu shadow fs-7">
+                                                        <li><a class="dropdown-item lh-0" href="#">所有</a></li>
+                                                        <li><hr class="dropdown-divider"></li>
+                                                        <li><a class="dropdown-item" href="#">普通</a></li>
+                                                        <li><a class="dropdown-item" href="#">Something else here</a></li>
+                                                        <li><hr class="dropdown-divider"></li>
+                                                        <li><a class="dropdown-item" href="#">Copy Text</a></li>
+                                                    </ul>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.Author.Lastname)@Html.DisplayFor(modelItem => item.Author.Firstname)
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.AssignedTo.Lastname)@Html.DisplayFor(modelItem => item.AssignedTo.Firstname)
+                                            </td>
+                                            <td>
+                                                @Html.Raw(RMUtils.ParseDate(item.CreatedOn, true))
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.IsPrivate)
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                        @*门户集成*@
+                        <div class="tab-pane fade m-0" id="portal" role="tabpanel" aria-labelledby="portal-tab">
+                            <table class="table table-hover lh-1 fs-7 border-1 border-ccc m-0">
+                                <thead>
+                                    <tr>
+                                        <th>
+                                            @Html.DisplayNameFor(model => model.Issue[0].Id)
+                                        </th>
+                                        <th>
+                                            @Html.DisplayNameFor(model => model.Issue[0].TrackerId)
+                                        </th>
+                                        <th>
+                                            @Html.DisplayNameFor(model => model.Issue[0].ProjectId)
+                                        </th>
+                                        <th>
+                                            @Html.DisplayNameFor(model => model.Issue[0].AuthorId)
+                                        </th>
+                                        <th width="40%">
+                                            @Html.DisplayNameFor(model => model.Issue[0].Subject)
+                                        </th>
+                                        <th>
+                                            @Html.DisplayNameFor(model => model.Issue[0].StatusId)
+                                        </th>
+                                        <th>
+                                            @Html.DisplayNameFor(model => model.Issue[0].PriorityId)
+                                        </th>
+                                        <th>
+                                            @Html.DisplayNameFor(model => model.Issue[0].AssignedToId)
+                                        </th>
+                                        <th>
+                                            @Html.DisplayNameFor(model => model.Issue[0].CreatedOn)
+                                        </th>
+                                        <th>
+                                            @Html.DisplayNameFor(model => model.Issue[0].IsPrivate)
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in Model.Issue.Where(t => t.TrackerId == Model.db_Tracker.FirstOrDefault(k => k.TrackerKey.Equals(TrackerMappingKey.dept)).TrackerId)) {
+                                        <tr>
+                                            <td>
+                                                <a asp-page="./Details" asp-route-id="@item.Id">@Html.DisplayFor(modelItem => item.Id)</a>
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.Tracker.Name)
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.Project.Name)
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.Subject)
+                                            </td>
+                                            <td>
+                                                <div class="btn-group m-0 p-0">
+                                                    <a class="btn btn-sm btn-link m-0 p-0 fs-7 lh-0" data-bs-toggle="dropdown">@Html.DisplayFor(modelItem => item.Status.Name)</a>
+                                                    <ul class="dropdown-menu shadow fs-7">
+                                                        <li><a class="dropdown-item disabled lh-0 text-dark" href="#">更改[@Html.DisplayFor(modelItem => item.Id)]为:</a></li>
+                                                        <li><hr class="dropdown-divider"></li>
+                                                        <li><a class="dropdown-item" href="#">新建</a></li>
+                                                        <li><hr class="dropdown-divider"></li>
+                                                        <li><a class="dropdown-item" href="#">Copy Text</a></li>
+                                                    </ul>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="btn-group m-0 p-0">
+                                                    <a class="btn btn-sm btn-link m-0 p-0 fs-7 lh-0" data-bs-toggle="dropdown">@Html.DisplayFor(modelItem => item.Priority.Name)</a>
+                                                    <ul class="dropdown-menu shadow fs-7">
+                                                        <li><a class="dropdown-item lh-0" href="#">所有</a></li>
+                                                        <li><hr class="dropdown-divider"></li>
+                                                        <li><a class="dropdown-item" href="#">普通</a></li>
+                                                        <li><a class="dropdown-item" href="#">Something else here</a></li>
+                                                        <li><hr class="dropdown-divider"></li>
+                                                        <li><a class="dropdown-item" href="#">Copy Text</a></li>
+                                                    </ul>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.Author.Lastname)@Html.DisplayFor(modelItem => item.Author.Firstname)
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.AssignedTo.Lastname)@Html.DisplayFor(modelItem => item.AssignedTo.Firstname)
+                                            </td>
+                                            <td>
+                                                @Html.Raw(RMUtils.ParseDate(item.CreatedOn, true))
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.IsPrivate)
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>&nbsp;
+            <div class="col-3">
+                <div class="row border-1 border-ccc bg-title">
+                    <div class="col">
+                        <div class="row">
+                            <div class="col">
+                        <span class="m-1 p-0">项目信息</span>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="row border-1 border-ccc border-top-0 pt-3 fs-7 bg-light">
+                    <div>
+                        <h4>@Html.DisplayFor(model => model.User.Lastname)@Html.DisplayFor(model => model.User.Firstname)&nbsp;<i class="fas fa-caret-down"></i></h4>
+                        <hr />
+                        <dl class="row">
+                            <dt class="col-sm-3">
+                                @Html.DisplayNameFor(model => model.User.Lastname)
+                            </dt>
+                            <dd class="col-sm-9">
+                                @Html.DisplayFor(model => model.User.Lastname)@Html.DisplayFor(model => model.User.Firstname)
+                            </dd>
+                            <dt class="col-sm-3">
+                                @Html.DisplayNameFor(model => model.User.CreatedOn)
+                            </dt>
+                            <dd class="col-sm-9">
+                                @Html.DisplayFor(model => model.User.CreatedOn)
+                            </dd>
+                            <dt class="col-sm-3">
+                                @Html.DisplayNameFor(model => model.User.UpdatedOn)
+                            </dt>
+                            <dd class="col-sm-9">
+                                @Html.DisplayFor(model => model.User.UpdatedOn)
+                            </dd>
+                            <dt class="col-sm-3">
+                                @Html.DisplayNameFor(model => model.User.Type)
+                            </dt>
+                            <dd class="col-sm-9">
+                                @Html.DisplayFor(model => model.User.Type)
+                            </dd>                  
+                        </dl>
+                    </div>
+                    <div>
+                        <a asp-page="./Edit" asp-route-id="@Model.User.Id">Edit</a> |
+                        <a asp-page="./Index">Back to List</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,73 @@
+﻿@page
+@model RubyMine.Pages.Management.UserModel
+@{
+    Layout = "~/Pages/Shared/_ManagementLayout.cshtml";
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Create</title>
+</head>
+<body>
+    <div class="row bg-title">
+        <div class="col">
+            <div class="row border-1 border-ccc bg-title pt-1 pb-1 ps-1 fw-bold">
+                员工帐号
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col p-0">
+            <table class="table border-1 border-ccc table-hover border-top-0">
+                <thead>
+                    <tr>
+                        <th class="p-0 ps-1 pt-1 pb-1">
+                            @Html.DisplayNameFor(model => model.User[0].Id)
+                        </th>
+                        <th class="p-0 ps-1 pt-1 pb-1">
+                            员工姓名
+                        </th>
+                        <th class="p-0 ps-1 pt-1 pb-1">
+                            @Html.DisplayNameFor(model => model.User[0].LastLoginOn)
+                        </th>
+                        <th class="p-0 ps-1 pt-1 pb-1">
+                            @Html.DisplayNameFor(model => model.User[0].Status)
+                        </th>
+                        <th class="p-0 ps-1 pt-1 pb-1">操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.User) {
+                        <tr>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Id)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Lastname) @Html.DisplayFor(modelItem => item.Firstname)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.LastLoginOn)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Status)
+                            </td>
+                            <td>
+                                <a asp-page="./Edit" asp-route-id="@item.Id">Edit</a> |
+                                <a asp-page="./Details" asp-route-id="@item.Id">Details</a> |
+                                <a asp-page="./Delete" asp-route-id="@item.Id">Delete</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    @section Scripts {
+        @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    }
+</body>
+</html>

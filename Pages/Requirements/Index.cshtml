@@ -1,0 +1,260 @@
+﻿@page
+@model RubyMine.Pages.Requirements.IndexModel
+
+@{
+//Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Index</title>
+    <style>
+        th[htmlValue="issue"],td[htmlValue="issue"] {
+            border: solid 1px #d7d7d7;
+            padding: 5px !important;
+        }
+        th[htmlValue="issue"] {
+            padding:8px !important;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col">
+                <div class="row border-1 border-bottom-0 border-ccc bg-title">
+                    <div class="col ps-1">
+                        <table width="100%">
+                            <tr>
+                                <td width="90px"><span class="fw-bold m-1 p-0">需求跟踪</span></td>
+                                <td></td>
+                                <td width="70px" class="text-right fs-7">
+                                    <div class="btn-group dropstart">
+                                        <a href="#column" class="dropdown-toggle text-decoration-none" data-bs-toggle="dropdown" aria-expanded="false">
+                                            <i class="bi bi-layout-text-sidebar-reverse"></i>&nbsp;显示列
+                                        </a>
+                                        <ul class="dropdown-menu fs-7">
+                                            <li>
+                                                <a class="dropdown-item" href="#item">
+                                                    <div class="form-check form-switch m-0 p-0 ps-3">
+                                                        <input class="form-check-input" type="checkbox" id="flexSwitchCheckChecked" checked>
+                                                        <label class="form-check-label" for="flexSwitchCheckChecked">主题</label>
+                                                    </div>
+                                                </a>
+                                            </li>
+                                            <li><a class="dropdown-item" href="#">Another action</a></li>
+                                            <li><a class="dropdown-item" href="#">Something else here</a></li>
+                                            <li><hr class="dropdown-divider"></li>
+                                            <li><a class="dropdown-item" href="#">Separated link</a></li>
+                                        </ul>
+                                    </div>
+                                </td>
+                                <td width="80px" class="text-right fs-7"><a href="#offcanvasExample" class="text-decoration-none" data-bs-toggle="offcanvas" role="button" aria-controls="offcanvasExample"><i class="bi bi-file-earmark-text text-dark"></i>&nbsp;快速登记</a></td>
+                                <td width="60px" class="text-right fs-7"><a href="#search" class="text-decoration-none" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne"><i class="bi bi-sort-down text-dark"></i>&nbsp;检索</a></td>
+                            </tr>
+                        </table>
+                    </div> 
+                    <div class="accordion w-100 m-0 border-0 bg-white fs-7" id="accordionExample">
+                        <div class="accordion-item border-0 border-bottom-0">
+                            <div id="collapseOne" class="accordion-collapse collapse border-bottom-0" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+                                <strong>This is the first item's accordion body.</strong> It is shown by default, until the collapse plugin adds the appropriate classes that we use to style each element. These classes control the overall appearance, as well as the showing and hiding via CSS transitions. You can modify any of this with custom CSS or overriding our default variables. It's also worth noting that just about any HTML can go within the <code>.accordion-body</code>, though the transition does limit overflow.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                    <div class="row border-1 border-ccc border-top-0 p-2">
+                        <table id="mainTable" class="table table-hover lh-1 fs-7 border-1 border-ccc">
+                            <thead>
+                                <tr style="background:#eee;">
+                                    <th htmlValue="issue" width="40px" class="text-269 border-bottom-0">
+                                        #
+                                    </th>
+                                    <th htmlValue="issue" width="60px" class="text-269 border-bottom-0">
+                                        @Html.DisplayNameFor(model => model.Issue[0].TrackerId)
+                                    </th>
+                                    <th htmlValue="issue" width="80px" class="text-269 border-bottom-0">
+                                        @Html.DisplayNameFor(model => model.Issue[0].ProjectId)
+                                    </th>
+                                    <th htmlValue="issue" width="40%" class="text-269 border-bottom-0">
+                                        @Html.DisplayNameFor(model => model.Issue[0].Subject)
+                                    </th>
+                                    <th htmlValue="issue" width="106px" class="text-269 border-bottom-0">
+                                        @Html.DisplayNameFor(model => model.Issue[0].StatusId)
+                                    </th>
+                                    <th htmlValue="issue" width="60px" class="text-269 border-bottom-0">
+                                        @Html.DisplayNameFor(model => model.Issue[0].PriorityId)
+                                    </th>
+                                    <th htmlValue="issue" width="80px" class="text-269 border-bottom-0">
+                                        @Html.DisplayNameFor(model => model.Issue[0].AuthorId)
+                                    </th>
+                                    <th htmlValue="issue" width="80px" class="text-269 border-bottom-0">
+                                        @Html.DisplayNameFor(model => model.Issue[0].AssignedToId)
+                                    </th>
+                                    <th htmlValue="issue" width="123px" class="text-269 border-bottom-0">
+                                        @Html.DisplayNameFor(model => model.Issue[0].CreatedOn)
+                                    </th>
+                                    <th htmlValue="issue" class="text-269 border-bottom-0">
+                                        @Html.DisplayNameFor(model => model.Issue[0].IsPrivate)
+                                    </th>
+                                    <th htmlValue="issue" class="text-269 text-center border-bottom-0">操作</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model.Issue) {
+                                    <tr>
+                                        <td htmlValue="issue" class="fs-7">
+                                            <a asp-page="./Details" asp-route-id="@item.Id" target="_blank" class="text-666">@Html.DisplayFor(modelItem => item.Id)</a>
+                                        </td>
+                                        <td htmlValue="issue">
+                                            @Html.DisplayFor(modelItem => item.Tracker.Name)
+                                        </td>
+                                        <td htmlValue="issue">
+                                            @Html.DisplayFor(modelItem => item.Project.Name)
+                                        </td>
+                                        <td htmlValue="issue">
+                                            <a class="text-666" asp-page="./Details" asp-route-id="@item.Id" target="_blank">@Html.DisplayFor(modelItem => item.Subject)</a>
+                                        </td>
+                                        <td htmlValue="issue" class="text-start">
+                                            <div class="btn-group m-0 p-0">
+                                                <a class="btn btn-sm text-666 m-0 p-0 fs-7 lh-0" data-bs-toggle="dropdown">@Html.DisplayFor(modelItem => item.Status.Name)</a>
+                                                <ul class="dropdown-menu shadow fs-7">                                     
+                                                    <li><a class="dropdown-item disabled lh-0 text-dark" href="#">更改[@Html.DisplayFor(modelItem => item.Id)]为:</a></li>
+                                                    <li><hr class="dropdown-divider"></li>
+                                                    <li><a class="dropdown-item" href="#">新建</a></li>
+                                                    <li><hr class="dropdown-divider"></li>
+                                                    <li><a class="dropdown-item" href="#">Copy Text</a></li>
+                                                </ul>
+                                            </div>
+                                        </td>
+                                        <td htmlValue="issue">
+                                            <div class="btn-group m-0 p-0">
+                                                <a class="btn btn-sm m-0 p-0 fs-7 lh-0" data-bs-toggle="dropdown">@Html.DisplayFor(modelItem => item.Priority.Name)</a>
+                                                <ul class="dropdown-menu shadow fs-7">
+                                                    <li><a class="dropdown-item lh-0" href="#">所有</a></li>
+                                                    <li><hr class="dropdown-divider"></li>
+                                                    <li><a class="dropdown-item" href="#">普通</a></li>
+                                                    <li><a class="dropdown-item" href="#">Something else here</a></li>
+                                                    <li><hr class="dropdown-divider"></li>
+                                                    <li><a class="dropdown-item" href="#">Copy Text</a></li>
+                                                </ul>
+                                            </div>
+                                        </td>
+                                        <td htmlValue="issue">
+                                           @Html.DisplayFor(modelItem => item.Author.Firstname)
+                                        </td>
+                                        <td htmlValue="issue">
+                                           @Html.DisplayFor(modelItem => item.AssignedTo.Firstname)
+                                        </td>
+                                        <td htmlValue="issue">
+                                            @Html.Raw(RMUtils.ParseDate(item.CreatedOn, true))
+                                        </td>
+                                        <td htmlValue="issue">
+                                            @Html.DisplayFor(modelItem => item.IsPrivate)
+                                        </td>
+                                        <td htmlValue="issue" class="text-center">
+                                            <a asp-page="./Edit" asp-route-id="@item.Id">Edit</a>
+                                            @*|
+                                    <a asp-page="./Details" asp-route-id="@item.Id">Details</a> |
+                                    <a asp-page="./Delete" asp-route-id="@item.Id">Delete</a>*@
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                        <nav aria-label="Page navigation example" class="pr-0">
+                            <ul class="pagination justify-content-end mr-0 fs-7">
+                                <li class="page-item disabled">
+                                    <a class="page-link" href="#" tabindex="-1" aria-disabled="true">共xxx条记录.</a>
+                                </li>
+                                <li class="page-item">
+                                    <a class="page-link" href="#" tabindex="-1" aria-disabled="true">第一页</a>
+                                </li>
+                                <li class="page-item"><a class="page-link" href="#">1</a></li>
+                                <li class="page-item"><a class="page-link" href="#">2</a></li>
+                                <li class="page-item"><a class="page-link" href="#">3</a></li>
+                                <li class="page-item">
+                                    <a class="page-link" href="#">末页</a>
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+    </div>
+    <div id="offcanvasExample" class="offcanvas bg-white offcanvas-end" style="width:30%" data-bs-scroll="true" tabindex="-1" aria-labelledby="offcanvasExampleLabel">
+        <div class="row offcanvas-header bg-title border-1 border-ccc p-2">           
+            <div class="col-sm-3 ps-0">
+                <select id="ruby_Project" class="form-select form-select-sm shadow fs-7" aria-label=".form-select-sm example" onchange="changeProject(this.value);">
+                    @{
+                        foreach (var item in Model.Project) {
+                            <option value="@item.Id">@item.Name</option>
+                        }
+                    }
+                </select>
+            </div>
+            <div class="col-sm-3">
+                <select id="ruby_Tracker" class="form-select form-select-sm shadow fs-7" aria-label=".form-select-sm example" onchange="changeTracker();">
+                    @*<option value="-1" selected>选择登记类型</option>*@
+                    @{
+                        foreach (var item in Model.Tracker) {
+                            <option id="ruby_Tracker_id_@item.Id" value="@item.Id" class="d-block">@item.Name</option>
+                        }
+                    }
+                </select>
+            </div>
+            <div class="col"></div>
+        </div>
+        <div class="row offcanvas-body fs-7 p-0">
+            <iframe id="frm_NewIssue" src="~/Issues/New" class="w-100 p-0 m-0" frameborder="0" style="height:100%;"></iframe>
+        </div>
+        @*<div class="row fixed-bottom position-absolute bottom-0 end-0 mr-0 bg-title border-1 border-ccc p-1" style="width:30%">
+            <div class="col mr-0">
+                <div class="float-right text-right justify-content-end">
+                    <button type="button" class="btn btn-primary btn-sm p-1 ps-2 pr-3 text-end shadow fs-7"><i class="bi bi-check-lg fs-7 m-0 p-0"></i>&nbsp;&nbsp;保存</button>
+                    <button type="button" class="btn btn-secondary btn-sm shadow fs-7" data-bs-toggle="offcanvas" role="button" aria-controls="offcanvasExample">取消</button>
+                </div>
+            </div>
+        </div>*@
+    </div>
+    <script>
+        var temp = @Html.Raw(Model.ProjectTracker);
+        function changeProject(project_id) {
+            var arr = [];
+            temp.forEach(function (item) {
+                if (item.ProjectId == project_id) {
+                    arr.push(item.TrackerId);
+                }
+            });
+            $('#ruby_Tracker option').each(function () {
+                var optValue = $(this).val();
+                if (optValue >=0) {                   
+                    var result = $.inArray(parseInt(optValue), arr);
+                    if (result >=0) {
+                        $(this).attr('class','d-block');
+                    } else {
+                        $(this).attr('class','d-none');
+                    }
+                }
+            });
+            $('#ruby_Tracker').get(0).selectedIndex = 0;
+            $('#ruby_Tracker').focus();
+
+            changeTracker();
+        }
+        function changeTracker() {
+            var project_id = $('#ruby_Project').val();
+            var tracker_id = $('#ruby_Tracker').val();
+            //$('#frm_NewIssue').attr('src','/Issues/New?project_id=' + project_id + '&tracker_id=' + tracker_id);
+            $('#frm_NewIssue')[0].contentWindow.changeHtmlControl(project_id, tracker_id);
+        }
+
+        var offcanvasExample = document.getElementById('offcanvasExample')
+        offcanvasExample.addEventListener('show.bs.offcanvas', function () {
+            $('#frm_NewIssue')[0].contentWindow.setSubjectFocus();
+        });
+    </script>
+</body>
+</html>
