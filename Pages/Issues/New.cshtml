@@ -27,7 +27,10 @@
             padding-bottom:2px;
         }
         .w-30 {
-            width: 30% !important;
+           width: 30% !important;
+        }
+        .w-35 {
+           width: 35% !important;
         }
     </style>
 </head>
@@ -47,7 +50,7 @@
                     <label for="inputPassword" class="col-form-label form-control-sm fw-bold fs-7">状态&nbsp;<span class="text-danger fw-bold">*</span></label>
                 </td>
                 <td class="line-height-row">
-                    @Html.DropDownList("issue_IssueStatus", new SelectList(Model.DB_IssueStatus,"Id","Name"), new{@class="form-select m-0 w-25 p-1 text-666 fs-7"})
+                    @Html.DropDownList("issue_IssueStatus", new SelectList(Model.DB_IssueStatus, "Id", "Name"), new { @class = "form-select m-0 w-25 p-1 text-666 fs-7" })
                 </td>
             </tr>
             @{
@@ -59,120 +62,127 @@
                         <td class="line-height-row">
                             @switch (customField.FieldFormat) {
                                 case "user":
-                                    <!--登记来源-->
-                                    <div id="cfMenu_@customField.Id" class="dropdown">
-                                        <button id="cf_@customField.Id" class="btn btn-light border-1 border-ccc bg-white btn-sm dropdown-toggle text-666 text-start fs-7" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="min-width:80px;">
-                                            
-                                        </button>
-                                        <ul id="cfDropdown_@customField.Id" class="dropdown-menu shadow text-666" aria-labelledby="cf_@customField.Id" style="width:400px;height:400px;overflow-y:scroll">
-                                            <div class="row p-0 m-0 pt-0 p-1 rounded-1 bg-title border-bottom">
-                                                <div class="col">
-                                                    <input id="cfInput_@customField.Id" class="form-control m-0 pt-0 p-1 bg-white border-1 border-ccc rounded-1 fs-7" type="text" placeholder="快速查询..." autocomplete="off" />
-                                                </div>
-                                                <div class="col-1">
-                                                    <a id="cfTrash_@customField.Id" href="#clearContent" class="text-269"><i class="bi bi-trash"></i></a>
-                                                </div>
-                                            </div>
-                                            @foreach (var item in Model.DB_ProjectUser) {
-                                                <li>
-                                                    <a class="dropdown-item fs-7" htmlType="source_@customField.Id" href="#Temp" htmlId="@Html.Raw(item.Id)" htmlPinyin="@Html.Raw(item.pinyin)" htmlText="@Html.Raw(item.Firstname)">
-                                                        <span style="float: left" class="text-666">@Html.Raw(item.Firstname)</span>&nbsp;
-                                                        <span style="float: right; color: #8492a6;">@Html.Raw(item.pinyin)</span>
-                                                    </a>
-                                                </li>
-                                            }
-                                        </ul>
-                                    </div>
-                                    break;
                                 case "version":
-                                    <!--版本-->
-                                    <div id="cfMenu_@customField.Id" class="dropdown">
-                                        <button id="cf_@customField.Id" class="btn btn-light border-1 border-ccc bg-white btn-sm dropdown-toggle text-start text-666 fs-7" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="min-width:80px;">
-                                            
-                                        </button>
-                                        <ul id="cfDropdown_@customField.Id" class="dropdown-menu shadow" aria-labelledby="cf_@customField.Id" style="width:80px;height:400px;overflow-y:scroll">
-                                            <div class="row p-0 m-0 pt-0 p-1 rounded-1 bg-title border-bottom">
-                                                <div class="col">
-                                                    <input id="cfInput_@customField.Id" class="form-control m-0 pt-0 p-1 bg-white border-1 border-ccc rounded-1 text-666 fs-7" type="text" placeholder="快速查询..." autocomplete="off" />
-                                                </div>
-                                                <div class="col-1">
-                                                    <a id="cfTrash_@customField.Id" href="#clearContent" class="text-269"><i class="bi bi-trash"></i></a>
-                                                </div>
-                                            </div>
-                                            @foreach (var item in Model.DB_Version) {
-                                                <li>
-                                                    <a class="dropdown-item fs-7" htmlType="version_@customField.Id" href="#Temp" htmlId="@Html.Raw(item.Id)" htmlPinyin="@Html.Raw(item.Name)" htmlText="@Html.Raw(item.Name)">
-                                                        <span style="float: left" class="text-666">@Html.Raw(item.Name)</span>&nbsp;
-                                                        @*<span style="float: right; color: #8492a6;">@Html.Raw(item.Project_id)</span>*@
-                                                    </a>
-                                                </li>
-                                            }
-                                        </ul>
-                                    </div>
-                                    break;
-                                case "date":
-                                    <input class="form-control m-0 w-30 p-1 text-666 fs-7" type="date" asp-for="CurrentDateTime" value="@DateTime.Now.ToString("yyyy-MM-dd")" />
-                                    break;
-                                case "bool":
-                                    <div class="form-check form-switch">
-                                        <input id="cf_@customField.Id" class="form-check-input" type="checkbox" @RMUtils.Html_Checked(customField.DefaultValue)>
-                                        <label class="form-check-label" for="cf_@customField.Id">是</label>
-                                    </div>
-                                    break;
                                 case "list":
-                                    <div class="dropdown">
-                                        <a id="cf_@customField.Id" class="btn btn-sm text-start btn-light bg-white border-1 border-ccc dropdown-toggle text-666 fs-7" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false" style="min-width:80px;">
-                                            @customField.DefaultValue
-                                        </a>
-                                        <ul class="dropdown-menu shadow fs-7" aria-labelledby="dropdownMenuLink">
-                                            @{
+                            @:<!--@Html.Raw(customField.Name)-->
+                            <div id="cfMenu_@customField.Id" class="dropdown">
+                                <div class="row">
+                                    <div class="col">
+                                        <button id="cf_@customField.Id" cf_Type="@customField.FieldFormat" cf_Id="" cf_Text="" class="btn btn-light w-100 border-1 border-ccc bg-white btn-sm dropdown-toggle text-666 text-start fs-7" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="min-width:30%;">
+                                        &nbsp;</button>
+                                        <ul id="cfDropdown_@customField.Id" class="dropdown-menu shadow text-666" aria-labelledby="cf_@customField.Id" style="min-width:300px;max-height:400px;overflow-y:auto">
+                                            <div class="row p-0 m-0 pt-0 p-1 pr-2 rounded-1 bg-title border-bottom">
+                                                <div class="col">
+                                                    <input id="cfInput_@customField.Id" class="form-control m-0 pt-0 p-1 bg-white border-1 border-ccc rounded-1 fs-7" type="text" placeholder="筛选 @customField.Name" autocomplete="off" />
+                                                </div>
+                                                @{
+                                                    if (customField.Multiple.Value == false) {
+                                                <div class="col-1 text-start">
+                                                    <a id="cfTrash_@customField.Id" href="#clearContent" class="text-269" title="清空选择"><i class="bi bi-trash"></i></a>
+                                                </div>
+                                                    }
+                                                 }
+                                            </div>
+                                            @if (customField.FieldFormat.Equals("user")) {
+                                                @foreach (var item in Model.DB_ProjectUser) {
+                                                    <li>
+                                                        <a class="dropdown-item text-decoration-none fs-7" htmlType="source_@customField.Id" href="#Temp" htmlId="@Html.Raw(item.Id)" htmlPinyin="@Html.Raw(item.pinyin)" htmlText="@Html.Raw(item.Firstname)">
+                                                            <span style="float:left" class="text-666">@Html.Raw(item.Firstname)</span>&nbsp;
+                                                            <span style="float:right;color:#8492a6;">@Html.Raw(item.pinyin)</span>
+                                                        </a>
+                                                    </li>
+                                                }
+                                            } else if (customField.FieldFormat.Equals("version")) { <!--版本-->
+                                                @foreach (var item in Model.DB_Version) {
+                                                    <li>
+                                                        <a class="dropdown-item text-decoration-none fs-7" htmlType="source_@customField.Id" href="#Temp" htmlId="@Html.Raw(item.Id)" htmlPinyin="@Html.Raw(item.Name)" htmlText="@Html.Raw(item.Name)">
+                                                            <span style="float:left" class="text-666">@Html.Raw(item.Name)</span>&nbsp;
+                                                        </a>
+                                                    </li>
+                                                }
+                                            } else if (customField.FieldFormat.Equals("list")) { <!--列表-->
                                                 string[] possibleValues = customField.PossibleValues.Split('\n');
-                                                foreach(string possbleValue in possibleValues) {
-                                                    if ("---".Equals(possbleValue)) continue;
-                                                  <li><a class="dropdown-item text-666" html_Cf_id="cf_@customField.Id" href="#PossibleValue">@possbleValue.Trim('-').Trim(' ') </a></li>
+                                                int nIndex = 0;
+                                                foreach (string possbleValue in possibleValues) {
+                                                    string temp_PossbleValue = possbleValue.Trim('-').Trim(' ');
+                                                    if (string.IsNullOrEmpty(temp_PossbleValue)) continue;
+                                                    <li>
+                                                        <a class="dropdown-item text-decoration-none fs-7" htmlType="source_@customField.Id" href="#Temp" htmlId="@Html.Raw(nIndex++)" htmlPinyin="" htmlText="@temp_PossbleValue">
+                                                            <span style="float:left" class="text-666">@temp_PossbleValue</span>&nbsp;
+                                                        </a>
+                                                    </li>
                                                 }
                                             }
                                         </ul>
-                                    </div>
-                                    break;
-                                case "text":
-                                    <textarea class="form-control text-666 fs-7" id="exampleFormControlTextarea1" rows="1" autocomplete="off"></textarea>
-                                    break;
 
-                            }
-                        </td>
-                    </tr>
-                }
-            }
-            <tr>
-                <td width="76px" class="p-0 text-right" valign="top">
-                    <label for="inputPassword" class="col-form-label form-control-sm fw-bold fs-7">描述</label>
-                </td>
-                <td>
-                    <textarea class="form-control fs-7 text-666" id="exampleFormControlTextarea1" rows="3" autocomplete="off"></textarea>
-                </td>
-            </tr>
-            <tr>
-                <td valign="top">
-                    <label for="inputPassword" class="col-form-label form-control-sm fs-7">附件<br /><i class="bi bi-arrow-up-right-square fs-6"></i></label>
-                </td>
-                <td>
-                    <table class="table table-sm table-hover w-100 table-bordered fs-7 rounded-3">
-                        <tbody>
-                            <tr>
-                                <td>Otto</td>
-                            </tr>
-                            <tr>
-                                <td>Thornton</td>
-                            </tr>
-                            <tr>
-                                <td colspan="2">Larry the Bird</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </td>
-            </tr>
-        </table>        
+                                    </div>
+                                    @*@if (customField.Multiple.Value == true) {
+                                        <div class="col-1">
+                                            <div class="col-1 p-0 pt-1">
+                                                <i id="btnClear_cf_@customField.Id" htmlType="btnClear" class="bi bi-trash" style="cursor:pointer" onclick="$('#cf_Multiple_@customField.Id').empty();"></i>
+                                            </div>
+                                        </div>
+                                    }*@
+                                    @if (customField.Multiple.Value == true) {
+                                       <div id="cf_Multiple_@customField.Id" class="container">
+                                           @*<span class="badge m-0 p-1 bg-eee text-dark fw-normal" htmlId="" htmlText="">Primary</span>*@                                      
+                                       </div>
+                                    }
+                                    </div>
+                            </div>
+                                    break;
+                                case "date":
+                                        <input class="form-control m-0 w-30 p-1 text-666 fs-7" type="date" asp-for="CurrentDateTime" value="@DateTime.Now.ToString(" yyyy-MM-dd")" />
+                                        break;
+                                   case "bool":
+                                        <div class="form-check form-switch">
+                                            <input id="cf_@customField.Id" class="form-check-input" type="checkbox" @RMUtils.Html_Checked(customField.DefaultValue)>
+                                            <label class="form-check-label" for="cf_@customField.Id">是</label>
+                                        </div>                                                                
+                                        break;
+                                    case "text":
+                                        <textarea class="form-control text-666 fs-7" id="exampleFormControlTextarea1" rows="1" autocomplete="off"></textarea>
+                                        break;
+                                    default:
+                                        <div class="m-0">
+                                            <input id="cf_@customField.Id" type="email" class="form-control text-666 fs-7" id="exampleFormControlInput1">
+                                        </div>
+                                        break;
+
+                                        }
+                                    </td>
+                                </tr>
+                                }
+                                }
+                                <tr>
+                                    <td width="76px" class="p-0 text-right" valign="top">
+                                        <label for="inputPassword" class="col-form-label form-control-sm fw-bold fs-7">描述</label>
+                                    </td>
+                                    <td>
+                                        <textarea class="form-control fs-7 text-666" id="exampleFormControlTextarea1" rows="3" autocomplete="off"></textarea>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td valign="top">
+                                        <label for="inputPassword" class="col-form-label form-control-sm fs-7">附件<br /><i class="bi bi-arrow-up-right-square fs-6"></i></label>
+                                    </td>
+                                    <td>
+                                        <table class="table table-sm table-hover w-100 table-bordered fs-7 rounded-3">
+                                            <tbody>
+                                                <tr>
+                                                    <td>Otto</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Thornton</td>
+                                                </tr>
+                                                <tr>
+                                                    <td colspan="2">Larry the Bird</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </td>
+                                </tr>
+                            </table>        
     </div>
     <div style="margin-bottom:30px">
         &nbsp;
@@ -193,12 +203,13 @@
 
     <script>
         var m_ProjectTracker = @Html.Raw(Model.ProjectTracker);
-                                                  var m_ProjectCustomField = @Html.Raw(Model.CustomFieldProject);
-                                                  var m_TrackerCustomField = @Html.Raw(Model.CustomFieldTracker);
+        var m_ProjectCustomField = @Html.Raw(Model.CustomFieldProject);
+        var m_TrackerCustomField = @Html.Raw(Model.CustomFieldTracker);
 
                                                   // 动态调整界面控件
         function changeHtmlControl(project_id, tracker_id) {
             $('#issue_Subject').val(project_id + "_" + tracker_id);
+            setSubjectFocus();
         }
         function setSubjectFocus() {
             $('#issue_Subject').focus();
@@ -209,7 +220,11 @@
             @{foreach (CustomField customField in Model.CustomField) {
                 switch (customField.FieldFormat) {
                     case "user":
+                    case "version":
+                    case "list":
                         // 检索+过滤
+                        @: // =================================cf_@customField.Id, @Html.Raw(customField.Name), @customField.FieldFormat================================
+                        @: // 检索
                         @:$("#cfInput_@customField.Id").on("keyup", function () {
                         @:    var value = $(this).val().toLowerCase();
                         @*@:    $(".dropdown-menu li").filter(function () {*@
@@ -217,57 +232,37 @@
                         @:        $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
                         @:    });
                         @:});
-                        // 选择时还原所有可选项
+                        @: // 选择
                         @:$('#cfDropdown_@customField.Id .dropdown-item').on("click", function () {
                         @:    var obj = $(this);
-                        @:    $('#cf_@customField.Id').text(obj[0].attributes["htmlText"].nodeValue);
+                        @:    var cf_Id = obj[0].attributes["htmlId"].nodeValue;
+                        @:    var cf_Text = obj[0].attributes["htmlText"].nodeValue;
+                        @:    $('#cf_@customField.Id').text(cf_Text);               // 显示值
+                        @:    $('#cf_@customField.Id').attr('cf_Id', cf_Id);       // to_db，提交数据库时，以cf_Id，cf_Text为准。
+                        @:    $('#cf_@customField.Id').attr('cf_Text', cf_Text);   // tb_db
                         @:    $("#cfInput_@customField.Id").val('');
                         @:    $("a[htmlType='source_@customField.Id']").filter(function () {
                         @:        $(this).show();
                         @:    });
+                        if (customField.Multiple.Value == true) {
+                        @:    var span = "<button id='cf_span_" + cf_Id + "' class='btn badge m-0 mr-2 border-1 border-ccc p-1 bg-eee text-dark fw-normal' cf_Id='" + cf_Id + "' cf_Text='" + cf_Text + "' onclick='$(this).remove();'>" + cf_Text + "&nbsp;<i class=\"bi bi-x-circle\"></i></button>";
+                        @:    if ($('#cf_Multiple_@customField.Id').children('#cf_span_' + cf_Id).length <=0) {
+                        @:        $('#cf_Multiple_@customField.Id').prepend(span);
+                        @:    }
+                        @:    $('#cf_@customField.Id').text('');
+                            }
                         @:});
-                        // 展开时设置输入焦点
+                        @: // 展开时设置焦点
                         @:var sourceMenu_@customField.Id = document.getElementById('cfMenu_@customField.Id');
                         @:(sourceMenu_@customField.Id).addEventListener('shown.bs.dropdown',function(){
-                        @:    $("#cfInput_@customField.Id").focus();
+                        @:      $("#cfInput_@customField.Id").focus();
                         @:});
+                        @: // 清空按钮
                         @:$('#cfTrash_@customField.Id').on("click", function () {
-                        @:$('#cf_@customField.Id').text('');
+                        @:      $('#cf_@customField.Id').text('');
+                        @:      // $('#cf_Multiple_@customField.Id').empty();
                         @:});
-                        break;
-                    case "version":
-                        // // 检索+过滤
-                        @:$("#cfInput_@customField.Id").on("keyup", function () {
-                        @:    var value = $(this).val().toLowerCase();
-                        @:    $("a[htmlType='version_@customField.Id']").filter(function () {
-                        @:        $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
-                        @:    });
-                        @:});
-                        // 选择时还原所有可选项
-                        @:$('#cfDropdown_@customField.Id .dropdown-item').on("click", function () {
-                        @:    var obj = $(this);
-                        @:    $('#cf_@customField.Id').text(obj[0].attributes["htmlText"].nodeValue);
-                        @:    $("#cfInput_@customField.Id").val('');
-                        @:    $("a[htmlType='version_@customField.Id']").filter(function () {
-                        @:        $(this).show();
-                        @:    });
-                        @:});
-                        // 展开时设置输入焦点
-                        @:var versionMenu_@customField.Id = document.getElementById('cfMenu_@customField.Id');
-                        @:(versionMenu_@customField.Id).addEventListener('shown.bs.dropdown',function(){
-                        @:    $("#cfInput_@customField.Id").focus();
-                        @:});
-                        @:$('#cfTrash_@customField.Id').on("click", function () {
-                        @:$('#cf_@customField.Id').text('');
-                        @:});
-                        break;
-                    case "list":
-                        @:$("a[html_Cf_id='cf_@customField.Id']").filter(function () {
-                        @:  $(this).on('click', function () {
-                        @:      var cf_id = $(this).attr("html_Cf_id");
-                        @:      $('#' + cf_id).text($(this).text());
-                        @:  });
-                        @:});
+                        @:
                         break;
                     }
                 }

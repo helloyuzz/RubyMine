@@ -4,13 +4,28 @@
     ViewData["Title"] = "Home page";
 }
 
-<div class="text-center">
-    <div class="jumbotron jumbotron-fluid">
-        <div class="container">
-            <h1 class="display-4">Fluid jumbotron</h1>
-            <p class="lead">This is a modified jumbotron that occupies the entire horizontal space of its parent.</p>
+<div class="container w-25 fw-bold shadow p-lg-5 fs-7">
+    <div class="row">
+        <div class="col">
+            <label for="basic-url" class="form-label">登录名</label>
+            <div class="input-group mb-3">
+                <span class="input-group-text" id="basic-addon3"><i class="bi bi-person-circle"></i></span>
+                <input type="text" class="form-control text-666 fs-7" id="basic-url" aria-describedby="basic-addon3">
+            </div>
         </div>
     </div>
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    <div class="row">
+        <div class="col">
+            <label for="basic-url" class="form-label">密码</label>
+            <div class="input-group mb-3">
+                <span class="input-group-text" id="basic-addon3"><i class="bi bi-gender-ambiguous"></i></span>
+                <input type="password" class="form-control text-666 fs-7" id="basic-url" aria-describedby="basic-addon3">
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            <button type="button" class="btn w-100 btn-light border-1 border-ccc bg-title fs-7">登录</button>
+        </div>
+    </div>
 </div>

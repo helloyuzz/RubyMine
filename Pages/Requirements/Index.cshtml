@@ -184,10 +184,10 @@
                 </div>
             </div>
     </div>
-    <div id="offcanvasExample" class="offcanvas bg-white offcanvas-end" style="width:30%" data-bs-scroll="true" tabindex="-1" aria-labelledby="offcanvasExampleLabel">
-        <div class="row offcanvas-header bg-title border-1 border-ccc p-2">           
-            <div class="col-sm-3 ps-0">
-                <select id="ruby_Project" class="form-select form-select-sm shadow fs-7" aria-label=".form-select-sm example" onchange="changeProject(this.value);">
+    <div id="offcanvasExample" class="offcanvas p-0 bg-white offcanvas-end" style="width:30%" data-bs-scroll="true" tabindex="-1" aria-labelledby="offcanvasExampleLabel">
+        <div class="row m-0 p-0 offcanvas-header bg-title border-1 border-ccc p-2">           
+            <div class="col-sm-3 ps-0 pr-0">
+                <select id="ruby_Project" class="form-select w-100 form-select-sm shadow fs-7" aria-label=".form-select-sm example" onchange="changeProject(this.value);">
                     @{
                         foreach (var item in Model.Project) {
                             <option value="@item.Id">@item.Name</option>
@@ -207,7 +207,7 @@
             </div>
             <div class="col"></div>
         </div>
-        <div class="row offcanvas-body fs-7 p-0">
+        <div class="row m-0 p-0 offcanvas-body fs-7">
             <iframe id="frm_NewIssue" src="~/Issues/New" class="w-100 p-0 m-0" frameborder="0" style="height:100%;"></iframe>
         </div>
         @*<div class="row fixed-bottom position-absolute bottom-0 end-0 mr-0 bg-title border-1 border-ccc p-1" style="width:30%">
@@ -252,7 +252,7 @@
         }
 
         var offcanvasExample = document.getElementById('offcanvasExample')
-        offcanvasExample.addEventListener('show.bs.offcanvas', function () {
+        offcanvasExample.addEventListener('shown.bs.offcanvas', function () {
             $('#frm_NewIssue')[0].contentWindow.setSubjectFocus();
         });
     </script>

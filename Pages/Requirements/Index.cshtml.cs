@@ -29,7 +29,7 @@ namespace RubyMine.Pages.Requirements {
 
         public async Task OnGetAsync() {
             Tracker = await _context.Trackers.OrderBy(x => x.Position).ToListAsync();
-            Project = await _context.Projects.Select(x => new Project() { Id = x.Id, Name = x.Name }).ToListAsync();
+            Project = await _context.Projects.Where(x => x.IsPublic == true).Select(x => new Project() { Id = x.Id, Name = x.Name }).ToListAsync();
             var db_ProjectTracker = await _context.ProjectsTrackers.Select(x => new ProjectsTracker() { ProjectId = x.ProjectId, TrackerId = x.TrackerId }).ToListAsync();
             ProjectTracker = JsonConvert.SerializeObject(db_ProjectTracker);
             Setting setting = _config.GetPerPageOptions();
