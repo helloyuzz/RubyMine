@@ -24,10 +24,7 @@ namespace RubyMine {
             services.AddSession(a => a.IdleTimeout = TimeSpan.FromMinutes(30));
 
             var serverVersion = new MySqlServerVersion(new System.Version(5, 7, 32));
-            services.AddDbContext<RubyRemineDbContext>(
-                options => options.UseMySql(Configuration.GetConnectionString("MySQL_remote"), serverVersion)
-                .EnableSensitiveDataLogging()
-                .EnableDetailedErrors()); ;
+            services.AddDbContext<RubyRemineDbContext>(options => options.UseMySql(Configuration.GetConnectionString("MySQL_remote"), serverVersion).EnableSensitiveDataLogging().EnableDetailedErrors());
             services.AddScoped<IDIPSetting, DIPSetting>();
         }
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -41,7 +38,7 @@ namespace RubyMine {
             app.UseStaticFiles();
 
             app.UseRouting();
-
+            app.UseSession();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints => {

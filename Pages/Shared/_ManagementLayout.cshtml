@@ -1,4 +1,11 @@
-﻿<!DOCTYPE html>
+﻿@using RubyMine.Models; 
+@{ 
+    User cua = SessionUtils.Get<User>(Context.Session, "cua");
+    if (cua == null) {
+        Context.Response.Redirect("/");
+    }
+}
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -77,7 +84,7 @@
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-dark border-bottom box-shadow mb-3 lh-sm p-1 shadow">
             <div class="container-fluid bg-success">
-                <a class="navbar-brand  text-white" href="#temp">RubyMine</a>
+                <a class="navbar-brand text-decoration-none text-white" href="#temp">RubyMine</a>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
@@ -140,16 +147,16 @@
             <div class="row">
                 <div class="col">
                     <div class="nav-pills flex-column lh-lg" id="v-pills-tab" role="tablist" aria-orientation="vertical">
-                        <a class="nav-link text-dark m-0 p-1 @ViewData["nav_About"]" asp-area="" asp-page="/Management/About"><img src="~/images/report.png" />&nbsp;退出</a>
-                        <a class="nav-link text-dark m-0 p-1 @ViewData["nav_Project"]" asp-area="" asp-page="/Management/Project"><img src="~/images/projects.png" />&nbsp;项目</a>
-                        <a class="nav-link text-dark m-0 p-1 @ViewData["nav_Trace"]" asp-area="" asp-page="/Management/Trace"><img src="~/images/ticket.png" />&nbsp;跟踪标签</a>
-                        <a class="nav-link text-dark m-0 p-1 @ViewData["nav_User"]" asp-area="" asp-page="/Management/User"><img src="~/images/group.png" />&nbsp;用户</a>
-                        <a class="nav-link text-dark m-0 p-1 @ViewData["nav_CustomField"]" asp-area="" asp-page="/Management/CustomField"><img src="~/images/true.png" />&nbsp;自定义字段</a>
-                        <a class="nav-link text-dark m-0 p-1 @ViewData["nav_Role"]" asp-area="" asp-page="/Management/Role"><img src="~/images/database_key.png" />&nbsp;角色和权限</a>
-                        <a class="nav-link text-dark m-0 p-1 @ViewData["nav_IssueStatus"]" asp-area="" asp-page="/Management/IssueStatus"><img src="~/images/ticket_edit.png" />&nbsp;问题状态</a>
-                        <a class="nav-link text-dark m-0 p-1 @ViewData["nav_Flow"]" asp-area="" asp-page="/Management/Flow"><img src="~/images/ticket_go.png" />&nbsp;工作流程</a>
-                        <a class="nav-link text-dark m-0 p-1 @ViewData["nav_Common"]" asp-area="" asp-page="/Management/Common"><img src="~/images/changeset.png" />&nbsp;通用</a>
-                        <a class="nav-link text-dark m-0 p-1 @ViewData["nav_Enum"]" asp-area="" asp-page="/Management/Enum"><img src="~/images/text_list_bullets.png" />&nbsp;枚举值</a>
+                        <a class="nav-link text-decoration-none text-dark m-0 p-0 @ViewData["nav_About"]" asp-area="" asp-page="/Management/About"><img src="~/images/report.png" />&nbsp;设置主页</a>
+                        <a class="nav-link text-decoration-none text-dark m-0 p-0 @ViewData["nav_Project"]" asp-area="" asp-page="/Management/Project"><img src="~/images/projects.png" />&nbsp;项目</a>
+                        <a class="nav-link text-decoration-none text-dark m-0 p-0 @ViewData["nav_Trace"]" asp-area="" asp-page="/Management/Trace"><img src="~/images/ticket.png" />&nbsp;跟踪标签</a>
+                        <a class="nav-link text-decoration-none text-dark m-0 p-0 @ViewData["nav_User"]" asp-area="" asp-page="/Management/User"><img src="~/images/group.png" />&nbsp;用户</a>
+                        <a class="nav-link text-decoration-none text-dark m-0 p-0 @ViewData["nav_CustomField"]" asp-area="" asp-page="/Management/CustomField"><img src="~/images/true.png" />&nbsp;自定义字段</a>
+                        <a class="nav-link text-decoration-none text-dark m-0 p-0 @ViewData["nav_Role"]" asp-area="" asp-page="/Management/Role"><img src="~/images/database_key.png" />&nbsp;角色和权限</a>
+                        <a class="nav-link text-decoration-none text-dark m-0 p-0 @ViewData["nav_IssueStatus"]" asp-area="" asp-page="/Management/IssueStatus"><img src="~/images/ticket_edit.png" />&nbsp;问题状态</a>
+                        <a class="nav-link text-decoration-none text-dark m-0 p-0 @ViewData["nav_Flow"]" asp-area="" asp-page="/Management/Flow"><img src="~/images/ticket_go.png" />&nbsp;工作流程</a>
+                        <a class="nav-link text-decoration-none text-dark m-0 p-0 @ViewData["nav_Common"]" asp-area="" asp-page="/Management/Common"><img src="~/images/changeset.png" />&nbsp;通用</a>
+                        <a class="nav-link text-decoration-none text-dark m-0 p-0 @ViewData["nav_Enum"]" asp-area="" asp-page="/Management/Enum"><img src="~/images/text_list_bullets.png" />&nbsp;枚举值</a>
                     </div>
                 </div>
             </div>

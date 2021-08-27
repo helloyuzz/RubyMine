@@ -4,6 +4,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Security.Cryptography;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace RubyMine {
@@ -49,6 +51,17 @@ namespace RubyMine {
                 RMIssues.Add(to_Issue);
             }
             return RMIssues;
+        }
+
+        internal static object SHA1(string orignalPassword) {
+            var strRes = Encoding.Default.GetBytes(orignalPassword);
+            HashAlgorithm iSha = new SHA1CryptoServiceProvider();
+            strRes = iSha.ComputeHash(strRes);
+            var encrypt_Password = new StringBuilder();
+            foreach (byte iByte in strRes) {
+                encrypt_Password.AppendFormat("{0:x2}", iByte);
+            }
+            return encrypt_Password.ToString();
         }
 
         internal static int ParseInt(object value) {

@@ -8,8 +8,9 @@ namespace RubyMine.Models {
     public partial class User {
         [Display(Name ="序号")]
         public int Id { get; set; }
-        [Display(Name = "帐号")]
+        [Display(Name = "登录帐号"),Required]
         public string Login { get; set; }
+        [Display(Name ="密码"),Required]
         public string HashedPassword { get; set; }
         public string Firstname { get; set; }
         public string Lastname { get; set; }
