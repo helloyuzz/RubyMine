@@ -11,37 +11,37 @@
 <form method="post">
     <div class="container fw-bold rounded-3 border-1 border-ccc bg-light shadow p-4 fs-7" style="margin-top:8%;max-width:25%;">
         <div class="row pb-3">
-            <div class="col">
-                <h3 class="text-269"><i class="bi bi-arrow-right-circle"></i>&nbsp;请先登录</h3>
+            <div class="col ps-3">
+                <h4 class="text-269"><i class="bi bi-arrow-right-circle"></i>&nbsp;请先登录</h4>
             </div>
         </div>
         <div class="row">
-            <div class="col">
+            <div class="col ps-4 pr-4">
                 <label for="basic-url" class="form-label">登录帐号</label>
                 <div class="input-group mb-3">
                     <span class="input-group-text m-0 p-3 pt-1 pb-1" id="basic-addon3"><i class="bi bi-person-circle"></i></span>
-                    <input type="text" class="form-control m-0 p-0 ps-1 text-666 fs-7" asp-for="Login" autocomplete="off" placeholder="请输入登录帐号" value="@TempData.Peek("TempLogin")">
+                    <input type="text" class="form-control m-0 p-0 ps-1 text-666 fs-7" asp-for="Login" autocomplete="off" placeholder="请输入登录帐号">
                 </div>
             </div>
         </div>
         <div class="row">
-            <div class="col">
+            <div class="col ps-4 pr-4">
                 <label for="basic-url" class="form-label">密码</label>
                 <div class="input-group mb-3">
                     <span class="input-group-text m-0 p-3 pt-1 pb-1" id="basic-addon3"><i class="bi bi-gender-ambiguous"></i></span>
-                    <input type="password" class="form-control m-0 p-0 ps-1 text-666 fs-7" asp-for="Password" autocomplete="off" placeholder="请输入密码" value="@TempData.Peek("TempPassword")">
+                    <input type="password" class="form-control m-0 p-0 ps-1 text-666 fs-7" asp-for="Password" autocomplete="off" placeholder="请输入密码">
                 </div>
             </div>
         </div>
         <div class="row mt-0 fs-7" style="display:none @TempData.Peek("ShowLogin");">
-            <div class="col">
-                <div class="alert mt-0 alert-danger" role="alert">
+            <div class="col ps-4 pr-4">
+                <div class="alert mt-0 pt-2 pb-2 mb-2 alert-danger" role="alert">
                     @TempData.Peek("ShowMessage")
                 </div>
             </div>
         </div>
-        <div class="row mt-2 mb-1">
-            <div class="col">
+        <div class="row mt-2 mb-3">
+            <div class="col ps-4 pr-4">
                 <button type="submit" class="btn pt-2 pb-2 w-100 btn-light border-1 border-ccc bg-success text-light fs-7">登录</button>
             </div>
         </div>

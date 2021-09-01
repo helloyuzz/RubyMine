@@ -36,9 +36,9 @@ namespace RubyMine.Pages {
         }
 
         public void OnGet() {
-            var cache_Account = Request.Cookies["cache_Account"];
-            if (string.IsNullOrEmpty(cache_Account) == false) {
-                TempLogin = cache_Account;
+            Login = Request.Cookies["cache_Account"];
+            TempLogin = Login;
+            if (string.IsNullOrEmpty(Login) == false) {
                 jsScript = "$('#Password').focus();";
             }
         }

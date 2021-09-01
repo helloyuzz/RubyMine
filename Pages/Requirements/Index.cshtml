@@ -19,48 +19,97 @@
         th[htmlValue="issue"] {
             padding:8px !important;
         }
+        /*待实施反馈*/
+        .issue_subject_3 {
+            color:blue !important;
+        }
+        /*功能已发布*/
+        .issue_subject_9 {
+            color: #2a8a29 !important;
+        }
+        /*已澄清*/
+        .issue_subject_15 {
+            color: #ccc !important;
+            text-decoration-line: line-through !important;
+        }
+        .issue_subject_14 {
+            color:#bb5656 !important;
+            text-decoration-line:line-through !important;
+        }
+        /*历史遗留*/
+        .issue_subject_19 {
+            color:#ccc !important;            
+        }
+        /*重复登记*/
+        .issue_subject_21 {
+            color:#b46b6b !important;
+            text-decoration:line-through !important;
+        }
     </style>
 </head>
 <body>
     <div class="container-fluid">
         <div class="row">
             <div class="col">
-                <div class="row border-1 border-bottom-0 border-ccc bg-title">
-                    <div class="col ps-1">
+                <div class="row border-1 border-ccc bg-title">
+                    <div class="col ps-0 border-bottom border-ccc">
                         <table width="100%">
                             <tr>
-                                <td width="90px"><span class="fw-bold m-1 p-0">需求跟踪</span></td>
+                                <td width="90px"><span class="m-1 p-0">需求跟踪</span></td>
                                 <td></td>
-                                <td width="70px" class="text-right fs-7">
-                                    <div class="btn-group dropstart">
-                                        <a href="#column" class="dropdown-toggle text-decoration-none" data-bs-toggle="dropdown" aria-expanded="false">
-                                            <i class="bi bi-layout-text-sidebar-reverse"></i>&nbsp;显示列
-                                        </a>
-                                        <ul class="dropdown-menu fs-7">
-                                            <li>
-                                                <a class="dropdown-item" href="#item">
-                                                    <div class="form-check form-switch m-0 p-0 ps-3">
-                                                        <input class="form-check-input" type="checkbox" id="flexSwitchCheckChecked" checked>
-                                                        <label class="form-check-label" for="flexSwitchCheckChecked">主题</label>
-                                                    </div>
-                                                </a>
-                                            </li>
-                                            <li><a class="dropdown-item" href="#">Another action</a></li>
-                                            <li><a class="dropdown-item" href="#">Something else here</a></li>
-                                            <li><hr class="dropdown-divider"></li>
-                                            <li><a class="dropdown-item" href="#">Separated link</a></li>
-                                        </ul>
-                                    </div>
-                                </td>
-                                <td width="80px" class="text-right fs-7"><a href="#offcanvasExample" class="text-decoration-none" data-bs-toggle="offcanvas" role="button" aria-controls="offcanvasExample"><i class="bi bi-file-earmark-text text-dark"></i>&nbsp;快速登记</a></td>
-                                <td width="60px" class="text-right fs-7"><a href="#search" class="text-decoration-none" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne"><i class="bi bi-sort-down text-dark"></i>&nbsp;检索</a></td>
+                                <td width="80px" class="text-right fs-7"><a href="#offcanvasExample" class="text-decoration-none text-269 fw-bold" data-bs-toggle="offcanvas" role="button" aria-controls="offcanvasExample"><i class="bi bi-lightning"></i>&nbsp;新建问题</a></td>
+                                @*<td width="60px" class="text-right fs-7"><a href="#search" class="text-decoration-none" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne"><i class="bi bi-sort-down text-dark"></i>&nbsp;检索</a></td>*@
                             </tr>
                         </table>
-                    </div> 
-                    <div class="accordion w-100 m-0 border-0 bg-white fs-7" id="accordionExample">
-                        <div class="accordion-item border-0 border-bottom-0">
-                            <div id="collapseOne" class="accordion-collapse collapse border-bottom-0" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
-                                <strong>This is the first item's accordion body.</strong> It is shown by default, until the collapse plugin adds the appropriate classes that we use to style each element. These classes control the overall appearance, as well as the showing and hiding via CSS transitions. You can modify any of this with custom CSS or overriding our default variables. It's also worth noting that just about any HTML can go within the <code>.accordion-body</code>, though the transition does limit overflow.
+                    </div>
+                    <div class="m-0 p-0 bg-white p-1">
+                        @*过滤器*@
+                        <div class="row text-secondary">
+                            <div class="col">
+                                <a id="btn_Condition" href="#Temp" class="m-0 p-0 fs-7 text-dark text-decoration-none" onclick="$('#div_Condition').toggle();changeIcon('icon_Condition');">
+                                    <i id="icon_Condition" class="bi bi-chevron-down"></i>&nbsp;过滤器
+                                </a>
+                                <div id="div_Condition" class="card-body m-0 p-0 p-1 fs-7">
+                                    <table class="w-100 text-666">
+                                        <tr>
+                                            <td width="16px"><i class="bi bi-x"></i></td>
+                                            <td width="130px">状态</td>
+                                            <td width="60px">
+                                                <select class="form-select form-select-sm w-auto fs-7" aria-label=".form-select-sm example">
+                                                    <option selected>打开</option>
+                                                    <option value="1">等于</option>
+                                                    <option value="2">不等于</option>
+                                                    <option value="3">关闭</option>
+                                                    <option value="4">全部</option>
+                                                </select>
+                                            </td>
+                                            <td></td>
+                                            <td width="80px">增加过滤器</td>
+                                            <td width="266px">
+                                                <select class="form-select form-select-sm w-auto pt-0 pb-0 fs-7" style="width:180px !important;">
+                                                    <option>&nbsp;</option>
+                                                </select>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td><i class="bi bi-x"></i></td>
+                                            <td>根据此条件分组</td>
+                                            <td>
+                                                <select class="form-select form-select-sm w-auto pt-0 pb-0 fs-7">
+                                                    <option>&nbsp;</option>
+                                                </select>
+                                            </td>
+                                            <td colspan="3"></td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>               
+                        <div class="row mt-1 pt-1 ps-1">
+                            <div class="col fs-7">
+                                <a href="#Temp" class="mr-3"><i class="bi bi-check-lg"></i>&nbsp;应用</a>
+                                <a href="#Temp" class="mr-3"><i class="bi bi-arrow-clockwise"></i>&nbsp;清除</a>
+                                <a href="#Temp" class="mr-3"><i class="bi bi-save"></i>&nbsp;保存</a>
                             </div>
                         </div>
                     </div>
@@ -99,7 +148,65 @@
                                     <th htmlValue="issue" class="text-269 border-bottom-0">
                                         @Html.DisplayNameFor(model => model.Issue[0].IsPrivate)
                                     </th>
-                                    <th htmlValue="issue" class="text-269 text-center border-bottom-0">操作</th>
+                                    <th width="30px" htmlValue="issue" class="text-269 text-center border-bottom-0">
+                                        <div class="btn-group dropstart">
+                                            <a href="#column" class="text-decoration-none fw-bold" data-bs-toggle="dropdown" aria-expanded="false">
+                                                <i class="bi bi-caret-down-square-fill"></i>
+                                            </a>
+                                            <ul class="dropdown-menu shadow fs-7">
+                                                <li><a class="dropdown-item ps-2 fw-bold disabled">显示&排序</a></li>
+                                                <li class="ps-2">
+                                                    <table class="w-100">
+                                                        <tr>
+                                                            <td width="30px">
+                                                                <div class="form-check form-switch lh-0 fs-6">
+                                                                    <input class="form-check-input" type="checkbox" id="flexSwitchCheckChecked" checked>
+                                                                </div>
+                                                            </td>
+                                                            <td>主题</td>
+                                                            <td><i class="bi bi-arrows-expand"></i></td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td width="30px">
+                                                                <div class="form-check form-switch lh-0 fs-6">
+                                                                    <input class="form-check-input" type="checkbox" id="flexSwitchCheckChecked" checked>
+                                                                </div>
+                                                            </td>
+                                                            <td>主题</td>
+                                                            <td><i class="bi bi-arrows-expand"></i></td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td width="30px">
+                                                                <div class="form-check form-switch lh-0 fs-6">
+                                                                    <input class="form-check-input" type="checkbox" id="flexSwitchCheckChecked" checked>
+                                                                </div>
+                                                            </td>
+                                                            <td>主题</td>
+                                                            <td><i class="bi bi-arrows-expand"></i></td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td width="30px">
+                                                                <div class="form-check form-switch lh-0 fs-6">
+                                                                    <input class="form-check-input" type="checkbox" id="flexSwitchCheckChecked" checked>
+                                                                </div>
+                                                            </td>
+                                                            <td>主题</td>
+                                                            <td><i class="bi bi-arrows-expand"></i></td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td width="30px">
+                                                                <div class="form-check form-switch lh-0 fs-6">
+                                                                    <input class="form-check-input" type="checkbox" id="flexSwitchCheckChecked" checked>
+                                                                </div>
+                                                            </td>
+                                                            <td>主题</td>
+                                                            <td><i class="bi bi-arrows-expand"></i></td>
+                                                        </tr>
+                                                    </table>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -115,11 +222,11 @@
                                             @Html.DisplayFor(modelItem => item.Project.Name)
                                         </td>
                                         <td htmlValue="issue">
-                                            <a class="text-666" asp-page="./Details" asp-route-id="@item.Id" target="_blank">@Html.DisplayFor(modelItem => item.Subject)</a>
+                                            <a class="text-666 issue_subject_@item.StatusId" asp-page="./Details" asp-route-id="@item.Id" target="_blank">@Html.DisplayFor(modelItem => item.Subject)</a>
                                         </td>
                                         <td htmlValue="issue" class="text-start">
                                             <div class="btn-group m-0 p-0">
-                                                <a class="btn btn-sm text-666 m-0 p-0 fs-7 lh-0" data-bs-toggle="dropdown">@Html.DisplayFor(modelItem => item.Status.Name)</a>
+                                                <a class="btn btn-sm text-666 m-0 p-0 fs-7 lh-0 issue_subject_@item.StatusId" data-bs-toggle="dropdown">@Html.DisplayFor(modelItem => item.Status.Name)</a>
                                                 <ul class="dropdown-menu shadow fs-7">                                     
                                                     <li><a class="dropdown-item disabled lh-0 text-dark" href="#">更改[@Html.DisplayFor(modelItem => item.Id)]为:</a></li>
                                                     <li><hr class="dropdown-divider"></li>
@@ -185,7 +292,10 @@
             </div>
     </div>
     <div id="offcanvasExample" class="offcanvas p-0 bg-white offcanvas-end" style="width:30%" data-bs-scroll="true" tabindex="-1" aria-labelledby="offcanvasExampleLabel">
-        <div class="row m-0 p-0 offcanvas-header bg-title border-1 border-ccc p-2">           
+        <div class="row m-0 p-0 offcanvas-header bg-title border-1 border-ccc p-2">
+            <div class="col text-start ps-0">
+                <span class="offcanvas-title fw-bold text-start" id="offcanvasExampleLabel"><i class="bi bi-lightning"></i>&nbsp;新建问题</span>
+            </div>&nbsp;
             <div class="col-sm-3 ps-0 pr-0">
                 <select id="ruby_Project" class="form-select w-100 form-select-sm shadow fs-7" aria-label=".form-select-sm example" onchange="changeProject(this.value);">
                     @{
@@ -255,6 +365,17 @@
         offcanvasExample.addEventListener('shown.bs.offcanvas', function () {
             $('#frm_NewIssue')[0].contentWindow.setSubjectFocus();
         });
+
+        function changeOptionsDiv(id) {
+            alert(id);
+        }
+        function changeIcon(html_id) {
+            if ($('#' + html_id).hasClass('bi bi-chevron-down')) {
+                $('#' + html_id).attr('class', 'bi bi-chevron-right');
+            } else {
+                $('#' + html_id).attr('class', 'bi bi-chevron-down'); 
+            }
+        }
     </script>
 </body>
 </html>
