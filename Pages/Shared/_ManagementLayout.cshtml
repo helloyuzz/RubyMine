@@ -36,44 +36,7 @@
             background-color: #2196F3;
             color: #fff;
         }
-    </style>
-    @{
-        string htmlUrl = Context.Request.Path.Value;
-        htmlUrl = htmlUrl.Substring(htmlUrl.LastIndexOf("/") + 1);
-
-        switch (htmlUrl) {
-            case "Project":
-                ViewData["nav_Project"] = "active";
-                break;
-            case "Trace":
-                ViewData["nav_Trace"] = "active";
-                break;
-            case "User":
-                ViewData["nav_User"] = "active";
-                break;
-            case "CustomField":
-                ViewData["nav_CustomField"] = "active";
-                break;
-            case "Role":
-                ViewData["nav_Role"] = "active";
-                break;
-            case "IssueStatus":
-                ViewData["nav_IssueStatus"] = "active";
-                break;
-            case "Flow":
-                ViewData["nav_Flow"] = "active";
-                break;
-            case "Common":
-                ViewData["nav_Common"] = "active";
-                break;
-            case "Enum":
-                ViewData["nav_Enum"] = "active";
-                break;
-            case "About":
-                ViewData["nav_About"] = "active";
-                break;
-        }
-    }
+    </style>   
 </head>
 <body class="overflow-hidden">
     @*<div id="mydiv" class="shadow rounded-circle">
@@ -94,41 +57,44 @@
                         <div class="col">
                             <ul class="navbar-nav flex-grow-1">
                                 <li class="nav-item">
-                                    <a class="nav-link text-decoration-none text-white fs-7 @ViewData["nav_Index"]" asp-area="" asp-page="/Index" title="">个人工作台</a>
+                                    <a class="nav-link text-decoration-none text-white fs-7" asp-area="" asp-page="/Index" title="">个人工作台</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link text-decoration-none text-white fs-7 @ViewData["nav_Products"]" asp-area="" asp-page="/Products/Index">公司产品</a>
+                                    <a class="nav-link text-decoration-none text-white fs-7" asp-area="" asp-page="/Products/Index">公司产品</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link text-decoration-none text-white fs-7 @ViewData["nav_Requirements"]" asp-area="" asp-page="/Requirements/Index">需求跟踪</a>
+                                    <a class="nav-link text-decoration-none text-white fs-7" asp-area="" asp-page="/Requirements/Index">需求跟踪</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link text-decoration-none text-white fs-7 @ViewData["nav_Plans"]" asp-area="" asp-page="/Plans/Index">研发计划</a>
+                                    <a class="nav-link text-decoration-none text-white fs-7" asp-area="" asp-page="/Plans/Index">研发管理</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link text-decoration-none text-white fs-7 @ViewData["nav_Clocks"]" asp-area="" asp-page="/Clocks/Index">工时填写</a>
+                                    <a class="nav-link text-decoration-none text-white fs-7" asp-area="" asp-page="/Clocks/Index">工时统计</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link text-decoration-none text-white fs-7  @ViewData["nav_Leaks"]" asp-area="" asp-page="/Leaks/Index">缺陷列表</a>
+                                    <a class="nav-link text-decoration-none text-white fs-7" asp-area="" asp-page="/Versions/Index">版本管理</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link text-decoration-none text-white fs-7 @ViewData["nav_Wiki"]" asp-area="" asp-page="/Wiki/Index">Wiki</a>
+                                    <a class="nav-link text-decoration-none text-white fs-7" asp-area="" asp-page="/Leaks/Index">缺陷列表</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link text-decoration-none text-white fs-7 @ViewData["nav_Documents"]" asp-area="" asp-page="/Documents/Index">文档附件</a>
+                                    <a class="nav-link text-decoration-none text-white fs-7" asp-area="" asp-page="/Wiki/Index">Wiki</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link text-decoration-none text-white fs-7 @ViewData["nav_Helps"]" asp-area="" asp-page="/Helps/Index">使用帮助</a>
+                                    <a class="nav-link text-decoration-none text-white fs-7" asp-area="" asp-page="/Documents/Index">文档附件</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link text-decoration-none text-white fs-7 @ViewData["nav_Privacy"]" asp-area="" asp-page="/Privacy">Privacy</a>
+                                    <a class="nav-link text-decoration-none text-white fs-7" asp-area="" asp-page="/Helps/Index">使用帮助</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-decoration-none text-white fs-7" asp-area="" asp-page="/Privacy">Privacy</a>
                                 </li>
                             </ul>
                         </div>
                         <div class="col-1 d-flex align-content-end text-right justify-content-end mr-0 pr-0">
                             <ul class="navbar-nav">
                                 <li class="nav-item">
-                                    <a class="nav-link text-decoration-none text-white fs-7" asp-area="" asp-page="/Management/Project"><i class="bi bi-gear"></i>&nbsp;设置</a>
+                                    <a class="nav-link text-decoration-none text-white fs-7" asp-area="" asp-page="/Management/About"><i class="bi bi-gear"></i>&nbsp;设置</a>
                                 </li>
                             </ul>
                         </div>

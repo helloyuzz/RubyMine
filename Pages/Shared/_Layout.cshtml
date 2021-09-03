@@ -6,50 +6,6 @@
     if (string.IsNullOrEmpty(requestPath.Trim('/'))==false && aleradyLogin == false) {
         Context.Response.Redirect("/");
     }
-    if (aleradyLogin) {
-        string defaultClass = " bg-success bg-gradient shadow rounded-2";
-        string htmlUrl = Context.Request.Path.Value;
-        htmlUrl = htmlUrl.Substring(htmlUrl.LastIndexOf("/") + 1);
-        ViewData["Toolbar_Display"] = "none";
-
-        switch (htmlUrl) {
-            case "Projects":
-                ViewData["nav_Projects"] = defaultClass;
-                break;
-            case "Products":
-                ViewData["nav_Products"] = defaultClass;
-                break;
-            case "Requirements":
-            case "Details":
-                ViewData["nav_Requirements"] = defaultClass;
-                ViewData["Toolbar_Display"] = "block";
-                break;
-            case "Leaks":
-                ViewData["nav_Leaks"] = defaultClass;
-                break;
-            case "Plans":
-                ViewData["nav_Plans"] = defaultClass;
-                break;
-            case "Clocks":
-                ViewData["nav_Clocks"] = defaultClass;
-                break;
-            case "Wiki":
-                ViewData["nav_Wiki"] = defaultClass;
-                break;
-            case "Documents":
-                ViewData["nav_Documents"] = defaultClass;
-                break;
-            case "Helps":
-                ViewData["nav_Helps"] = defaultClass;
-                break;
-            case "Privacy":
-                ViewData["nav_Privacy"] = defaultClass;
-                break;
-            default:
-                ViewData["nav_Index"] = defaultClass;
-                break;
-        }
-    }
 }
 <!DOCTYPE html>
 <html lang="en">
@@ -67,6 +23,14 @@
     <script src="~/js/site.js" asp-append-version="true"></script>
 
     <link rel="stylesheet" href="~/css/site.css" />
+    <style>
+        .menu-True {
+            background-color: #198754 !important;
+            box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
+            background-image: var(--bs-gradient) !important;
+            border-radius: 0.25rem !important;
+        }
+    </style>
 </head>
 <body>
     <header>
@@ -79,38 +43,41 @@
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between pr-0">
                     <div class="row w-100 ml-0 mr-0">
-                            @{ if(aleradyLogin) {
-                        <div class="col">
+                        @{ if (aleradyLogin) {
+                                <div class="col">
                                     <ul class="navbar-nav flex-grow-1">
                                         <li class="nav-item">
-                                            <a class="nav-link text-decoration-none text-white fs-7 @ViewData["nav_Index"]" asp-area="" asp-page="/Index" title="">个人工作台</a>
+                                            <a class="nav-link text-decoration-none text-white fs-7 menu-@requestPath.Equals("/")" asp-area="" asp-page="/Index" title="">个人工作台</a>
                                         </li>
                                         <li class="nav-item">
-                                            <a class="nav-link text-decoration-none text-white fs-7 @ViewData["nav_Products"]" asp-area="" asp-page="/Products/Index">公司产品</a>
+                                            <a class="nav-link text-decoration-none text-white fs-7 menu-@requestPath.Contains("Products")" asp-area="" asp-page="/Products/Index">公司产品</a>
                                         </li>
                                         <li class="nav-item">
-                                            <a class="nav-link text-decoration-none text-white fs-7 @ViewData["nav_Requirements"]" asp-area="" asp-page="/Requirements/Index">需求跟踪</a>
+                                            <a class="nav-link text-decoration-none text-white fs-7 menu-@requestPath.Contains("Requirements")" asp-area="" asp-page="/Requirements/Index">需求跟踪</a>
                                         </li>
                                         <li class="nav-item">
-                                            <a class="nav-link text-decoration-none text-white fs-7 @ViewData["nav_Plans"]" asp-area="" asp-page="/Plans/Index">研发计划</a>
+                                            <a class="nav-link text-decoration-none text-white fs-7 menu-@requestPath.Contains("Plans")" asp-area="" asp-page="/Plans/Index">研发管理</a>
                                         </li>
                                         <li class="nav-item">
-                                            <a class="nav-link text-decoration-none text-white fs-7 @ViewData["nav_Clocks"]" asp-area="" asp-page="/Clocks/Index">工时填写</a>
+                                            <a class="nav-link text-decoration-none text-white fs-7 menu-@requestPath.Contains("Clocks")" asp-area="" asp-page="/Clocks/Index">工时统计</a>
                                         </li>
                                         <li class="nav-item">
-                                            <a class="nav-link text-decoration-none text-white fs-7  @ViewData["nav_Leaks"]" asp-area="" asp-page="/Leaks/Index">缺陷列表</a>
+                                            <a class="nav-link text-decoration-none text-white fs-7 menu-@requestPath.Contains("Versions")" asp-area="" asp-page="/Versions/Index">版本管理</a>
                                         </li>
                                         <li class="nav-item">
-                                            <a class="nav-link text-decoration-none text-white fs-7 @ViewData["nav_Wiki"]" asp-area="" asp-page="/Wiki/Index">Wiki</a>
+                                            <a class="nav-link text-decoration-none text-white fs-7 menu-@requestPath.Contains("Leaks")" asp-area="" asp-page="/Leaks/Index">缺陷列表</a>
                                         </li>
                                         <li class="nav-item">
-                                            <a class="nav-link text-decoration-none text-white fs-7 @ViewData["nav_Documents"]" asp-area="" asp-page="/Documents/Index">文档附件</a>
+                                            <a class="nav-link text-decoration-none text-white fs-7 menu-@requestPath.Contains("Wiki")" asp-area="" asp-page="/Wiki/Index">Wiki</a>
                                         </li>
                                         <li class="nav-item">
-                                            <a class="nav-link text-decoration-none text-white fs-7 @ViewData["nav_Helps"]" asp-area="" asp-page="/Helps/Index">使用帮助</a>
+                                            <a class="nav-link text-decoration-none text-white fs-7 menu-@requestPath.Contains("Documents")" asp-area="" asp-page="/Documents/Index">文档附件</a>
                                         </li>
                                         <li class="nav-item">
-                                            <a class="nav-link text-decoration-none text-white fs-7 @ViewData["nav_Privacy"]" asp-area="" asp-page="/Privacy">Privacy</a>
+                                            <a class="nav-link text-decoration-none text-white fs-7 menu-@requestPath.Contains("Helps")" asp-area="" asp-page="/Helps/Index">使用帮助</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link text-decoration-none text-white fs-7 menu-@requestPath.Contains("Privacy")" asp-area="" asp-page="/Privacy">Privacy</a>
                                         </li>
                                     </ul>
                                 </div>
@@ -120,10 +87,10 @@
                                             <a class="nav-link text-decoration-none text-white fs-7" asp-area="" asp-page="/Management/About"><i class="bi bi-gear"></i>&nbsp;设置</a>
                                         </li>
                                     </ul>
-                                </div> 
-                                }
+                                </div>
                             }
-                        </div>
+                        }
+                    </div>
                 </div>
             </div>
         </nav>

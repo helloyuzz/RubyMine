@@ -3,10 +3,8 @@ using System.Collections.Generic;
 
 #nullable disable
 
-namespace RubyMine.Models
-{
-    public partial class Version
-    {
+namespace RubyMine.Models {
+    public partial class Version {
         public int Id { get; set; }
         public int ProjectId { get; set; }
         public string Name { get; set; }
