@@ -57,7 +57,11 @@
 </form>
 <script>
     $(document).ready(function () {
-        $('#Login').focus();
+        if ($('#Login').val() == "") {
+            $('#Login').focus();
+        } else {
+            $('#Password').focus();
+        }
         @Html.Raw(TempData.Peek("jsScript"))
     });
 </script>

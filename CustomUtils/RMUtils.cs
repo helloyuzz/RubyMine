@@ -129,10 +129,14 @@ namespace RubyMine {
             return status == 1 ? "激活的" : "已锁定";
         }
         public static string ParseDate(DateTime? dateTime,bool showMintues=false) {
-            if (showMintues == true) {
-                return dateTime.Value.ToString("yy-MM-dd HH:mm");
+            if (dateTime != null) {
+                if (showMintues == true) {
+                    return dateTime.Value.ToString("yy-MM-dd HH:mm");
+                } else {
+                    return dateTime.Value.ToString("yyyy-MM-dd");
+                }
             } else {
-                return dateTime.Value.ToString("yyyy-MM-dd");
+                return "";
             }
         }
         public static string PraseDateTime(DateTime? dateTime) {
@@ -181,6 +185,28 @@ namespace RubyMine {
         }
         public static string Html_Checked(string boolValue) {
             return boolValue.Equals("1") ? "checked" : "";
+        }
+        public static string ParseVersionStatus(string issue_status) {
+            string result = "";
+            switch (issue_status) {
+                case "locked":
+                    result = "已发布";
+                    break;
+                case "open":
+                    result = "开发中";
+                    break;
+                case "closed":
+                    result = "关闭";
+                    break;
+            }
+            return result;
+        }
+        public static string ParseVersionSharing(string issue_sharing) {
+            string result = "否";
+            if ("system".Equals(issue_sharing)) {
+                result = "是";
+            }
+            return result;
         }
     }
 }

@@ -12,39 +12,7 @@
     <meta name="viewport" content="width=device-width" />
     <title>Index</title>
     <style>
-        th[htmlValue="issue"],td[htmlValue="issue"] {
-            border: solid 1px #d7d7d7;
-            padding: 5px !important;
-        }
-        th[htmlValue="issue"] {
-            padding:8px !important;
-        }
-        /*待实施反馈*/
-        .issue_subject_3 {
-            color:blue !important;
-        }
-        /*功能已发布*/
-        .issue_subject_9 {
-            color: #2a8a29 !important;
-        }
-        /*已澄清*/
-        .issue_subject_15 {
-            color: #ccc !important;
-            text-decoration-line: line-through !important;
-        }
-        .issue_subject_14 {
-            color:#bb5656 !important;
-            text-decoration-line:line-through !important;
-        }
-        /*历史遗留*/
-        .issue_subject_19 {
-            color:#ccc !important;            
-        }
-        /*重复登记*/
-        .issue_subject_21 {
-            color:#b46b6b !important;
-            text-decoration:line-through !important;
-        }
+
     </style>
 </head>
 <body>
@@ -130,7 +98,7 @@
                                     <th htmlValue="issue" width="40%" class="text-269 border-bottom-0">
                                         @Html.DisplayNameFor(model => model.Issue[0].Subject)
                                     </th>
-                                    <th htmlValue="issue" width="106px" class="text-269 border-bottom-0">
+                                    <th htmlValue="issue" width="136px" class="text-269 border-bottom-0">
                                         @Html.DisplayNameFor(model => model.Issue[0].StatusId)
                                     </th>
                                     <th htmlValue="issue" width="60px" class="text-269 border-bottom-0">

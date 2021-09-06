@@ -2,9 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Abp.Linq.Expressions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
+using RubyMine.Models;
 
 namespace RubyMine.Pages.Version {
     public class IndexModel : PageModel {
@@ -12,9 +14,24 @@ namespace RubyMine.Pages.Version {
         public IndexModel(RubyMine.DbContexts.RubyRemineDbContext context) {
             _context = context;
         }
+        [BindProperty(SupportsGet =true)]
+        public int project_id { get; set; }
+        [BindProperty(SupportsGet = true)]
+        public string status { get; set; }
         public IList<RubyMine.Models.Version> Version { get; set; }
+        public IList<Project> Project { get; set; }
         public async Task OnGet() {
-            Version = await _context.Versions.Where(t => t.Status.Equals("closed") == false).ToListAsync();
+            var pr = PredicateBuilder.New<RubyMine.Models.Version>(true);
+            if (project_id > 0) {
+                pr = pr.And(x => x.ProjectId == project_id);
+            }
+            if (string.IsNullOrEmpty(status) == false) {
+                pr = pr.And(x => x.Status.Equals(status));
+            } else { 
+                pr.And(x => x.Status.Equals("closed") == false);
+            }
+            Project = await _context.Projects.Where(t => t.IsPublic.Value).Select(t => new Project { Id = t.Id, Name = t.Name }).ToListAsync();
+            Version = await _context.Versions.Where(pr).Include(t=>t.Project).OrderByDescending(t=>t.Name).ToListAsync();
         }
     }
 }

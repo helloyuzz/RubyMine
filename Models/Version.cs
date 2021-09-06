@@ -15,5 +15,6 @@ namespace RubyMine.Models {
         public string WikiPageTitle { get; set; }
         public string Status { get; set; }
         public string Sharing { get; set; }
+        public Project Project { get; set; }
     }
 }
