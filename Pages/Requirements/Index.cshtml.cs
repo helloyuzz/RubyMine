@@ -23,6 +23,9 @@ namespace RubyMine.Pages.Requirements {
         public IList<Issue> Issue { get; set; }
         public IList<Tracker> Tracker { get; set; }
         public IList<Project> Project { get; set; }
+
+        public IList<RubyMine.Models.Version> Version { get; set; }
+        
         public string ProjectTracker { get; set; }
         public int PageSize = 30;
         public int PageIndex = 1;
@@ -30,6 +33,7 @@ namespace RubyMine.Pages.Requirements {
         public async Task OnGetAsync() {
             Tracker = await _context.Trackers.OrderBy(x => x.Position).ToListAsync();
             Project = await _context.Projects.Where(x => x.IsPublic == true).Select(x => new Project() { Id = x.Id, Name = x.Name }).ToListAsync();
+            Version = await _context.Versions.Where(t => t.Status.Equals("closed") == false).OrderByDescending(t => t.Status).ThenByDescending(t => t.Name).ToListAsync();
             var db_ProjectTracker = await _context.ProjectsTrackers.Select(x => new ProjectsTracker() { ProjectId = x.ProjectId, TrackerId = x.TrackerId }).ToListAsync();
             ProjectTracker = JsonConvert.SerializeObject(db_ProjectTracker);
             Setting setting = _config.GetPerPageOptions();

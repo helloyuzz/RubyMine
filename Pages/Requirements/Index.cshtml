@@ -2,7 +2,10 @@
 @model RubyMine.Pages.Requirements.IndexModel
 
 @{
-//Layout = null;
+    //Layout = null;
+    ViewData["showTitle"] = Request.Query["showTitle"];
+    var showFlag = "show";
+    var activeFlag = "active";
 }
 
 <!DOCTYPE html>
@@ -12,20 +15,47 @@
     <meta name="viewport" content="width=device-width" />
     <title>Index</title>
     <style>
+        .vertical-text {
+            transform: rotate(180deg);
+            /*transform-origin: left top 0;*/
+            writing-mode: vertical-rl;
+            text-orientation: mixed;
+        }
 
+        .accordion-button::after {
+            width: 0.75rem !important;
+            height: 0.75rem !important;
+            background-size: 0.75rem !important;
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23212529'%3e%3cpath fill-rule='evenodd' d='M11.354 1.646a.5.5 0 0 1 0 .708L5.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0z'/%3e%3c/svg%3e");
+            margin-left: unset;
+        }
+
+        .accordion-button:not(.collapsed)::after {
+            transform: rotate(0deg) !important;
+        }
+
+        .btn-locked {
+            /*text-decoration: line-through !important;*/
+            color: #ccc;
+        }
+        .table tbody tr.highlight td {
+            background-color: #56de833b;
+            font-weight:bold;
+            color: red !important;
+        }
     </style>
 </head>
 <body>
     <div class="container-fluid">
         <div class="row">
-            <div class="col">
-                <div class="row border-1 border-ccc bg-title">
+            <div class="col ps-3">
+                <div class="row border-1 border-ccc bg-title border-bottom-0">
                     <div class="col ps-0 border-bottom border-ccc">
                         <table width="100%">
                             <tr>
-                                <td width="90px"><span class="m-1 p-0">需求跟踪</span></td>
+                                <td width="130px"><span class="m-1 p-0 fs-7">需求跟踪&nbsp;(@Model.Issue.Count)</span></td>
                                 <td></td>
-                                <td width="80px" class="text-right fs-7"><a href="#offcanvasExample" class="text-decoration-none text-269 fw-bold" data-bs-toggle="offcanvas" role="button" aria-controls="offcanvasExample"><i class="bi bi-lightning"></i>&nbsp;新建问题</a></td>
+                                <td width="80px" class="text-right fs-7"><a href="#offcanvasExample" class="text-decoration-none text-269" data-bs-toggle="offcanvas" role="button" aria-controls="offcanvasExample"><i class="bi bi-lightning"></i>&nbsp;新建问题</a></td>
                                 @*<td width="60px" class="text-right fs-7"><a href="#search" class="text-decoration-none" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne"><i class="bi bi-sort-down text-dark"></i>&nbsp;检索</a></td>*@
                             </tr>
                         </table>
@@ -37,8 +67,8 @@
                                 <a id="btn_Condition" href="#Temp" class="m-0 p-0 fs-7 text-dark text-decoration-none" onclick="$('#div_Condition').toggle();changeIcon('icon_Condition');">
                                     <i id="icon_Condition" class="bi bi-chevron-down"></i>&nbsp;过滤器
                                 </a>
-                                <div id="div_Condition" class="card-body m-0 p-0 p-1 fs-7">
-                                    <table class="w-100 text-666">
+                                <div id="div_Condition" class="card-body m-0 p-0 fs-7">
+                                    <table class="w-100 text-666 m-0">
                                         <tr>
                                             <td width="16px"><i class="bi bi-x"></i></td>
                                             <td width="130px">状态</td>
@@ -72,7 +102,7 @@
                                     </table>
                                 </div>
                             </div>
-                        </div>               
+                        </div>
                         <div class="row mt-1 pt-1 ps-1">
                             <div class="col fs-7">
                                 <a href="#Temp" class="mr-3"><i class="bi bi-check-lg"></i>&nbsp;应用</a>
@@ -82,182 +112,183 @@
                         </div>
                     </div>
                 </div>
-                    <div class="row border-1 border-ccc border-top-0 p-2">
-                        <table id="mainTable" class="table table-hover lh-1 fs-7 border-1 border-ccc">
-                            <thead>
-                                <tr style="background:#eee;">
-                                    <th htmlValue="issue" width="40px" class="text-269 border-bottom-0">
-                                        #
-                                    </th>
-                                    <th htmlValue="issue" width="60px" class="text-269 border-bottom-0">
-                                        @Html.DisplayNameFor(model => model.Issue[0].TrackerId)
-                                    </th>
-                                    <th htmlValue="issue" width="80px" class="text-269 border-bottom-0">
-                                        @Html.DisplayNameFor(model => model.Issue[0].ProjectId)
-                                    </th>
-                                    <th htmlValue="issue" width="40%" class="text-269 border-bottom-0">
-                                        @Html.DisplayNameFor(model => model.Issue[0].Subject)
-                                    </th>
-                                    <th htmlValue="issue" width="136px" class="text-269 border-bottom-0">
-                                        @Html.DisplayNameFor(model => model.Issue[0].StatusId)
-                                    </th>
-                                    <th htmlValue="issue" width="60px" class="text-269 border-bottom-0">
-                                        @Html.DisplayNameFor(model => model.Issue[0].PriorityId)
-                                    </th>
-                                    <th htmlValue="issue" width="80px" class="text-269 border-bottom-0">
-                                        @Html.DisplayNameFor(model => model.Issue[0].AuthorId)
-                                    </th>
-                                    <th htmlValue="issue" width="80px" class="text-269 border-bottom-0">
-                                        @Html.DisplayNameFor(model => model.Issue[0].AssignedToId)
-                                    </th>
-                                    <th htmlValue="issue" width="123px" class="text-269 border-bottom-0">
-                                        @Html.DisplayNameFor(model => model.Issue[0].CreatedOn)
-                                    </th>
-                                    <th htmlValue="issue" class="text-269 border-bottom-0">
-                                        @Html.DisplayNameFor(model => model.Issue[0].IsPrivate)
-                                    </th>
-                                    <th width="30px" htmlValue="issue" class="text-269 text-center border-bottom-0">
-                                        <div class="btn-group dropstart">
-                                            <a href="#column" class="text-decoration-none fw-bold" data-bs-toggle="dropdown" aria-expanded="false">
-                                                <i class="bi bi-caret-down-square-fill"></i>
-                                            </a>
+                <div class="row">
+                    <table id="mainTable" class="table table-hover lh-1 fs-7 border-1 border-ccc">
+                        <thead>
+                            <tr style="background:#eee;">
+                                <th htmlValue="issue" width="40px" class="text-269 border-bottom-0">
+                                    #
+                                </th>
+                                <th htmlValue="issue" width="60px" class="text-269 border-bottom-0">
+                                    @Html.DisplayNameFor(model => model.Issue[0].TrackerId)
+                                </th>
+                                <th htmlValue="issue" width="80px" class="text-269 border-bottom-0">
+                                    @Html.DisplayNameFor(model => model.Issue[0].ProjectId)
+                                </th>
+                                <th htmlValue="issue" width="40%" class="text-269 border-bottom-0">
+                                    @Html.DisplayNameFor(model => model.Issue[0].Subject)
+                                </th>
+                                <th htmlValue="issue" width="136px" class="text-269 border-bottom-0">
+                                    @Html.DisplayNameFor(model => model.Issue[0].StatusId)
+                                </th>
+                                <th htmlValue="issue" width="60px" class="text-269 border-bottom-0">
+                                    @Html.DisplayNameFor(model => model.Issue[0].PriorityId)
+                                </th>
+                                <th htmlValue="issue" width="80px" class="text-269 border-bottom-0">
+                                    @Html.DisplayNameFor(model => model.Issue[0].AuthorId)
+                                </th>
+                                <th htmlValue="issue" width="80px" class="text-269 border-bottom-0">
+                                    @Html.DisplayNameFor(model => model.Issue[0].AssignedToId)
+                                </th>
+                                <th htmlValue="issue" width="123px" class="text-269 border-bottom-0">
+                                    @Html.DisplayNameFor(model => model.Issue[0].CreatedOn)
+                                </th>
+                                <th htmlValue="issue" class="text-269 border-bottom-0">
+                                    @Html.DisplayNameFor(model => model.Issue[0].IsPrivate)
+                                </th>
+                                <th width="30px" htmlValue="issue" class="text-269 text-center border-bottom-0">
+                                    <div class="btn-group dropstart">
+                                        <a href="#column" class="text-decoration-none fw-bold" data-bs-toggle="dropdown" aria-expanded="false">
+                                            <i class="bi bi-caret-down-square-fill"></i>
+                                        </a>
+                                        <ul class="dropdown-menu shadow fs-7">
+                                            <li><a class="dropdown-item ps-2 fw-bold disabled">显示&排序</a></li>
+                                            <li class="ps-2">
+                                                <table class="w-100">
+                                                    <tr>
+                                                        <td width="30px">
+                                                            <div class="form-check form-switch lh-0 fs-6">
+                                                                <input class="form-check-input" type="checkbox" id="flexSwitchCheckChecked" checked>
+                                                            </div>
+                                                        </td>
+                                                        <td>主题</td>
+                                                        <td><i class="bi bi-arrows-expand"></i></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td width="30px">
+                                                            <div class="form-check form-switch lh-0 fs-6">
+                                                                <input class="form-check-input" type="checkbox" id="flexSwitchCheckChecked" checked>
+                                                            </div>
+                                                        </td>
+                                                        <td>主题</td>
+                                                        <td><i class="bi bi-arrows-expand"></i></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td width="30px">
+                                                            <div class="form-check form-switch lh-0 fs-6">
+                                                                <input class="form-check-input" type="checkbox" id="flexSwitchCheckChecked" checked>
+                                                            </div>
+                                                        </td>
+                                                        <td>主题</td>
+                                                        <td><i class="bi bi-arrows-expand"></i></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td width="30px">
+                                                            <div class="form-check form-switch lh-0 fs-6">
+                                                                <input class="form-check-input" type="checkbox" id="flexSwitchCheckChecked" checked>
+                                                            </div>
+                                                        </td>
+                                                        <td>主题</td>
+                                                        <td><i class="bi bi-arrows-expand"></i></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td width="30px">
+                                                            <div class="form-check form-switch lh-0 fs-6">
+                                                                <input class="form-check-input" type="checkbox" id="flexSwitchCheckChecked" checked>
+                                                            </div>
+                                                        </td>
+                                                        <td>主题</td>
+                                                        <td><i class="bi bi-arrows-expand"></i></td>
+                                                    </tr>
+                                                </table>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model.Issue) {
+                                <tr class="clickable-row">
+                                    <td htmlValue="issue" class="fs-7">
+                                        <a asp-page="./Details" asp-route-id="@item.Id" target="_blank" class="text-666">@Html.DisplayFor(modelItem => item.Id)</a>
+                                    </td>
+                                    <td htmlValue="issue">
+                                        @Html.DisplayFor(modelItem => item.Tracker.Name)
+                                    </td>
+                                    <td htmlValue="issue">
+                                        @Html.DisplayFor(modelItem => item.Project.Name)
+                                    </td>
+                                    <td htmlValue="issue">
+                                        <a class="text-666 issue_subject_@item.StatusId" asp-page="./Details" asp-route-id="@item.Id" target="_blank">@Html.DisplayFor(modelItem => item.Subject)</a>
+                                    </td>
+                                    <td htmlValue="issue" class="text-start">
+                                        <div class="btn-group m-0 p-0">
+                                            <a class="btn btn-sm text-666 m-0 p-0 fs-7 lh-0 issue_subject_@item.StatusId" data-bs-toggle="dropdown">@Html.DisplayFor(modelItem => item.Status.Name)</a>
                                             <ul class="dropdown-menu shadow fs-7">
-                                                <li><a class="dropdown-item ps-2 fw-bold disabled">显示&排序</a></li>
-                                                <li class="ps-2">
-                                                    <table class="w-100">
-                                                        <tr>
-                                                            <td width="30px">
-                                                                <div class="form-check form-switch lh-0 fs-6">
-                                                                    <input class="form-check-input" type="checkbox" id="flexSwitchCheckChecked" checked>
-                                                                </div>
-                                                            </td>
-                                                            <td>主题</td>
-                                                            <td><i class="bi bi-arrows-expand"></i></td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td width="30px">
-                                                                <div class="form-check form-switch lh-0 fs-6">
-                                                                    <input class="form-check-input" type="checkbox" id="flexSwitchCheckChecked" checked>
-                                                                </div>
-                                                            </td>
-                                                            <td>主题</td>
-                                                            <td><i class="bi bi-arrows-expand"></i></td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td width="30px">
-                                                                <div class="form-check form-switch lh-0 fs-6">
-                                                                    <input class="form-check-input" type="checkbox" id="flexSwitchCheckChecked" checked>
-                                                                </div>
-                                                            </td>
-                                                            <td>主题</td>
-                                                            <td><i class="bi bi-arrows-expand"></i></td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td width="30px">
-                                                                <div class="form-check form-switch lh-0 fs-6">
-                                                                    <input class="form-check-input" type="checkbox" id="flexSwitchCheckChecked" checked>
-                                                                </div>
-                                                            </td>
-                                                            <td>主题</td>
-                                                            <td><i class="bi bi-arrows-expand"></i></td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td width="30px">
-                                                                <div class="form-check form-switch lh-0 fs-6">
-                                                                    <input class="form-check-input" type="checkbox" id="flexSwitchCheckChecked" checked>
-                                                                </div>
-                                                            </td>
-                                                            <td>主题</td>
-                                                            <td><i class="bi bi-arrows-expand"></i></td>
-                                                        </tr>
-                                                    </table>
-                                                </li>
+                                                <li><a class="dropdown-item disabled lh-0 text-dark" href="#">更改[@Html.DisplayFor(modelItem => item.Id)]为:</a></li>
+                                                <li><hr class="dropdown-divider"></li>
+                                                <li><a class="dropdown-item" href="#">新建</a></li>
+                                                <li><hr class="dropdown-divider"></li>
+                                                <li><a class="dropdown-item" href="#">Copy Text</a></li>
                                             </ul>
                                         </div>
-                                    </th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach (var item in Model.Issue) {
-                                    <tr>
-                                        <td htmlValue="issue" class="fs-7">
-                                            <a asp-page="./Details" asp-route-id="@item.Id" target="_blank" class="text-666">@Html.DisplayFor(modelItem => item.Id)</a>
-                                        </td>
-                                        <td htmlValue="issue">
-                                            @Html.DisplayFor(modelItem => item.Tracker.Name)
-                                        </td>
-                                        <td htmlValue="issue">
-                                            @Html.DisplayFor(modelItem => item.Project.Name)
-                                        </td>
-                                        <td htmlValue="issue">
-                                            <a class="text-666 issue_subject_@item.StatusId" asp-page="./Details" asp-route-id="@item.Id" target="_blank">@Html.DisplayFor(modelItem => item.Subject)</a>
-                                        </td>
-                                        <td htmlValue="issue" class="text-start">
-                                            <div class="btn-group m-0 p-0">
-                                                <a class="btn btn-sm text-666 m-0 p-0 fs-7 lh-0 issue_subject_@item.StatusId" data-bs-toggle="dropdown">@Html.DisplayFor(modelItem => item.Status.Name)</a>
-                                                <ul class="dropdown-menu shadow fs-7">                                     
-                                                    <li><a class="dropdown-item disabled lh-0 text-dark" href="#">更改[@Html.DisplayFor(modelItem => item.Id)]为:</a></li>
-                                                    <li><hr class="dropdown-divider"></li>
-                                                    <li><a class="dropdown-item" href="#">新建</a></li>
-                                                    <li><hr class="dropdown-divider"></li>
-                                                    <li><a class="dropdown-item" href="#">Copy Text</a></li>
-                                                </ul>
-                                            </div>
-                                        </td>
-                                        <td htmlValue="issue">
-                                            <div class="btn-group m-0 p-0">
-                                                <a class="btn btn-sm m-0 p-0 fs-7 lh-0" data-bs-toggle="dropdown">@Html.DisplayFor(modelItem => item.Priority.Name)</a>
-                                                <ul class="dropdown-menu shadow fs-7">
-                                                    <li><a class="dropdown-item lh-0" href="#">所有</a></li>
-                                                    <li><hr class="dropdown-divider"></li>
-                                                    <li><a class="dropdown-item" href="#">普通</a></li>
-                                                    <li><a class="dropdown-item" href="#">Something else here</a></li>
-                                                    <li><hr class="dropdown-divider"></li>
-                                                    <li><a class="dropdown-item" href="#">Copy Text</a></li>
-                                                </ul>
-                                            </div>
-                                        </td>
-                                        <td htmlValue="issue">
-                                           @Html.DisplayFor(modelItem => item.Author.Firstname)
-                                        </td>
-                                        <td htmlValue="issue">
-                                           @Html.DisplayFor(modelItem => item.AssignedTo.Firstname)
-                                        </td>
-                                        <td htmlValue="issue">
-                                            @Html.Raw(RMUtils.ParseDate(item.CreatedOn, true))
-                                        </td>
-                                        <td htmlValue="issue">
-                                            @Html.DisplayFor(modelItem => item.IsPrivate)
-                                        </td>
-                                        <td htmlValue="issue" class="text-center">
-                                            <a asp-page="./Edit" asp-route-id="@item.Id">Edit</a>
-                                            @*|
+                                    </td>
+                                    <td htmlValue="issue">
+                                        <div class="btn-group m-0 p-0">
+                                            <a class="btn btn-sm m-0 p-0 fs-7 lh-0" data-bs-toggle="dropdown">@Html.DisplayFor(modelItem => item.Priority.Name)</a>
+                                            <ul class="dropdown-menu shadow fs-7">
+                                                <li><a class="dropdown-item lh-0" href="#">所有</a></li>
+                                                <li><hr class="dropdown-divider"></li>
+                                                <li><a class="dropdown-item" href="#">普通</a></li>
+                                                <li><a class="dropdown-item" href="#">Something else here</a></li>
+                                                <li><hr class="dropdown-divider"></li>
+                                                <li><a class="dropdown-item" href="#">Copy Text</a></li>
+                                            </ul>
+                                        </div>
+                                    </td>
+                                    <td htmlValue="issue">
+                                        @Html.DisplayFor(modelItem => item.Author.Firstname)
+                                    </td>
+                                    <td htmlValue="issue">
+                                        @Html.DisplayFor(modelItem => item.AssignedTo.Firstname)
+                                    </td>
+                                    <td htmlValue="issue">
+                                        @Html.Raw(RMUtils.ParseDate(item.CreatedOn, true))
+                                    </td>
+                                    <td htmlValue="issue">
+                                        @Html.DisplayFor(modelItem => item.IsPrivate)
+                                    </td>
+                                    <td htmlValue="issue" class="text-center">
+                                        <a asp-page="./Edit" asp-route-id="@item.Id">Edit</a>
+                                        @*|
                                     <a asp-page="./Details" asp-route-id="@item.Id">Details</a> |
                                     <a asp-page="./Delete" asp-route-id="@item.Id">Delete</a>*@
-                                        </td>
-                                    </tr>
-                                }
-                            </tbody>
-                        </table>
-                        <nav aria-label="Page navigation example" class="pr-0">
-                            <ul class="pagination justify-content-end mr-0 fs-7">
-                                <li class="page-item disabled">
-                                    <a class="page-link" href="#" tabindex="-1" aria-disabled="true">共xxx条记录.</a>
-                                </li>
-                                <li class="page-item">
-                                    <a class="page-link" href="#" tabindex="-1" aria-disabled="true">第一页</a>
-                                </li>
-                                <li class="page-item"><a class="page-link" href="#">1</a></li>
-                                <li class="page-item"><a class="page-link" href="#">2</a></li>
-                                <li class="page-item"><a class="page-link" href="#">3</a></li>
-                                <li class="page-item">
-                                    <a class="page-link" href="#">末页</a>
-                                </li>
-                            </ul>
-                        </nav>
-                    </div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                    共 @Model.Issue.Count 条数据。
+                    <nav aria-label="Page navigation example" class="pr-0">
+                        <ul class="pagination justify-content-end mr-0 fs-7">
+                            <li class="page-item disabled">
+                                <a class="page-link" href="#" tabindex="-1" aria-disabled="true">共xxx条记录.</a>
+                            </li>
+                            <li class="page-item">
+                                <a class="page-link" href="#" tabindex="-1" aria-disabled="true">第一页</a>
+                            </li>
+                            <li class="page-item"><a class="page-link" href="#">1</a></li>
+                            <li class="page-item"><a class="page-link" href="#">2</a></li>
+                            <li class="page-item"><a class="page-link" href="#">3</a></li>
+                            <li class="page-item">
+                                <a class="page-link" href="#">末页</a>
+                            </li>
+                        </ul>
+                    </nav>
                 </div>
             </div>
+        </div>
     </div>
     <div id="offcanvasExample" class="offcanvas p-0 bg-white offcanvas-end" style="width:30%" data-bs-scroll="true" tabindex="-1" aria-labelledby="offcanvasExampleLabel">
         <div class="row m-0 p-0 offcanvas-header bg-title border-1 border-ccc p-2">
@@ -297,6 +328,7 @@
             </div>
         </div>*@
     </div>
+    <div id="result"></div>
     <script>
         var temp = @Html.Raw(Model.ProjectTracker);
         function changeProject(project_id) {
@@ -344,6 +376,34 @@
                 $('#' + html_id).attr('class', 'bi bi-chevron-down'); 
             }
         }
+
+        //$('#mainTable').on('click', '.clickable', function (event) {
+        //    $(this).addClass('active').siblings().removeClass('active');
+        //});
+        var ctrlKey = false;
+        $('#mainTable').on('click', 'tbody tr', function (event) {
+            if (ctrlKey) {
+                $(this).addClass('highlight');
+            } else {
+                $(this).addClass('highlight').siblings().removeClass('highlight');
+            }
+        });
+        $(document).keydown(function (event) {
+            //console.log(event);
+            if (!event.ctrlKey) {
+                ctrlKey = false;
+                return true;
+            }
+            ctrlKey = true;
+            event.preventDefault();
+        });
+        $(document).keyup(function (event) {
+            //console.log(event);
+            if (!event.ctrlKey) {
+                ctrlKey = false;
+                return true;
+            }
+        });
     </script>
 </body>
 </html>

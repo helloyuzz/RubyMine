@@ -18,112 +18,128 @@
         background-size: 0.75rem !important;
         background-image:url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23212529'%3e%3cpath fill-rule='evenodd' d='M11.354 1.646a.5.5 0 0 1 0 .708L5.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0z'/%3e%3c/svg%3e");
         margin-left:unset;
+        display:none;
     }
     .accordion-button:not(.collapsed)::after {
         transform:rotate(0deg) !important;
     }
     .btn-locked {
-        /*text-decoration: line-through !important;*/
         color: #ccc;
     }
+    .badge {
+        font-weight:normal !important;
+    }
 </style>
-<div class="container-fluid">
-    <div class="row">
-        <div class="col-2">
+<div class="container-fluid pr-0">
+    <div class="row ps-0">
+        <div class="col-2 border-1 border-ccc">
             <div class="row">
-                <div class="lh-0 col border-1 border-ccc border-bottom-0 bg-title ps-1 pt-2 pb-2">
-                    <!-- LinkButton trigger modal -->
-                    版本计划<a href="#Temp"><span class="float-end fs-7" data-bs-toggle="modal" data-bs-target="#staticBackdrop"><i class="bi bi-plus-lg fs-7"></i>&nbsp;新建版本</span></a>
+                <div class="col border-bottom-1 border-ccc bg-title p-0 ps-1 pt-1 pb-1 fw-bold fs-7">
+                    产品线
                 </div>
             </div>
-            <div class="row fs-7">
-                <div class="col border-1 border-ccc p-1">
+            <div class="row fs-7 border-top border-ccc">
+                <div class="col p-1">
                     <div class="d-flex align-items-start">
                         <div class="nav flex-column nav-pills me-3" id="v-pills-tab" role="tablist" aria-orientation="vertical">
                             @foreach (var project_id in Model.Version.Select(x => x.ProjectId).Distinct()) {
-                                <a class="nav-link @activeFlag p-2 mt-1 text-269 text-decoration-none vertical-text" id="v-pills-home-tab-@project_id" data-bs-toggle="pill" data-bs-target="#v-pills-home-@project_id" type="button" role="tab" aria-controls="v-pills-home-@project_id" aria-selected="true">@Model.Project.FirstOrDefault(x => x.Id == project_id).Name</a>
+                                <a class="nav-link @activeFlag p-1 mt-1 shadow text-dark text-decoration-none vertical-text" id="v-pills-home-tab-@project_id" data-bs-toggle="pill" data-bs-target="#v-pills-home-@project_id" type="button" role="tab" aria-controls="v-pills-home-@project_id" aria-selected="true">@Model.Project.FirstOrDefault(x => x.Id == project_id).Name</a>
                                 activeFlag = "";
                             }
                         </div>
-                        <div class="tab-content w-100" id="v-pills-tabContent">
+                        <div class="tab-content w-100 ps-1" id="v-pills-tabContent">
                             @foreach (var project_id in Model.Version.Select(x => x.ProjectId).Distinct()) {
                                 activeFlag = "active";
                                 <div class="tab-pane fade @showFlag @activeFlag" id="v-pills-home-@project_id" role="tabpanel" aria-labelledby="v-pills-home-tab-@project_id">
-                                    <div class="accordion accordion-flush h-25 overflow-hidden" id="accordionFlushExample-@project_id">
-                                        @foreach (Version item in Model.Version.Where(x => x.ProjectId == project_id || x.Sharing.Equals("system"))) {
+                                    <div class="accordion accordion-flush" id="accordionFlushExample-@project_id">
+                                        @foreach (RubyMine.Models.Version item in Model.Version.Where(x => x.Sharing.Equals("system"))) {
                                             showFlag = "";
                                             activeFlag = "";
-                                            <div class="accordion-item">
-                                                <h2 class="accordion-header" id="flush-headingOne-@item.Id">
-                                                    <button class="accordion-button btn-@item.Status collapsed m-0 p-1 fs-7" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseOne-@item.Id" aria-expanded="false" aria-controls="flush-collapseOne-@item.Id">
-                                                        @{
-                                                            var showEffectiveDate = "";
-                                                            var showEffectiveDateClass = "";
-                                                            var showBiClass = "bi-cursor text-success";
-                                                            var showBiTitle = "";
+                                        <div class="accordion-item mb-1">
+                                            <h2 class="accordion-header" id="flush-headingOne-@item.Id">
+                                                <button class="accordion-button btn-@item.Status collapsed m-0 p-2 fs-7" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseOne-@item.Id" aria-expanded="false" aria-controls="flush-collapseOne-@item.Id">
+                                                    <i class="bi bi-shuffle"></i>&nbsp;<span class="mr-2 fw-bold text-danger">@item.Name</span>
+                                                    <span class="badge bg-title text-secondary ms-auto rounded-pill m-0 p-1">@Model.Version.Count(t => t.Sharing.Equals("system"))</span>
+                                                </button>
+                                            </h2>
+                                            <div id="flush-collapseOne-@item.Id" class="accordion-collapse collapse" aria-labelledby="flush-headingOne-@item.Id" data-bs-parent="#accordionFlushExample-@project_id">
+                                                <div class="accordion-body p-1 ps-3 text-secondary">
+                                                        <ol class="list-group list-group-flush list-group-numbered">
+                                                            <li class="list-group-item list-group-item-action text-269 m-0 p-1">
+                                                                <label for="staticEmail" class="col col-form-label m-0 p-0 ps-1 text-black-50">@item.Name</label>
+                                                            </li>
+                                                        </ol>
+                                                    </div>
+                                            </div>
+                                        </div>
+                                        }
+                                        <div class="accordion-item mb-1">
+                                            <h2 class="accordion-header" id="headingOne-open-@project_id">
+                                                <button class="accordion-button m-0 p-2 fs-7" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne-open-@project_id" aria-expanded="true" aria-controls="collapseOne-open-@project_id">
+                                                    <i class="bi bi-telegram"></i>&nbsp;
+                                                    开发中
+                                                    <span class="badge bg-title text-secondary ms-auto rounded-pill m-0 p-1">@Model.Version.Count(t => t.Status.Equals("open") && t.ProjectId == project_id && t.Sharing.Equals("system") == false)</span>
+                                                </button>
+                                            </h2>
+                                            <div id="collapseOne-open-@project_id" class="accordion-collapse collapse show" aria-labelledby="headingOne-open-@project_id" data-bs-parent="#accordionFlushExample-@project_id">
+                                                <div class="accordion-body p-1 ps-2">
+                                                    <ol class="list-group list-group-flush">
+                                                        @foreach (RubyMine.Models.Version item in Model.Version.Where(t => t.Status.Equals("open") && t.ProjectId == project_id && t.Sharing.Equals("system")==false)) {
+                                                            var showWarring = "";
+                                                            var showIcon = "";
+                                                            var showTitle = "";
+                                                            var showEffectiveDate = "?";
+                                                            var showThroughline = "";
+
                                                             if (item.EffectiveDate != null) {
                                                                 showEffectiveDate = item.EffectiveDate.Value.ToString("yyyy-MM-dd");
-                                                                if (DateTime.Now.CompareTo(item.EffectiveDate.Value) > 0) {
-                                                                    showEffectiveDateClass = "text-danger";
-                                                                    showBiClass = "text-danger bi-exclamation-triangle-fill";
-                                                                    showBiTitle = "警告：版本计划已超时！";
+                                                                if (DateTime.Now.CompareTo(item.EffectiveDate) > 0) {
+                                                                    showIcon = "bi-exclamation-triangle-fill";
+                                                                    showWarring = "text-danger";
+                                                                    showTitle = "版本已超期。";
+                                                                    //showThroughline = "text-decoration-line-through";
                                                                 }
-                                                            }
-                                                            if (item.Sharing.Equals("system")) {
-                                                                <span class="mr-2 fw-bold text-269">@item.Name</span>@Html.Raw("&nbsp;LTS")
-                                                                <span class="ms-auto text-269">
-                                                                    <i class="bi bi-pin-fill"></i> @Html.Raw("&nbsp;")
-                                                                </span>
-                                                            } else if (item.Status.Equals("locked")) {
-                                                                <span class="mr-2">@item.Name</span><span>@showEffectiveDate</span>
-                                                                <i class="bi bi-lock ms-auto"></i> @Html.Raw("&nbsp;&nbsp;")
                                                             } else {
-                                                                <span class="mr-2 fw-bold text-269">@item.Name</span>
-                                                                <span class="ms-auto @showEffectiveDateClass" title="@showBiTitle">
-                                                                    @showEffectiveDate <i class="bi @showBiClass ms-auto"></i> @Html.Raw("&nbsp;")
-                                                                </span>
+                                                                showWarring = "text-danger";
                                                             }
+                                                        <li class="list-group-item list-group-item-action m-0 p-1" title="@showTitle">
+                                                            <span>@item.Name</span>&nbsp;<span class="float-end @showThroughline"><i class="bi @showIcon @showWarring"></i>&nbsp;@showEffectiveDate</span>
+                                                        </li>
                                                         }
-                                                    </button>
-                                                </h2>
-                                                <div id="flush-collapseOne-@item.Id" class="accordion-collapse collapse" aria-labelledby="flush-headingOne-@item.Id" data-bs-parent="#accordionFlushExample-@project_id">
-                                                    <div class="accordion-body p-1 text-secondary">
-                                                        <div class="mb-3 row">
-                                                            <label for="staticEmail" class="col col-form-label">计划完成</label>
-                                                            <div class="col">
-                                                                <input type="text" readonly class="form-control-plaintext" id="staticEmail" value="@item.EffectiveDate">
-                                                            </div>
-                                                        </div>
-                                                        @item.Description
-                                                    </div>
+                                                    </ol>
                                                 </div>
                                             </div>
-                                        }                        
+                                        </div>
+                                        <div class="accordion-item mb-1">
+                                            <h2 class="accordion-header" id="headingOne-locked-@project_id">
+                                                <button class="accordion-button collapsed m-0 p-2 fs-7" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne-locked-@project_id" aria-expanded="true" aria-controls="collapseOne-locked-@project_id">
+                                                    <i class="bi bi-lock"></i>&nbsp;
+                                                    已关闭版本
+                                                    <span class="badge bg-title text-primary ms-auto rounded-pill m-0 p-1">@Model.Version.Count(t => t.Status.Equals("locked") && t.ProjectId == project_id)</span>
+                                                </button>
+                                            </h2>
+                                            <div id="collapseOne-locked-@project_id" class="accordion-collapse collapse" aria-labelledby="headingOne-locked-@project_id" data-bs-parent="#accordionFlushExample-@project_id">
+                                                <div class="accordion-body p-1 ps-3">
+                                                    <ol class="list-group list-group-flush list-group-numbered">
+                                                        @foreach (RubyMine.Models.Version item in Model.Version.Where(t => t.Status.Equals("locked") && t.ProjectId == project_id).OrderByDescending(t=>t.EffectiveDate)) {
+                                                        <li class="list-group-item list-group-item-action text-black-50 m-0 p-1">
+                                                            已发布 @item.Name&nbsp;<span class="float-end"><i class="bi"></i>&nbsp;@RMUtils.ParseDate(item.EffectiveDate)</span>
+                                                        </li>
+                                                        }
+                                                    </ol>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
-                            }                       
+                            }
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="col">
-            <table id="mainTable" class="table table-hover lh-1 fs-7 border-1 border-ccc">
-                <thead>
-                    <tr>
-                        <th>#</th>
-                    </tr>
-                </thead>
-            </table>
-        </div>
-        <div class="col-3 p-0">
-            <table id="mainTable" class="table table-hover lh-1 fs-7 border-1 border-ccc">
-                <thead>
-                    <tr>
-                        <th>#</th>
-                    </tr>
-                </thead>
-            </table>
+        <div class="col p-0 ps-0 mr-0 pr-0">
+            <iframe id="issue_content" name="issue_content" src="~/Requirements/Index?showTitle=show" class="w-100" style="min-height:900px;" scrolling="no" onload="this.height=issue_content.document.body.scrollHeight"></iframe>
         </div>
     </div>
 </div>

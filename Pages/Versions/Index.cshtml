@@ -1,27 +1,29 @@
 ﻿@page
 @model RubyMine.Pages.Version.IndexModel
+@using Abp.Linq.Expressions;
 @{
 }
-<div class="container-fluid">
+<style>
+    a.dropdown-toggle::after {
+        display:none !important;
+    }
+</style>
+<div class="container-fluid fs-7">
     <div class="row">
-        <div class="col-2 ps-0">
-            <div class="container ms-0 ps-2 pr-2">
-                <div class="row border-1 border-ccc bg-title">
-                    <div class="col">
-                        项目列表
+        <div class="col-2 border-1 border-ccc mr-2">
+            <div class="container p-0">
+                <div class="row bg-title border-bottom border-ccc">
+                    <div class="col ps-1 pt-1 pb-1">
+                        版本<span class="fs-7 text-269">(@Model.Version.Count)</span>&nbsp;<a href="#Temp" class="float-end fs-7 text-269" data-bs-toggle="modal" data-bs-target="#staticBackdrop"><i class="bi bi-plus-lg fs-7"></i>&nbsp;新建</></a>
                     </div>
                 </div><form id="frmVersion" method="get">
-                    <div class="row border-1 border-ccc border-top-0 pb-lg-5">
+                    <div class="row">
                         <div class="col p-3">
                             <table class="fs-7">
                                 <tr>
-                                    <td width="60px">版本号</td>
-                                    <td><input type="text" class="form-control fs-7" aria-label="" placeholder="Ctrl+F"></td>
-                                </tr>
-                                <tr>
                                     <td>产品线</td>
                                     <td>
-                                        <select class="form-select fs-7 mb-1 w-auto" aria-label="" asp-for="project_id" onchange="$('#frmVersion').submit();">
+                                        <select class="form-select p-1 pr-5 fs-7 mb-1 w-auto" aria-label="" asp-for="project_id" onchange="$('#frmVersion').submit();">
                                             <option value="">全部</option>
                                             @foreach (RubyMine.Models.Project item in Model.Project) {
                                                 <option value="@item.Id">@item.Name</option>
@@ -32,19 +34,17 @@
                                 <tr>
                                     <td>状态</td>
                                     <td>
-                                        <select class="form-select fs-7 mb-1 w-auto" aria-label="" asp-for="status" onchange="$('#frmVersion').submit();">
+                                        <select class="form-select p-1 pr-5 fs-7 mb-1 w-auto" aria-label="" asp-for="status" onchange="$('#frmVersion').submit();">
                                             <option value="">全部</option>
                                             <option value="open">开发中</option>
                                             <option value="locked">已发布</option>
                                         </select>
                                     </td>
                                 </tr>
-                                @*<tr>
-                                    <td>计划完成</td>
-                                    <td>
-                                        <input type="date" class="form-control fs-7"/>
-                                    </td>
-                                </tr>*@
+                                <tr>
+                                    <td width="60px">版本号</td>
+                                    <td><input type="text" class="form-control p-1 fs-7" aria-label="" placeholder="Ctrl+F"></td>
+                                </tr>
                             </table>
                         </div>
                     </div>
@@ -52,16 +52,11 @@
             </div>
         </div>
         <div class="col border-1 border-ccc">
-            <div class="row">
-                <div class="col bg-title ps-1 border-bottom border-ccc">
-                    版本&nbsp;<span class="fs-7 text-269">(&nbsp;@Model.Version.Count&nbsp;)</span><a href="#Temp" class="float-end fs-7 pt-1"><span data-bs-toggle="modal" data-bs-target="#staticBackdrop"><i class="bi bi-plus-lg fs-7"></i>&nbsp;新建版本</span></a>
-                </div>
-            </div>
-            <div class="row fs-7 pr-0">
-                <div class="col p-1">
-                    <table id="mainTable" class="table table-hover lh-1 fs-7 border-1 border-ccc">
+            <div class="row fs-7 pr-0 bgt">
+                <div class="col p-0 border-0">
+                    <table id="mainTable" class="table table-hover lh-1 fs-7">
                         <thead>
-                            <tr style="background:#eee;">
+                            <tr class="bg-title">
                                 <th class="border-ccc text-666">#</th>
                                 <th class="border-ccc text-666">公司产品线</th>
                                 <th class="border-ccc text-666">版本号</th>
@@ -70,23 +65,24 @@
                                 <th class="border-ccc text-666">版本描述</th>
                                 <th class="border-ccc text-666">创建于</th>
                                 <th class="border-ccc text-666">是否共享</th>
-                                <th class="border-ccc text-666">编辑</th>
+                                <th class="border-ccc text-666"></th>
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach (var item in Model.Version) {
-                                var htmlClass = "";
-                                var htmlIcon = "";
-                                switch (item.Status) {
-                                    case "open":
-                                        htmlClass = "text-269";
-                                        htmlIcon = "bi-cursor";
-                                        break;
-                                    case "locked":
-                                        htmlClass = "text-secondary";
-                                        htmlIcon = "bi-lock";
-                                        break;
-                                }
+                            @{                                 
+                                foreach (var item in Model.Version.OrderByDescending(t => t.EffectiveDate)) {
+                                    var htmlClass = "";
+                                    var htmlIcon = "";
+                                    switch (item.Status) {
+                                        case "open":
+                                            htmlClass = "text-269";
+                                            htmlIcon = "bi-cursor";
+                                            break;
+                                        case "locked":
+                                            htmlClass = "text-666";
+                                            htmlIcon = "bi-lock";
+                                            break;
+                                    }
                                 <tr class="@htmlClass">
                                     <td>@item.Id</td>
                                     <td>@item.Project.Name</td>
@@ -94,17 +90,31 @@
                                         <a href="#Temp" class="@htmlClass"><i class="bi @htmlIcon ms-auto"></i>@item.Name</a>
                                     </td>
                                     <td>
-                                        <a href="#Temp" class="@htmlClass">@RMUtils.ParseVersionStatus(item.Status)</a>
+                                        @if (item.Status.Equals("open")) {
+                                            <div class="dropdown">
+                                                <a href="#Temp" class="dropdown-toggle @htmlClass" id="subMenu-@item.Id" data-bs-toggle="dropdown" aria-expanded="false">
+                                                    @RMUtils.ParseVersionStatus(item.Status)
+                                                </a>
+                                                <ul class="dropdown-menu shadow p-0" aria-labelledby="subMenu-@item.Id">
+                                                    <li><button class="dropdown-item p-2 fs-7 disabled" type="button">开发中</button></li>
+                                                    <li><button class="dropdown-item p-2 fs-7" type="button">已发布</button></li>
+                                                </ul>
+                                            </div>
+                                        } else {
+                                            @RMUtils.ParseVersionStatus(item.Status)
+                                        }
                                     </td>
                                     <td>@RMUtils.ParseDate(item.EffectiveDate)</td>
                                     <td>@item.Description</td>
-                                    <td>@RMUtils.ParseDate(item.CreatedOn,true)</td>
+                                    <td>@RMUtils.ParseDate(item.CreatedOn, true)</td>
                                     <td>@RMUtils.ParseVersionSharing(item.Sharing)</td>
-                                    <td><a href="#Temp" class="text-269"><i class="bi bi-pencil"></i></a></td>
+                                    <td class="text-center"><a href="#Temp" class="text-269">编辑</a>&nbsp;<a href="#Temp" class="text-269">删除</a></td>
                                 </tr>
-                            }
+                                    }
+                                }
                         </tbody>
                     </table>
+                    <span class="text-269 ps-1 pb-3">共：@Model.Version.Count 条数据</span>
                 </div>
             </div>
         </div>

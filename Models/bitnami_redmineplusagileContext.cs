@@ -1,13 +1,15 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Console;
 
 #nullable disable
 
 namespace RubyMine.Models
 {
-    public partial class bitnami_redmineplusagileContext : DbContext
-    {
+    public partial class bitnami_redmineplusagileContext : DbContext {
+        public static readonly ILoggerFactory loggerFactory = LoggerFactory.Create(builder => builder.AddConsole());
         public bitnami_redmineplusagileContext()
         {
         }
@@ -83,6 +85,7 @@ namespace RubyMine.Models
         {
             if (!optionsBuilder.IsConfigured)
             {
+                optionsBuilder.UseLoggerFactory(loggerFactory).EnableSensitiveDataLogging();
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
                 //optionsBuilder.UseMySql("server=localhost;port=3306;database=bitnami_redmineplusagile;uid=bitnami;pwd=e32a9b7bd9;sslmode=None;allowpublickeyretrieval=true", Microsoft.EntityFrameworkCore.ServerVersion.Parse("5.7.32-mysql"));
                 optionsBuilder.UseMySql("server=192.168.3.65;port=3306;database=bitnami_redmineplusagile;uid=rubymine;pwd=aa123456;sslmode=None;allowpublickeyretrieval=true", Microsoft.EntityFrameworkCore.ServerVersion.Parse("5.7.32-mysql"));
