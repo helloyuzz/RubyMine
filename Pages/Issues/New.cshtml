@@ -3,205 +3,202 @@
 @using RubyMine.Models;
 @using RubyMine.CustomModels;
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - RubyMine</title>
-    <link href="~/lib/bootstrap-5.0.2-dist/css/bootstrap.css" rel="stylesheet">
-    @*<script src="~/lib/bootstrap-5.0.2-dist/js/bootstrap.min.js"></script>*@
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
-    <script src="https://kit.fontawesome.com/64adc7381d.js" crossorigin="anonymous"></script>
-    <script src="~/lib/jquery-3.6.0/dist/jquery.min.js"></script>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
 
-    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
-
-    @{
-        Layout = null;
+@{
+    //Layout = null;
+}
+<style>
+    .line-height-row {
+        padding-top: 2px;
+        padding-bottom: 2px;
     }
-    <style>
-        .line-height-row {
-            padding-top:2px;
-            padding-bottom:2px;
-        }
-        .w-30 {
-           width: 30% !important;
-        }
-        .w-35 {
-           width: 35% !important;
-        }
-    </style>
-</head>
-<body class="bg-white p-2">
-    <div class="row m-0 p-0 pr-3 w-100">
-        <table width="100%" class="mt-1 mr-1">
-            <tr>
-                <td width="76px" class="p-0 text-right">
-                    <label for="inputPassword" class="col-form-label form-control-sm fw-bold fs-7">主题&nbsp;<span class="text-danger fw-bold">*</span></label>
-                </td>
-                <td class="line-height-row">
-                    <input type="text" class="form-control form-control-sm fs-7 text-666" id="issue_Subject" value="@Model.Tracker_id" autocomplete="off">
-                </td>
-            </tr>
-            <tr>
-                <td width="76px" class="p-0 text-right">
-                    <label for="inputPassword" class="col-form-label form-control-sm fw-bold fs-7">状态&nbsp;<span class="text-danger fw-bold">*</span></label>
-                </td>
-                <td class="line-height-row">
-                    @Html.DropDownList("issue_IssueStatus", new SelectList(Model.DB_IssueStatus, "Id", "Name"), new { @class = "form-select m-0 w-25 p-1 text-666 fs-7" })
-                </td>
-            </tr>
-            @{
-                foreach (CustomField customField in Model.CustomField) {
-                    <tr id="tr_@customField.Id">
-                        <td width="76px" class="p-0 text-right" valign="top">
-                            <label for="inputPassword" class="col-form-label form-control-sm fw-bold fs-7">@customField.Name@Html.Raw(RMUtils.Html_IsRequired(customField.IsRequired))</label>
-                        </td>
-                        <td class="line-height-row">
-                            @switch (customField.FieldFormat) {
-                                case "user":
-                                case "version":
-                                case "list":
-                            @:<!--@Html.Raw(customField.Name)-->
-                            <div id="cfMenu_@customField.Id" class="dropdown">
-                                <div class="row">
-                                    <div class="col">
-                                        <button id="cf_@customField.Id" cf_Type="@customField.FieldFormat" cf_Id="" cf_Text="" class="btn btn-light w-100 border-1 border-ccc bg-white btn-sm dropdown-toggle text-666 text-start fs-7" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="min-width:30%;">
-                                        &nbsp;</button>
-                                        <ul id="cfDropdown_@customField.Id" class="dropdown-menu shadow text-666" aria-labelledby="cf_@customField.Id" style="min-width:300px;max-height:400px;overflow-y:auto">
-                                            <div class="row p-0 m-0 pt-0 p-1 pr-2 rounded-1 bg-title border-bottom">
-                                                <div class="col">
-                                                    <input id="cfInput_@customField.Id" class="form-control m-0 pt-0 p-1 bg-white border-1 border-ccc rounded-1 fs-7" type="text" placeholder="筛选 @customField.Name" autocomplete="off" />
+
+    .w-30 {
+        width: 30% !important;
+    }
+
+    .w-35 {
+        width: 35% !important;
+    }
+</style>
+<form id="newForm" method="post">
+    <div class="container-fluid fs-7">
+        <div class="row ps-0 border-1 border-ccc">
+            <div class="col">
+                <div class="row border-bottom-1 border-ccc">
+                    <div class="col bg-title p-1 ps-2 fw-bold fs-7">
+                        <span>新建问题</span>
+                        <div class="float-end pr-2">
+                            <a href="#Temp" class="btn-sm p-0 fs-7 text-269" onclick="$('#newForm').submit();">保存</a>&nbsp;
+                            <a asp-page="/Requirements/Index" class="p-0 fs-7 text-269">取消</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="row p-3 pt-1 border-top border-ccc" style="background:#fcfcfc">
+                    <div class="col">
+                        <table width="100%" class="mt-1 mr-1">
+                            <tr>
+                                <td width="76px" class="p-0 text-right">
+                                    <label for="inputPassword" class="col-form-label form-control-sm fw-bold fs-7">主题&nbsp;<span class="text-danger fw-bold">*</span></label>
+                                </td>
+                                <td class="line-height-row">
+                                    <input type="text" class="form-control form-control-sm fs-7 text-666" id="issue_Subject" value="@Model.Tracker_id" autocomplete="off" required>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td width="76px" class="p-0 text-right">
+                                    <label for="inputPassword" class="col-form-label form-control-sm fw-bold fs-7">状态&nbsp;<span class="text-danger fw-bold">*</span></label>
+                                </td>
+                                <td class="line-height-row">
+                                    @Html.DropDownList("issue_IssueStatus", new SelectList(Model.DB_IssueStatus, "Id", "Name"), new { @class = "form-select m-0 w-auto p-1 text-666 fs-7" })
+                                </td>
+                            </tr>
+                            @{
+                                foreach (CustomField customField in Model.CustomField) {
+                                    <tr id="tr_@customField.Id">
+                                        <td width="76px" class="p-0 text-right" valign="top">
+                                            <label for="inputPassword" class="col-form-label form-control-sm fw-bold fs-7">@customField.Name@Html.Raw(RMUtils.Html_IsRequired(customField.IsRequired))</label>
+                                        </td>
+                                        <td class="line-height-row">
+                                            @switch (customField.FieldFormat) {
+                                                case "user":
+                                                case "version":
+                                                case "list":
+                                                    @:<!--@Html.Raw(customField.Name)-->
+                                                    <div id="cfMenu_@customField.Id" class="dropdown">
+                                                        <div class="row">
+                                                            <div class="col">
+                                                                <button id="cf_@customField.Id" cf_Type="@customField.FieldFormat" cf_Id="" cf_Text="" class="btn btn-light w-auto border-1 border-ccc bg-white btn-sm dropdown-toggle text-666 text-start fs-7" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="min-width:30%;">
+                                                                    &nbsp;
+                                                                </button>
+                                                                <ul id="cfDropdown_@customField.Id" class="dropdown-menu w-auto shadow text-666" aria-labelledby="cf_@customField.Id" style="min-width:300px;max-height:400px;overflow-y:auto">
+                                                                    <div class="row p-0 m-0 pt-0 p-1 pr-2 rounded-1 bg-title border-bottom">
+                                                                        <div class="col">
+                                                                            <input id="cfInput_@customField.Id" class="form-control m-0 pt-0 p-1 bg-white border-1 border-ccc rounded-1 fs-7" type="text" placeholder="筛选 @customField.Name" autocomplete="off" />
+                                                                        </div>
+                                                                        @{
+                                                                            if (customField.Multiple.Value == false) {
+                                                                                <div class="col-1 text-start">
+                                                                                    <a id="cfTrash_@customField.Id" href="#clearContent" class="text-269" title="清空选择"><i class="bi bi-trash"></i></a>
+                                                                                </div>
+                                                                            }
+                                                                        }
+                                                                    </div>
+                                                                    @if (customField.FieldFormat.Equals("user")) {
+                                                                        @foreach (var item in Model.DB_ProjectUser) {
+                                                                            <li>
+                                                                                <a class="dropdown-item text-decoration-none fs-7" htmlType="source_@customField.Id" href="#Temp" htmlId="@Html.Raw(item.Id)" htmlPinyin="@Html.Raw(item.pinyin)" htmlText="@Html.Raw(item.Firstname)">
+                                                                                    <span style="float:left" class="text-666">@Html.Raw(item.Firstname)</span>&nbsp;
+                                                                                    <span style="float:right;color:#8492a6;">@Html.Raw(item.pinyin)</span>
+                                                                                </a>
+                                                                            </li>
+                                                                        }
+                                                                    } else if (customField.FieldFormat.Equals("version")) { <!--版本-->
+                                                                        @foreach (var item in Model.DB_Version) {
+                                                                            <li>
+                                                                                <a class="dropdown-item text-decoration-none fs-7" htmlType="source_@customField.Id" href="#Temp" htmlId="@Html.Raw(item.Id)" htmlPinyin="@Html.Raw(item.Name)" htmlText="@Html.Raw(item.Name)">
+                                                                                    <span style="float:left" class="text-666">@Html.Raw(item.Name)</span>&nbsp;
+                                                                                </a>
+                                                                            </li>
+                                                                        }
+                                                                    } else if (customField.FieldFormat.Equals("list")) { <!--列表-->
+                                                                        string[] possibleValues = customField.PossibleValues.Split('\n');
+                                                                        int nIndex = 0;
+                                                                        foreach (string possbleValue in possibleValues) {
+                                                                            string temp_PossbleValue = possbleValue.Trim('-').Trim(' ');
+                                                                            if (string.IsNullOrEmpty(temp_PossbleValue)) continue;
+                                                                            <li>
+                                                                                <a class="dropdown-item text-decoration-none fs-7" htmlType="source_@customField.Id" href="#Temp" htmlId="@Html.Raw(nIndex++)" htmlPinyin="" htmlText="@temp_PossbleValue">
+                                                                                    <span style="float:left" class="text-666">@temp_PossbleValue</span>&nbsp;
+                                                                                </a>
+                                                                            </li>
+                                                                        }
+                                                                    }
+                                                                </ul>
+
+                                                            </div>
+                                                            @*@if (customField.Multiple.Value == true) {
+                                            <div class="col-1">
+                                                <div class="col-1 p-0 pt-1">
+                                                    <i id="btnClear_cf_@customField.Id" htmlType="btnClear" class="bi bi-trash" style="cursor:pointer" onclick="$('#cf_Multiple_@customField.Id').empty();"></i>
                                                 </div>
-                                                @{
-                                                    if (customField.Multiple.Value == false) {
-                                                <div class="col-1 text-start">
-                                                    <a id="cfTrash_@customField.Id" href="#clearContent" class="text-269" title="清空选择"><i class="bi bi-trash"></i></a>
-                                                </div>
-                                                    }
-                                                 }
                                             </div>
-                                            @if (customField.FieldFormat.Equals("user")) {
-                                                @foreach (var item in Model.DB_ProjectUser) {
-                                                    <li>
-                                                        <a class="dropdown-item text-decoration-none fs-7" htmlType="source_@customField.Id" href="#Temp" htmlId="@Html.Raw(item.Id)" htmlPinyin="@Html.Raw(item.pinyin)" htmlText="@Html.Raw(item.Firstname)">
-                                                            <span style="float:left" class="text-666">@Html.Raw(item.Firstname)</span>&nbsp;
-                                                            <span style="float:right;color:#8492a6;">@Html.Raw(item.pinyin)</span>
-                                                        </a>
-                                                    </li>
-                                                }
-                                            } else if (customField.FieldFormat.Equals("version")) { <!--版本-->
-                                                @foreach (var item in Model.DB_Version) {
-                                                    <li>
-                                                        <a class="dropdown-item text-decoration-none fs-7" htmlType="source_@customField.Id" href="#Temp" htmlId="@Html.Raw(item.Id)" htmlPinyin="@Html.Raw(item.Name)" htmlText="@Html.Raw(item.Name)">
-                                                            <span style="float:left" class="text-666">@Html.Raw(item.Name)</span>&nbsp;
-                                                        </a>
-                                                    </li>
-                                                }
-                                            } else if (customField.FieldFormat.Equals("list")) { <!--列表-->
-                                                string[] possibleValues = customField.PossibleValues.Split('\n');
-                                                int nIndex = 0;
-                                                foreach (string possbleValue in possibleValues) {
-                                                    string temp_PossbleValue = possbleValue.Trim('-').Trim(' ');
-                                                    if (string.IsNullOrEmpty(temp_PossbleValue)) continue;
-                                                    <li>
-                                                        <a class="dropdown-item text-decoration-none fs-7" htmlType="source_@customField.Id" href="#Temp" htmlId="@Html.Raw(nIndex++)" htmlPinyin="" htmlText="@temp_PossbleValue">
-                                                            <span style="float:left" class="text-666">@temp_PossbleValue</span>&nbsp;
-                                                        </a>
-                                                    </li>
-                                                }
+                                        }*@
+                                                            @if (customField.Multiple.Value == true) {
+                                                                <div id="cf_Multiple_@customField.Id" class="container">
+                                                                    @*<span class="badge m-0 p-1 bg-eee text-dark fw-normal" htmlId="" htmlText="">Primary</span>*@
+                                                                </div>
+                                                            }
+                                                        </div>
+                                                    </div>
+                                                    break;
+                                                case "date":
+                                                    <input class="form-control m-0 w-auto p-1 text-666 fs-7" type="date" asp-for="CurrentDateTime" value="@DateTime.Now.ToString(" yyyy-MM-dd")" />
+                                                    break;
+                                                case "bool":
+                                                    <div class="form-check form-switch">
+                                                        <input id="cf_@customField.Id" class="form-check-input" type="checkbox" @RMUtils.Html_Checked(customField.DefaultValue)>
+                                                        <label class="form-check-label" for="cf_@customField.Id">是</label>
+                                                    </div>
+                                                    break;
+                                                case "text":
+                                                    <textarea class="form-control w-auto text-666 fs-7" id="cf_@customField.Id" rows="1" autocomplete="off"></textarea>
+                                                    break;
+                                                default:
+                                                    <div class="m-0">
+                                                        <input id="cf_@customField.Id" type="email" class="form-control w-auto text-666 fs-7">
+                                                    </div>
+                                                    break;
+
                                             }
-                                        </ul>
-
-                                    </div>
-                                    @*@if (customField.Multiple.Value == true) {
-                                        <div class="col-1">
-                                            <div class="col-1 p-0 pt-1">
-                                                <i id="btnClear_cf_@customField.Id" htmlType="btnClear" class="bi bi-trash" style="cursor:pointer" onclick="$('#cf_Multiple_@customField.Id').empty();"></i>
-                                            </div>
-                                        </div>
-                                    }*@
-                                    @if (customField.Multiple.Value == true) {
-                                       <div id="cf_Multiple_@customField.Id" class="container">
-                                           @*<span class="badge m-0 p-1 bg-eee text-dark fw-normal" htmlId="" htmlText="">Primary</span>*@                                      
-                                       </div>
-                                    }
-                                    </div>
-                            </div>
-                                    break;
-                                case "date":
-                                        <input class="form-control m-0 w-30 p-1 text-666 fs-7" type="date" asp-for="CurrentDateTime" value="@DateTime.Now.ToString(" yyyy-MM-dd")" />
-                                        break;
-                                   case "bool":
-                                        <div class="form-check form-switch">
-                                            <input id="cf_@customField.Id" class="form-check-input" type="checkbox" @RMUtils.Html_Checked(customField.DefaultValue)>
-                                            <label class="form-check-label" for="cf_@customField.Id">是</label>
-                                        </div>                                                                
-                                        break;
-                                    case "text":
-                                        <textarea class="form-control text-666 fs-7" id="exampleFormControlTextarea1" rows="1" autocomplete="off"></textarea>
-                                        break;
-                                    default:
-                                        <div class="m-0">
-                                            <input id="cf_@customField.Id" type="email" class="form-control text-666 fs-7" id="exampleFormControlInput1">
-                                        </div>
-                                        break;
-
-                                        }
-                                    </td>
-                                </tr>
+                                        </td>
+                                    </tr>
                                 }
-                                }
-                                <tr>
-                                    <td width="76px" class="p-0 text-right" valign="top">
-                                        <label for="inputPassword" class="col-form-label form-control-sm fw-bold fs-7">描述</label>
-                                    </td>
-                                    <td>
-                                        <textarea class="form-control fs-7 text-666" id="exampleFormControlTextarea1" rows="3" autocomplete="off"></textarea>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td valign="top">
-                                        <label for="inputPassword" class="col-form-label form-control-sm fs-7">附件<br /><i class="bi bi-arrow-up-right-square fs-6"></i></label>
-                                    </td>
-                                    <td>
-                                        <table class="table table-sm table-hover w-100 table-bordered fs-7 rounded-3">
-                                            <tbody>
-                                                <tr>
-                                                    <td>Otto</td>
-                                                </tr>
-                                                <tr>
-                                                    <td>Thornton</td>
-                                                </tr>
-                                                <tr>
-                                                    <td colspan="2">Larry the Bird</td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </td>
-                                </tr>
-                            </table>        
-    </div>
-    <div style="margin-bottom:30px">
-        &nbsp;
-    </div>
-    <div class="row fixed-bottom bottom-0 end-0 mr-0 bg-white border-1 border-ccc p-2 border-end-0">
-        <div class="col mr-0">
-            <div class="float-right text-start justify-content-end">
-                <button type="button" class="btn btn-success btn-sm p-1 ps-2 pr-3 text-end shadow fs-7"><i class="bi bi-check-lg fs-7 m-0 p-0"></i>&nbsp;&nbsp;保存</button>
-                <button type="button" class="btn btn-secondary btn-sm shadow fs-7" data-bs-toggle="offcanvas" role="button" aria-controls="offcanvasExample">取消</button>
-            </div>
+                            }
+                        </table>
+                    </div>
+                    <div class="col">
+                        <table>
+                            <tr>
+                                <td width="76px" class="p-0 text-right" valign="top">
+                                    <label for="inputPassword" class="col-form-label form-control-sm fw-bold fs-7">描述</label>
+                                </td>
+                                <td>
+                                    <textarea class="form-control fs-7 text-666" id="exampleFormControlTextarea1" rows="3" autocomplete="off"></textarea>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td valign="top">
+                                    <label for="inputPassword" class="col-form-label form-control-sm fs-7">附件<br /><i class="bi bi-arrow-up-right-square fs-6"></i></label>
+                                </td>
+                                <td>
+                                    <table class="table table-sm table-hover w-100 table-bordered fs-7 rounded-3">
+                                        <tbody>
+                                            <tr>
+                                                <td>Otto</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Thornton</td>
+                                            </tr>
+                                            <tr>
+                                                <td colspan="2">Larry the Bird</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+                <div style="margin-bottom:30px">
+                    &nbsp;
+                </div>
         </div>
-        @*<div class="col text-right ps-0">
-            <span class="offcanvas-title fw-bold text-start" id="offcanvasExampleLabel"><i class="bi bi-lightning"></i>&nbsp;新建问题</span>
-        </div>&nbsp;*@
     </div>
+</form>
+@Model.Project_id
 
-    @Model.Project_id
-
-    <script>
+<script>
         var m_ProjectTracker = @Html.Raw(Model.ProjectTracker);
         var m_ProjectCustomField = @Html.Raw(Model.CustomFieldProject);
         var m_TrackerCustomField = @Html.Raw(Model.CustomFieldTracker);
@@ -214,8 +211,8 @@
         function setSubjectFocus() {
             $('#issue_Subject').focus();
         }
-    </script>
-    <script>
+</script>
+<script>
         $(document).ready(function () {
             @{foreach (CustomField customField in Model.CustomField) {
                 switch (customField.FieldFormat) {
@@ -268,6 +265,4 @@
                 }
             }
         });
-    </script>
-</body>
-</html>
+</script>

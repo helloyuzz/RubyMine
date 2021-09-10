@@ -8,19 +8,15 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using RubyMine.DbContexts;
 using RubyMine.Models;
 
-namespace RubyMine.Pages.Projects
-{
-    public class CreateModel : PageModel
-    {
+namespace RubyMine.Pages.Projects {
+    public class CreateModel : PageModel {
         private readonly RubyMine.DbContexts.RubyRemineDbContext _context;
 
-        public CreateModel(RubyMine.DbContexts.RubyRemineDbContext context)
-        {
+        public CreateModel(RubyMine.DbContexts.RubyRemineDbContext context) {
             _context = context;
         }
 
-        public IActionResult OnGet()
-        {
+        public IActionResult OnGet() {
             return Page();
         }
 
@@ -28,10 +24,8 @@ namespace RubyMine.Pages.Projects
         public User User { get; set; }
 
         // To protect from overposting attacks, see https://aka.ms/RazorPagesCRUD
-        public async Task<IActionResult> OnPostAsync()
-        {
-            if (!ModelState.IsValid)
-            {
+        public async Task<IActionResult> OnPostAsync() {
+            if (!ModelState.IsValid) {
                 return Page();
             }
 

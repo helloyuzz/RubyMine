@@ -1,0 +1,84 @@
+﻿@page
+@model RubyMine.Pages.Versions.temp.EditModel
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Edit</title>
+</head>
+<body>
+
+<h4>Version</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Version.Id" />
+            <div class="form-group">
+                <label asp-for="Version.ProjectId" class="control-label"></label>
+                <select asp-for="Version.ProjectId" class="form-control" asp-items="ViewBag.ProjectId"></select>
+                <span asp-validation-for="Version.ProjectId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Version.Name" class="control-label"></label>
+                <input asp-for="Version.Name" class="form-control" />
+                <span asp-validation-for="Version.Name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Version.Description" class="control-label"></label>
+                <input asp-for="Version.Description" class="form-control" />
+                <span asp-validation-for="Version.Description" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Version.EffectiveDate" class="control-label"></label>
+                <input asp-for="Version.EffectiveDate" class="form-control" />
+                <span asp-validation-for="Version.EffectiveDate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Version.CreatedOn" class="control-label"></label>
+                <input asp-for="Version.CreatedOn" class="form-control" />
+                <span asp-validation-for="Version.CreatedOn" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Version.UpdatedOn" class="control-label"></label>
+                <input asp-for="Version.UpdatedOn" class="form-control" />
+                <span asp-validation-for="Version.UpdatedOn" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Version.WikiPageTitle" class="control-label"></label>
+                <input asp-for="Version.WikiPageTitle" class="form-control" />
+                <span asp-validation-for="Version.WikiPageTitle" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Version.Status" class="control-label"></label>
+                <input asp-for="Version.Status" class="form-control" />
+                <span asp-validation-for="Version.Status" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Version.Sharing" class="control-label"></label>
+                <input asp-for="Version.Sharing" class="form-control" />
+                <span asp-validation-for="Version.Sharing" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-page="./Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
+</body>
+</html>

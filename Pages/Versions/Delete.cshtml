@@ -1,0 +1,94 @@
+﻿@page
+@model RubyMine.Pages.Versions.DeleteModel
+
+@{
+    //Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Delete</title>
+</head>
+<body>
+    <div class="container-fluid ps-2 pt-0 pr-3 m-1">
+        <div class="row border border-ccc fs-7">
+            <div class="col">
+                <div class="row bg-title border-bottom border-ccc ps-0">
+                    <span class="ps-1 pt-1 pb-1 w-auto">是否删除 @Html.DisplayFor(model => model.Version.Project.Name) - @Html.DisplayFor(model => model.Version.Name) ?</span>
+                </div>
+                <div>
+                    <span class="ps-1"></span>
+                    <div class="fs-7 ps-2">
+                        <div class="row pb-1">
+                            <div class="col-1">
+                                状态：
+                            </div>
+                            <div class="col">
+                                @RMUtils.ParseVersionStatus(Model.Version.Status)
+                            </div>
+                        </div>
+                        <hr class="fs-7 mt-1 mb-2" />
+                        <div class="row mb-2">
+                            <div class="col-1">
+                                公司产品线：
+                            </div>
+                            <div class="col">
+                                @Model.Version.Project.Name
+                            </div>
+                        </div>
+                        <div class="row mb-2">
+                            <div class="col-1">
+                                计划发布：
+                            </div>
+                            <div class="col">
+                                @RMUtils.ParseDate(Model.Version.EffectiveDate)
+                            </div>
+                        </div>
+                        <div class="row mb-2">
+                            <div class="col-1">
+                                创建于：
+                            </div>
+                            <div class="col">
+                                @RMUtils.ParseDate(Model.Version.CreatedOn)
+                            </div>
+                        </div>
+                        <div class="row mb-2">
+                            <div class="col-1">
+                                最近修改：
+                            </div>
+                            <div class="col">
+                                @RMUtils.ParseDate(Model.Version.UpdatedOn)
+                            </div>
+                        </div>
+                        <div class="row mb-2">
+                            <div class="col-1">
+                                跨版本共享：
+                            </div>
+                            <div class="col">
+                                @RMUtils.ParseVersionSharing(Model.Version.Sharing)
+                            </div>
+                        </div>
+                        <div class="row mb-2">
+                            <div class="col-1">
+                                备注：
+                            </div>
+                            <div class="col">
+                                @Html.DisplayFor(model => model.Version.Description)
+                            </div>
+                        </div>
+
+                    </div>
+                    <form method="post" class="mt-3 mb-3">
+                        <input type="hidden" asp-for="Version.Id" />
+                        <input type="submit" value="此功能禁用" class="btn btn-danger fs-7" disabled /> &nbsp;&nbsp;|&nbsp;&nbsp;
+                        <a class="text-269 fs-7" asp-page="./Index">返回列表</a>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -7,21 +7,24 @@
     a.dropdown-toggle::after {
         display:none !important;
     }
+    .dropdown-menu{
+        min-width:80px !important;
+    }
 </style>
 <div class="container-fluid fs-7">
     <div class="row">
         <div class="col-2 border-1 border-ccc mr-2">
             <div class="container p-0">
                 <div class="row bg-title border-bottom border-ccc">
-                    <div class="col ps-1 pt-1 pb-1">
-                        版本<span class="fs-7 text-269">(@Model.Version.Count)</span>&nbsp;<a href="#Temp" class="float-end fs-7 text-269" data-bs-toggle="modal" data-bs-target="#staticBackdrop"><i class="bi bi-plus-lg fs-7"></i>&nbsp;新建</></a>
+                    <div class="col ps-2 pt-1 pb-1">
+                        <span class="fs-7 fw-bold">版本</span>&nbsp;<a asp-page="New" class="float-end fs-7 text-269"><i class="bi bi-plus-lg fs-7"></i>&nbsp;新增</></a>
                     </div>
                 </div><form id="frmVersion" method="get">
                     <div class="row">
-                        <div class="col p-3">
+                        <div class="col p-2">
                             <table class="fs-7">
                                 <tr>
-                                    <td>产品线</td>
+                                    <td>公司项目</td>
                                     <td>
                                         <select class="form-select p-1 pr-5 fs-7 mb-1 w-auto" aria-label="" asp-for="project_id" onchange="$('#frmVersion').submit();">
                                             <option value="">全部</option>
@@ -43,7 +46,11 @@
                                 </tr>
                                 <tr>
                                     <td width="60px">版本号</td>
-                                    <td><input type="text" class="form-control p-1 fs-7" aria-label="" placeholder="Ctrl+F"></td>
+                                    <td><input type="text" class="form-control p-1 fs-7 mb-1" aria-label="" placeholder="Ctrl+F"></td>
+                                </tr>
+                                <tr>
+                                    <td width="60px">数量</td>
+                                    <td><label class="form-control p-1 fs-7 border-0">@Model.Version.Count</label></td>
                                 </tr>
                             </table>
                         </div>
@@ -58,60 +65,91 @@
                         <thead>
                             <tr class="bg-title">
                                 <th class="border-ccc text-666">#</th>
-                                <th class="border-ccc text-666">公司产品线</th>
                                 <th class="border-ccc text-666">版本号</th>
+                                <th class="border-ccc text-666">发布日期</th>
                                 <th class="border-ccc text-666">状态</th>
-                                <th class="border-ccc text-666">计划完成</th>
                                 <th class="border-ccc text-666">版本描述</th>
                                 <th class="border-ccc text-666">创建于</th>
+                                <th class="border-ccc text-666">公司项目</th>
                                 <th class="border-ccc text-666">是否共享</th>
-                                <th class="border-ccc text-666"></th>
+                                <th class="border-ccc text-666 text-center"><i class="bi bi-pencil-fill"></i></th>
                             </tr>
                         </thead>
                         <tbody>
-                            @{                                 
-                                foreach (var item in Model.Version.OrderByDescending(t => t.EffectiveDate)) {
+                            @{
+                                foreach (var item in Model.Version) {
                                     var htmlClass = "";
                                     var htmlIcon = "";
+                                    var showEffectiveDate = "未知";
+                                    var issue_Status = @RMUtils.ParseVersionStatus(item.Status);
                                     switch (item.Status) {
                                         case "open":
                                             htmlClass = "text-269";
-                                            htmlIcon = "bi-cursor";
+                                            var day = DateTime.Now -item.EffectiveDate;
+                                            if (item.EffectiveDate != null && day.Value.Days > 0) {
+                                                htmlClass = "text-danger";
+                                                htmlIcon = "bi bi-exclamation-triangle-fill";
+                                                issue_Status = "延期" + day.Value.Days + "天";
+                                            } else {
+                                                htmlIcon = "bi bi-cursor";
+                                            }
                                             break;
                                         case "locked":
                                             htmlClass = "text-666";
                                             htmlIcon = "bi-lock";
                                             break;
                                     }
-                                <tr class="@htmlClass">
-                                    <td>@item.Id</td>
-                                    <td>@item.Project.Name</td>
-                                    <td>
-                                        <a href="#Temp" class="@htmlClass"><i class="bi @htmlIcon ms-auto"></i>@item.Name</a>
-                                    </td>
-                                    <td>
-                                        @if (item.Status.Equals("open")) {
+
+                                    if (item.EffectiveDate != null) {
+                                        showEffectiveDate = RMUtils.ParseDate(item.EffectiveDate);
+                                    }
+                                    <tr class="@htmlClass">
+                                        <td><a asp-page="New" asp-route-id="@item.Id" asp-route-action="view" class="text-269 @htmlClass">@item.Id</a></td>
+                                        <td>
+                                            <i class="@htmlIcon ms-auto"></i>&nbsp;<a asp-page="New" asp-route-id="@item.Id" asp-route-action="view" class="text-269 @htmlClass">@item.Name</a>
+                                        </td>
+                                        <td><a asp-page="New" asp-route-id="@item.Id" asp-route-action="view" class="text-269 @htmlClass">@showEffectiveDate</a></td>
+                                        <td>
+                                            @if (item.Status.Equals("open")) {
+                                                <div class="dropdown">
+                                                    <a href="#Temp" class="dropdown-toggle @htmlClass" id="subMenu-@item.Id" data-bs-toggle="dropdown" aria-expanded="false">
+                                                        @issue_Status
+                                                    </a>
+                                                    <ul class="dropdown-menu shadow p-0" aria-labelledby="subMenu-@item.Id" style="width:96px;">
+                                                        <li><button class="dropdown-item p-2 fs-7 fw-bold" type="button">#&nbsp;@item.Id</button></li>
+                                                        <li><hr class="dropdown-divider m-0"></li>
+                                                        <li><button class="dropdown-item p-2 fs-7" type="button">已发布</button></li>
+                                                    </ul>
+                                                </div>
+                                            } else {
+                                                <i class="bi bi-lock ms-auto"></i>@RMUtils.ParseVersionStatus(item.Status)
+                                            }
+                                        </td>
+                                        <td>@item.Description</td>
+                                        <td>@RMUtils.ParseDate(item.CreatedOn, true)</td>
+                                        <td>
                                             <div class="dropdown">
-                                                <a href="#Temp" class="dropdown-toggle @htmlClass" id="subMenu-@item.Id" data-bs-toggle="dropdown" aria-expanded="false">
-                                                    @RMUtils.ParseVersionStatus(item.Status)
-                                                </a>
-                                                <ul class="dropdown-menu shadow p-0" aria-labelledby="subMenu-@item.Id">
-                                                    <li><button class="dropdown-item p-2 fs-7 disabled" type="button">开发中</button></li>
-                                                    <li><button class="dropdown-item p-2 fs-7" type="button">已发布</button></li>
+                                                <a asp-page="/Project/Index" asp-route-id="@item.ProjectId" class="dropdown-toggle text-269" id="btn-@item.Id" data-bs-toggle="dropdown" aria-expanded="false">@item.Project.Name</a>
+                                                <ul class="dropdown-menu shadow" aria-labelledby="btn-@item.Id" style="width:123px;">
+                                                    <li><a asp-page="/Products/Index" asp-route-id="@item.Id" class="dropdown-item ps-2 text-269 fs-7"><i class="bi bi-reply-fill"></i>&nbsp;&nbsp;转到该项目</a></li>
                                                 </ul>
                                             </div>
-                                        } else {
-                                            @RMUtils.ParseVersionStatus(item.Status)
-                                        }
-                                    </td>
-                                    <td>@RMUtils.ParseDate(item.EffectiveDate)</td>
-                                    <td>@item.Description</td>
-                                    <td>@RMUtils.ParseDate(item.CreatedOn, true)</td>
-                                    <td>@RMUtils.ParseVersionSharing(item.Sharing)</td>
-                                    <td class="text-center"><a href="#Temp" class="text-269">编辑</a>&nbsp;<a href="#Temp" class="text-269">删除</a></td>
-                                </tr>
-                                    }
+                                        </td>
+                                        <td>@RMUtils.ParseVersionSharing(item.Sharing)</td>
+                                        <td class="text-center">
+                                            <div class="dropdown">
+                                                <a href="#Temp" class="dropdown-toggle text-269" id="btn-@item.Id" data-bs-toggle="dropdown" aria-expanded="false">
+                                                    编辑
+                                                </a>
+                                                <ul class="dropdown-menu shadow" aria-labelledby="btn-@item.Id" style="width:96px;">
+                                                    <li><a asp-page="New" asp-route-id="@item.Id" class="dropdown-item pt-2 pb-2 text-269 fs-7"><i class="bi bi-pencil-fill"></i>&nbsp;编辑</a></li>
+                                                    <li><a asp-page="Delete" asp-route-id="@item.Id" class="dropdown-item pt-2 pb-2 text-269 fs-7"><i class="bi bi-x-lg"></i>&nbsp;删除</a></li>
+                                                </ul>
+                                            </div>
+                                        </td>
+                                    </tr>
                                 }
+                            }
                         </tbody>
                     </table>
                     <span class="text-269 ps-1 pb-3">共：@Model.Version.Count 条数据</span>

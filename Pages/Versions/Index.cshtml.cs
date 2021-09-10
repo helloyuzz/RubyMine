@@ -31,7 +31,7 @@ namespace RubyMine.Pages.Version {
                 pr.And(x => x.Status.Equals("closed") == false);
             }
             Project = await _context.Projects.Where(t => t.IsPublic.Value).Select(t => new Project { Id = t.Id, Name = t.Name }).ToListAsync();
-            Version = await _context.Versions.Where(pr).OrderBy("status desc,name desc").Include(t => t.Project).ToListAsync();
+            Version = await _context.Versions.Where(pr).OrderBy("status desc,EffectiveDate desc").Include(t => t.Project).ToListAsync();
         }
     }
 }

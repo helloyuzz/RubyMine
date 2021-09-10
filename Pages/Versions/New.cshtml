@@ -1,0 +1,109 @@
+﻿@page
+@model RubyMine.Pages.Versions.NewModel
+@{
+
+    var viewParams = Request.Query["action"];
+    var viewAction = "view".Equals(viewParams);
+}
+
+<form method="post" autocomplete="off">
+    <input type="hidden" asp-for="Version.Id" />
+    <input asp-for="Version.CreatedOn" class="form-control d-none" />
+    <input asp-for="Version.UpdatedOn" class="form-control d-none" />
+    <input asp-for="Version.WikiPageTitle" class="form-control d-none" />
+    <div class="container-fluid ps-2 pt-0 pr-3 m-1">
+        <div class="row border border-ccc fs-7">
+            <div class="col">
+                <div class="row bg-title border-bottom border-ccc ps-0">
+                    <span class="ps-1 pt-1 pb-1 w-auto fw-bold">@Model.ShowFormTitle</span>
+                </div>
+                <div class="row fs-7">
+                    <div class="modal-body ps-4 pr-4">
+                        <table class="w-100">
+                            <tr>
+                                <td class="pb-1">版本号&nbsp;<span class="text-danger fw-bold">*</span></td>
+                                <td class="pb-1">
+                                    @if (viewAction) {
+                                        <label class="form-control form-control-sm fs-7 w-auto border-0">@Model.Version.Name</label>
+                                    } else {
+                                        <input class="form-control form-control-sm fs-7 w-auto" type="text" placeholder="" asp-for="Version.Name" required>
+                                    }
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="pb-1" width="80px">公司项目&nbsp;<span class="text-danger fw-bold">*</span></td>
+                                <td class="pb-1">
+                                    @if (viewAction) {
+                                        <label class="form-control form-control-sm fs-7 w-auto border-0">@Model.Version.Project.Name</label>
+                                    } else {
+                                        <select asp-for="Version.ProjectId" class="form-select p-1 pr-5 fs-7 mb-1 w-auto @Model.ReadonlyClass bg-white" aria-label="">
+                                            @foreach (RubyMine.Models.Project item in Model.Project) {
+                                                <option value="@item.Id">@item.Name</option>
+                                            }
+                                        </select>
+                                    }
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="pb-1">状态&nbsp;<span class="text-danger fw-bold">*</span></td>
+                                <td class="pb-1">
+                                    @if (viewAction) {
+                                        <label class="form-control form-control-sm fs-7 w-auto border-0">@RMUtils.ParseVersionStatus(Model.Version.Status)</label>
+                                    } else {
+                                        <select asp-for="Version.Status" class="form-select p-1 pr-5 fs-7 mb-1 w-auto" aria-label="">
+                                            <option value="open">开发中</option>
+                                            <option value="locked">已发布</option>
+                                        </select>
+                                    }
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="pb-1">发布日期&nbsp;<span class="text-danger fw-bold">*</span></td>
+                                <td class="pb-1">
+                                    @if (viewAction) {
+                                        <label class="form-control form-control-sm fs-7 w-auto border-0">@RMUtils.ParseDate(Model.Version.EffectiveDate)</label>
+                                    } else {
+                                        <input asp-for="Version.EffectiveDate" class="form-control form-control-sm fs-7 w-auto" type="date" placeholder="" required>
+                                    }
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="pb-1">版本描述</td>
+                                <td class="pb-1">
+                                    @if (viewAction) {
+                                        <label class="form-control form-control-sm fs-7 w-auto border-0">@Model.Version.Description</label>
+                                    } else {
+                                        <input asp-for="Version.Description" class="form-control form-control-sm fs-7" type="text" placeholder="" multiple aria-label=".form-control-sm example">
+                                    }
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="pb-1">跨项目共享</td>
+                                <td class="pb-1">
+                                    @if (viewAction) {
+                                        <label class="form-control form-control-sm fs-7 w-auto border-0">否</label>
+                                    } else {
+                                        <select asp-for="Version.Sharing" class="form-select p-1 pr-5 fs-7 mb-1 w-auto" aria-label="">
+                                            <option value="none">否</option>
+                                        </select>
+                                    }
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="modal-footer p-1 justify-content-start">
+                        @if (viewAction == false) {
+                            <button type="submit" class="btn btn-primary fs-7">保存</button>
+                        }
+                        <a asp-page="/Versions/Index" class="btn btn-secondary fs-7 text-decoration-none text-white">Back to list</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        $(document).ready(function () {
+            $('#Version_Name')[0].focus();
+        });
+    </script>
+</form>

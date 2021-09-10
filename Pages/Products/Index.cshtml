@@ -1,173 +1,51 @@
 ﻿@page
 @model RubyMine.Pages.Products.IndexModel
-@using RubyMine.Models.CustomModels;
+@using RubyMine.Models;
 @{
 }
 
-<!DOCTYPE html>
-
-<html>
-<head>
-    <meta name="viewport" content="width=device-width" />
-    <title>Index</title>
-</head>
 <body>
-    <div class="container-fluid">
-        <div class="row">
-            <div class="col-6">
-                <div class="row border-1 border-ccc bg-title">
-                    <div class="col ps-2">
-                        <nav aria-label="breadcrumb">
-                            <ol class="breadcrumb m-0">
-                                <li class="breadcrumb-item"><a asp-page="/Projects/Index" class="text-decoration-none text-dark">蓝鹰产品</a></li>
-                            </ol>
-                        </nav>
+    <div class="container-fluid fs-7">
+        <div class="row ps-0">
+            <div class="col border-1 border-ccc">
+                <div class="row">
+                    <div class="col bg-title p-1 ps-2 fs-7">
+                        项目列表
                     </div>
                 </div>
-                <div class="row border-1 border-ccc border-top-0 p-2">
-                    <table class="table table-hover lh-1 fs-7 border-1 border-ccc">
-                        <thead>
-                            <tr>
-                                <th>编号</th>
-                                <th>系统名称</th>
-                                <th>状态</th>
-                                <th>唯一标识</th>
-                                <th>创建于</th>
-                                <th>操作</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach (var item in Model.Products) {
-                                <tr>
-                                    <td>
-                                        @Html.DisplayFor(modelItem => item.Id)
-                                    </td>
-                                    <td>
-                                        <a asp-page="./Details" asp-route-id="@item.Id" target="_blank">
-                                            @Html.DisplayFor(modelItem => item.Name)
-                                        </a>
-                                    <td>
-                                        @Html.Raw(RMUtils.ParseUserStatus(item.Status))
-                                    </td>
-                                    <td>
-                                        @Html.DisplayFor(modelItem => item.Identifier)
-                                    </td>
-                                    <td>
-                                        @Html.Raw(RMUtils.ParseDate(item.CreatedOn, true))
-                                    </td>
-                                    <td>
-                                        @*<a asp-page="./Edit" asp-route-id="@item.Id">Edit</a> |*@
-                                        <a asp-page="./Details" asp-route-id="@item.Id" target="_blank">查看</a>
-                                        @*|<a asp-page="./Delete" asp-route-id="@item.Id">Delete</a>*@
-                                    </td>
-                                </tr>
-                            }
-                        </tbody>
-                    </table>
-                    <div class="row fs-7 ps-3">
-                        合计：@Model.Products.Count
-                    </div>
-                </div>
-            </div>
-        </div><br />
-        <div class="row">
-            <div class="col">
-                <div class="row border-1 border-ccc bg-title">
-                    <div class="col ps-2">
-                        <nav aria-label="breadcrumb">
-                            <ol class="breadcrumb m-0">
-                                <li class="breadcrumb-item"><a asp-page="/Projects/Index" class="text-decoration-none text-dark">医院列表</a></li>
-                            </ol>
-                        </nav>
-                    </div>
-                    @*<div class="col-1 mt-1 fs-7 text-right"><a href="#aaa" class="text-decoration-none text-secondary" title="权限未开放，请联系管理员"><img src="~/images/add.png">快速登记</a></div>*@
-                </div>
-                <div class="row border-1 border-ccc border-top-0 p-2">
-                    <table class="table table-hover lh-1 fs-7 border-1 border-ccc">
-                        <thead>
-                            <tr>
-                                <th>编号</th>
-                                <th width="20%">项目名称</th>
-                                <th>需求</th>
-                                <th>线上问题</th>
-                                <th>HIS对接</th>
-                                <th>人员科室</th>
-                                <th>设备对接</th>
-                                <th>单点登录</th>
-                                @foreach (CustomField1 customField in Model.RMProjects[0].CustomFields) {
-                                    @if (customField.Description.Contains("hide")) continue;
-                                    <th>
-                                        @Html.DisplayName(customField.Name)
-                                    </th>
-                                }
-                                <th>实施人员</th>
-                                <th>操作</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach (var item in Model.RMProjects) {
-                                <tr>
-                                    <td>
-                                        @Html.DisplayFor(modelItem => item.Id)
-                                    </td>
-                                    <td id="item_@item.Id">
-                                        <div class="dropdown" onmousemove="changeStyle('dropdownMenuLink_@item.Id','inline-flex');" onmouseout="changeStyle('dropdownMenuLink_@item.Id','none');">
-                                            <a asp-page="./Details" asp-route-id="@item.Id" target="_blank">
-                                                @Html.DisplayFor(modelItem => item.Firstname)
-                                            </a>&nbsp;
-                                            <a class="btn btn-secondary m-0 p-0 fs-7 bg-transparent border-0 text-primary" href="#" role="button" id="dropdownMenuLink_@item.Id" data-bs-toggle="dropdown" aria-expanded="false" style="display:none;">
-                                                <img src="~/images/add.png" />
-                                            </a>
-                                            <ul class="dropdown-menu shadow" style="width:198px;" aria-labelledby="dropdownMenuLink">
-                                                <li class="fs-7 pt-1 pb-1 ps-2 fw-bold">@Html.DisplayFor(modelItem => item.Lastname)@Html.DisplayFor(modelItem => item.Firstname)&nbsp;&gt;&nbsp;登记</li>
-                                                <li><hr class="dropdown-divider"></li>
-                                                <li><a class="dropdown-item fs-7" href="#">需求</a></li>
-                                                <li><a class="dropdown-item fs-7" href="#">线上问题</a></li>
-                                                <li><a class="dropdown-item fs-7" href="#">临时修改</a></li>
-                                                <li><hr class="dropdown-divider"></li>
-                                                <li><a class="dropdown-item fs-7" href="#">版本升级</a></li>
-                                                <li><a class="dropdown-item fs-7" href="#">远程连接地址</a></li>
-                                                <li><hr class="dropdown-divider"></li>
-                                                <li><a class="dropdown-item fs-7" href="#">HIS对接</a></li>
-                                                <li><a class="dropdown-item fs-7" href="#">设备对接</a></li>
-                                                <li><hr class="dropdown-divider"></li>
-                                                <li><a class="dropdown-item fs-7" href="#">人员科室对接</a></li>
-                                                <li><a class="dropdown-item fs-7" href="#">单点登录对接</a></li>
-                                            </ul>
-                                        </div>
-                                    </td>
-                                    <td><a class="text-decoration-none" asp-page="./Details" asp-route-id="@item.Id" asp-route-tracker="requirement" target="_blank">@Html.DisplayFor(modelItem => item.IssueNumber)</a></td>
-                                    <td><a class="text-decoration-none" asp-page="./Details" asp-route-id="@item.Id" asp-route-tracker="bug" target="_blank">@Html.Raw(item.BugNumber)</a></td>
-                                    <td><a class="text-decoration-none" asp-page="./Details" asp-route-id="@item.Id" asp-route-tracker="his" target="_blank">@Html.Raw(item.HisNumber)</a></td>
-                                    <td><a class="text-decoration-none" asp-page="./Details" asp-route-id="@item.Id" asp-route-tracker="dept" target="_blank">@Html.Raw(item.DeptNumber)</a></td>
-                                    <td><a class="text-decoration-none" asp-page="./Details" asp-route-id="@item.Id" asp-route-tracker="device" target="_blank">@Html.Raw(item.DeviceNumber)</a></td>
-                                    <td><a class="text-decoration-none" asp-page="./Details" asp-route-id="@item.Id" asp-route-tracker="portal" target="_blank">@Html.Raw(item.PortalNumber)</a></td>
-                                    @foreach (CustomField1 customField1 in item.CustomFields) {
-                                        @if (customField1.Description.Contains("hide")) continue;
+                <div class="row border-top-0 p-1 ps-1">
+                    <div class="accordion m-0 p-0" id="accordion-main">
+                        <table class="table border border-ccc w-100">
+                            @{
+                                foreach (Project item in Model.Product) {
+                                    var user_id = Model.Member.Where(t => t.ProjectId == item.Id).Select(t => t.UserId).Distinct();
+                                    <tr id="tr-@item.Id" class="bg-light" onclick="$('#content-@item.Id').toggle();">
                                         <td>
-                                            @if (customField1.CustomValue != null) {
-                                                @Html.Raw(RMUtils.ParseCustomField(customField1))
-                                            }
+                                        <i class="bi bi-chevron-right"></i>&nbsp;@item.Name&nbsp;<span class="badge fw-normal bg-dark">@user_id.Count()</span>
+                                            <span class="float-end">@item.Description</span>
                                         </td>
-                                    }
-                                    <td><a asp-page="/Employees/Details" asp-route-id="@item.Employee?.Id" target="_blank">@Html.Raw(RMUtils.ParseUserName(item.Employee))</a></td>
-                                    <td align="center">
-                                        @*<a asp-page="./Edit" asp-route-id="@item.Id">Edit</a> |*@
-                                        @*<a asp-page="./Details" asp-route-id="@item.Id" target="_blank">登记</a>*@
-
-
-                                        @*|<a asp-page="./Delete" asp-route-id="@item.Id">Delete</a>*@
-                                    </td>
-                                </tr>
+                                    </tr>
+                                    <tr id="content-@item.Id">
+                                        <td class="ps-1">
+                                            <table class="table table-bordered table-hover">
+                                                @{
+                                                    foreach (User user in Model.Project.Where(t => user_id.Contains(t.Id))) {
+                                                        <tr>
+                                                            <td>@user.Id</td>
+                                                            <td>@user.Firstname</td>
+                                                            <td>@user.pinyin</td>
+                                                        </tr>
+                                                    }
+                                                }
+                                            </table>
+                                        </td>
+                                    </tr>
+                                }
                             }
-                        </tbody>
-                    </table>
-                    <div class="row fs-7 ps-3">
-                        合计：@Model.RMProjects.Count
+                        </table>
                     </div>
                 </div>
             </div>
+                <div class="col-3"></div>
         </div>
-    </div>
 </body>
-</html>

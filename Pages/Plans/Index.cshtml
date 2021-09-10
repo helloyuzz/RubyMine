@@ -35,7 +35,7 @@
         <div class="col-2 border-1 border-ccc">
             <div class="row">
                 <div class="col border-bottom-1 border-ccc bg-title p-0 ps-1 pt-1 pb-1 fw-bold fs-7">
-                    产品线
+                    开发
                 </div>
             </div>
             <div class="row fs-7 border-top border-ccc">
@@ -114,7 +114,7 @@
                                             <h2 class="accordion-header" id="headingOne-locked-@project_id">
                                                 <button class="accordion-button collapsed m-0 p-2 fs-7" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne-locked-@project_id" aria-expanded="true" aria-controls="collapseOne-locked-@project_id">
                                                     <i class="bi bi-lock"></i>&nbsp;
-                                                    已关闭版本
+                                                    已关闭
                                                     <span class="badge bg-title text-primary ms-auto rounded-pill m-0 p-1">@Model.Version.Count(t => t.Status.Equals("locked") && t.ProjectId == project_id)</span>
                                                 </button>
                                             </h2>
@@ -140,62 +140,6 @@
         </div>
         <div class="col p-0 ps-0 mr-0 pr-0">
             <iframe id="issue_content" name="issue_content" src="~/Requirements/Index?showTitle=show" class="w-100" style="min-height:900px;" scrolling="no" onload="this.height=issue_content.document.body.scrollHeight"></iframe>
-        </div>
-    </div>
-</div>
-
-<!-- Modal -->
-<div class="modal fade fs-7" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" style="width:600px !important;margin-top:-6%;">
-        <div class="modal-content">
-            <div class="modal-header">
-                <span class="modal-title fw-bold text-269" id="staticBackdropLabel">新建版本</span>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <table>
-                    <tr>
-                        <td>项目&nbsp;<span class="text-danger fw-bold">*</span></td>
-                        <td>
-                            <input class="form-control form-control-sm" type="text" placeholder=".form-control-sm" aria-label=".form-control-sm example">
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>版本号&nbsp;<span class="text-danger fw-bold">*</span></td>
-                        <td>
-                            <input class="form-control form-control-sm" type="text" placeholder=".form-control-sm" aria-label=".form-control-sm example">
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>版本号&nbsp;<span class="text-danger fw-bold">*</span></td>
-                        <td>
-                            <input class="form-control form-control-sm" type="text" placeholder=".form-control-sm" aria-label=".form-control-sm example">
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>版本号&nbsp;<span class="text-danger fw-bold">*</span></td>
-                        <td>
-                            <input class="form-control form-control-sm" type="text" placeholder=".form-control-sm" aria-label=".form-control-sm example">
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>版本号&nbsp;<span class="text-danger fw-bold">*</span></td>
-                        <td>
-                            <input class="form-control form-control-sm" type="text" placeholder=".form-control-sm" aria-label=".form-control-sm example">
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>版本号&nbsp;<span class="text-danger fw-bold">*</span></td>
-                        <td>
-                            <input class="form-control form-control-sm" type="text" placeholder=".form-control-sm" aria-label=".form-control-sm example">
-                        </td>
-                    </tr>
-                </table>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-primary fs-7">保存</button>
-                <button type="button" class="btn btn-secondary fs-7" data-bs-dismiss="modal">取消</button>
-            </div>
         </div>
     </div>
 </div>
