@@ -43,7 +43,7 @@
                     <div class="d-flex align-items-start">
                         <div class="nav flex-column nav-pills me-3" id="v-pills-tab" role="tablist" aria-orientation="vertical">
                             @foreach (var project_id in Model.Version.Select(x => x.ProjectId).Distinct()) {
-                                <a class="nav-link @activeFlag p-1 mt-1 shadow text-dark text-decoration-none vertical-text" id="v-pills-home-tab-@project_id" data-bs-toggle="pill" data-bs-target="#v-pills-home-@project_id" type="button" role="tab" aria-controls="v-pills-home-@project_id" aria-selected="true">@Model.Project.FirstOrDefault(x => x.Id == project_id).Name</a>
+                                <a class="nav-link @activeFlag p-1 pt-3 pb-3 m-1 mt-1 text-dark text-decoration-none vertical-text" id="v-pills-home-tab-@project_id" data-bs-toggle="pill" data-bs-target="#v-pills-home-@project_id" type="button" role="tab" aria-controls="v-pills-home-@project_id" aria-selected="true">@Model.Project.FirstOrDefault(x => x.Id == project_id).Name</a>
                                 activeFlag = "";
                             }
                         </div>
@@ -57,7 +57,7 @@
                                             activeFlag = "";
                                         <div class="accordion-item mb-1">
                                             <h2 class="accordion-header" id="flush-headingOne-@item.Id">
-                                                <button class="accordion-button btn-@item.Status collapsed m-0 p-2 fs-7" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseOne-@item.Id" aria-expanded="false" aria-controls="flush-collapseOne-@item.Id">
+                                                <button class="accordion-button btn-@item.Status collapsed m-0 p-1 fs-7" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseOne-@item.Id" aria-expanded="false" aria-controls="flush-collapseOne-@item.Id">
                                                     <i class="bi bi-shuffle"></i>&nbsp;<span class="mr-2 fw-bold text-danger">@item.Name</span>
                                                     <span class="badge bg-title text-secondary ms-auto rounded-pill m-0 p-1">@Model.Version.Count(t => t.Sharing.Equals("system"))</span>
                                                 </button>
@@ -75,7 +75,7 @@
                                         }
                                         <div class="accordion-item mb-1">
                                             <h2 class="accordion-header" id="headingOne-open-@project_id">
-                                                <button class="accordion-button m-0 p-2 fs-7" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne-open-@project_id" aria-expanded="true" aria-controls="collapseOne-open-@project_id">
+                                                <button class="accordion-button m-0 p-1 fs-7" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne-open-@project_id" aria-expanded="true" aria-controls="collapseOne-open-@project_id">
                                                     <i class="bi bi-telegram"></i>&nbsp;
                                                     开发中
                                                     <span class="badge bg-title text-secondary ms-auto rounded-pill m-0 p-1">@Model.Version.Count(t => t.Status.Equals("open") && t.ProjectId == project_id && t.Sharing.Equals("system") == false)</span>
@@ -112,7 +112,7 @@
                                         </div>
                                         <div class="accordion-item mb-1">
                                             <h2 class="accordion-header" id="headingOne-locked-@project_id">
-                                                <button class="accordion-button collapsed m-0 p-2 fs-7" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne-locked-@project_id" aria-expanded="true" aria-controls="collapseOne-locked-@project_id">
+                                                <button class="accordion-button collapsed m-0 p-1 fs-7" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne-locked-@project_id" aria-expanded="true" aria-controls="collapseOne-locked-@project_id">
                                                     <i class="bi bi-lock"></i>&nbsp;
                                                     已关闭
                                                     <span class="badge bg-title text-primary ms-auto rounded-pill m-0 p-1">@Model.Version.Count(t => t.Status.Equals("locked") && t.ProjectId == project_id)</span>

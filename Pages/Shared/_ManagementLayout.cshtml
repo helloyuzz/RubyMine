@@ -36,14 +36,35 @@
             background-color: #2196F3;
             color: #fff;
         }
-    </style>   
+
+        /*body {
+            background: linear-gradient(-45deg, #93dbe9, #689cc5, #5e6fa3, #3b4368);
+            background-size: 400% 400%;
+            animation: gradient 15s  ease-in-out infinite;
+            height: 100vh;
+        }
+
+        @@keyframes gradient {
+            0% {
+                background-position: 0% 50%;
+            }
+
+            50% {
+                background-position: 100% 50%;
+            }
+
+            100% {
+                background-position: 0% 50%;
+            }
+        }*/
+    </style>
 </head>
 <body class="overflow-hidden">
     @*<div id="mydiv" class="shadow rounded-circle">
-        <div id="mydivheader" class="shadow rounded-circle">
-            <p>Move</p>
-        </div>
-    </div>*@
+            <div id="mydivheader" class="shadow rounded-circle">
+                <p>Move</p>
+            </div>
+        </div>*@
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-dark border-bottom box-shadow mb-3 lh-sm p-1 shadow">
             <div class="container-fluid bg-success">
@@ -60,22 +81,22 @@
                                     <a class="nav-link text-decoration-none text-white fs-7" asp-area="" asp-page="/Index" title="">个人工作台</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link text-decoration-none text-white fs-7" asp-area="" asp-page="/Products/Index">公司产品</a>
+                                    <a class="nav-link text-decoration-none text-white fs-7" asp-area="" asp-page="/Products/Index">项目列表</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-decoration-none text-white fs-7" asp-area="" asp-page="/Versions/Index">版本管理</a>
                                 </li>
                                 <li class="nav-item">
                                     <a class="nav-link text-decoration-none text-white fs-7" asp-area="" asp-page="/Requirements/Index">需求跟踪</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link text-decoration-none text-white fs-7" asp-area="" asp-page="/Plans/Index">研发管理</a>
+                                    <a class="nav-link text-decoration-none text-white fs-7" asp-area="" asp-page="/Plans/Index">开发管理</a>
                                 </li>
                                 <li class="nav-item">
                                     <a class="nav-link text-decoration-none text-white fs-7" asp-area="" asp-page="/Clocks/Index">工时统计</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link text-decoration-none text-white fs-7 asp-area="" asp-page="/Creation/Index">新产品研发</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link text-decoration-none text-white fs-7" asp-area="" asp-page="/Versions/Index">版本管理</a>
+                                    <a class="nav-link text-decoration-none text-white fs-7" asp-area="" asp-page="/Creation/Index">新产品研发</a>
                                 </li>
                                 <li class="nav-item">
                                     <a class="nav-link text-decoration-none text-white fs-7" asp-area="" asp-page="/Leaks/Index">缺陷列表</a>
@@ -139,62 +160,64 @@
         </div>
     </div>
 
-        <footer class="border-top footer text-muted lh-middle">
-            <div class="container-fluid fs-7">
-                RubyMine @@ Powered by Jack Sparrow - <a asp-area="" asp-page="/Privacy">Privacy</a>
-            </div>
-        </footer>
+    <footer class="border-top footer text-muted lh-middle">
+        <div class="container-fluid fs-7">
+            RubyMine @@ Powered by Jack Sparrow - <a asp-area="" asp-page="/Privacy">Privacy</a>
+        </div>
+    </footer>
+    <div class="d-flex flex-column justify-content-center w-100 h-100" style="z-index:-999;">
+     
+    </div>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
 
-        <script src="~/lib/jquery/dist/jquery.min.js"></script>
-        <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-        <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
 
-        @await RenderSectionAsync("Scripts", required: false)
+    <script>
+        //Make the DIV element draggagle:
+        dragElement(document.getElementById("mydiv"));
 
-        <script>
-            //Make the DIV element draggagle:
-            dragElement(document.getElementById("mydiv"));
-
-            function dragElement(elmnt) {
-                var pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
-                if (document.getElementById(elmnt.id + "header")) {
-                    /* if present, the header is where you move the DIV from:*/
-                    document.getElementById(elmnt.id + "header").onmousedown = dragMouseDown;
-                } else {
-                    /* otherwise, move the DIV from anywhere inside the DIV:*/
-                    elmnt.onmousedown = dragMouseDown;
-                }
-
-                function dragMouseDown(e) {
-                    e = e || window.event;
-                    e.preventDefault();
-                    // get the mouse cursor position at startup:
-                    pos3 = e.clientX;
-                    pos4 = e.clientY;
-                    document.onmouseup = closeDragElement;
-                    // call a function whenever the cursor moves:
-                    document.onmousemove = elementDrag;
-                }
-
-                function elementDrag(e) {
-                    e = e || window.event;
-                    e.preventDefault();
-                    // calculate the new cursor position:
-                    pos1 = pos3 - e.clientX;
-                    pos2 = pos4 - e.clientY;
-                    pos3 = e.clientX;
-                    pos4 = e.clientY;
-                    // set the element's new position:
-                    elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
-                    elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
-                }
-
-                function closeDragElement() {
-                    /* stop moving when mouse button is released:*/
-                    document.onmouseup = null;
-                    document.onmousemove = null;
-                }
+        function dragElement(elmnt) {
+            var pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+            if (document.getElementById(elmnt.id + "header")) {
+                /* if present, the header is where you move the DIV from:*/
+                document.getElementById(elmnt.id + "header").onmousedown = dragMouseDown;
+            } else {
+                /* otherwise, move the DIV from anywhere inside the DIV:*/
+                elmnt.onmousedown = dragMouseDown;
             }
-        </script>
+
+            function dragMouseDown(e) {
+                e = e || window.event;
+                e.preventDefault();
+                // get the mouse cursor position at startup:
+                pos3 = e.clientX;
+                pos4 = e.clientY;
+                document.onmouseup = closeDragElement;
+                // call a function whenever the cursor moves:
+                document.onmousemove = elementDrag;
+            }
+
+            function elementDrag(e) {
+                e = e || window.event;
+                e.preventDefault();
+                // calculate the new cursor position:
+                pos1 = pos3 - e.clientX;
+                pos2 = pos4 - e.clientY;
+                pos3 = e.clientX;
+                pos4 = e.clientY;
+                // set the element's new position:
+                elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+                elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+            }
+
+            function closeDragElement() {
+                /* stop moving when mouse button is released:*/
+                document.onmouseup = null;
+                document.onmousemove = null;
+            }
+        }
+    </script>
 </body>
 </html>

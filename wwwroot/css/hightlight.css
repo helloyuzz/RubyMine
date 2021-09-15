@@ -1,0 +1,4 @@
+﻿.table tbody tr.highlight td {
+    background-color: #c6dccd3b;
+    color: red !important;
+}

@@ -53,8 +53,12 @@
                                     @Html.DropDownList("issue_IssueStatus", new SelectList(Model.DB_IssueStatus, "Id", "Name"), new { @class = "form-select m-0 w-auto p-1 text-666 fs-7" })
                                 </td>
                             </tr>
+                        </table>
+                    </div>
+                    <div class="col">
+                        <table class="w-100">
                             @{
-                                foreach (CustomField customField in Model.CustomField) {
+                                foreach (CustomField customField in Model.CustomField.Where(t=>string.IsNullOrEmpty(t.Description))) {
                                     <tr id="tr_@customField.Id">
                                         <td width="76px" class="p-0 text-right" valign="top">
                                             <label for="inputPassword" class="col-form-label form-control-sm fw-bold fs-7">@customField.Name@Html.Raw(RMUtils.Html_IsRequired(customField.IsRequired))</label>
@@ -157,38 +161,38 @@
                             }
                         </table>
                     </div>
-                    <div class="col">
-                        <table>
-                            <tr>
-                                <td width="76px" class="p-0 text-right" valign="top">
-                                    <label for="inputPassword" class="col-form-label form-control-sm fw-bold fs-7">描述</label>
-                                </td>
-                                <td>
-                                    <textarea class="form-control fs-7 text-666" id="exampleFormControlTextarea1" rows="3" autocomplete="off"></textarea>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td valign="top">
-                                    <label for="inputPassword" class="col-form-label form-control-sm fs-7">附件<br /><i class="bi bi-arrow-up-right-square fs-6"></i></label>
-                                </td>
-                                <td>
-                                    <table class="table table-sm table-hover w-100 table-bordered fs-7 rounded-3">
-                                        <tbody>
-                                            <tr>
-                                                <td>Otto</td>
-                                            </tr>
-                                            <tr>
-                                                <td>Thornton</td>
-                                            </tr>
-                                            <tr>
-                                                <td colspan="2">Larry the Bird</td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </td>
-                            </tr>
-                        </table>
-                    </div>
+                </div>
+                <div class="row">
+                    <table>
+                        <tr>
+                            <td width="76px" class="p-0 text-right" valign="top">
+                                <label for="inputPassword" class="col-form-label form-control-sm fw-bold fs-7">描述</label>
+                            </td>
+                            <td>
+                                <textarea class="form-control fs-7 text-666" id="exampleFormControlTextarea1" rows="3" autocomplete="off"></textarea>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td valign="top">
+                                <label for="inputPassword" class="col-form-label form-control-sm fs-7">附件<br /><i class="bi bi-arrow-up-right-square fs-6"></i></label>
+                            </td>
+                            <td>
+                                <table class="table table-sm table-hover w-100 table-bordered fs-7 rounded-3">
+                                    <tbody>
+                                        <tr>
+                                            <td>Otto</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Thornton</td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="2">Larry the Bird</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </td>
+                        </tr>
+                    </table>
                 </div>
                 <div style="margin-bottom:30px">
                     &nbsp;

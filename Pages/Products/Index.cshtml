@@ -3,49 +3,130 @@
 @using RubyMine.Models;
 @{
 }
-
+<style>
+    input::before, input::after {
+        padding-top: 0px !important;
+    }
+    .link-btn {
+        flex-shrink: 0;
+    }
+    .link-btn::before {
+        zoom:0.8;
+        content: "";
+        padding-left: 18px;
+        background-image: url('/images/svg/chevron-down.svg') !important;
+        background-repeat: no-repeat;
+    }
+    .link-btn:not(.collapsed)::before {
+        zoom:0.8;
+        content: "";
+        padding-left: 18px;
+        background-image: url('/images/svg/chevron-right.svg') !important;
+        background-repeat: no-repeat;
+        /*transform: rotate(-180deg) !important;*/
+        /*transition: ease-in;*/
+    }
+</style>
 <body>
     <div class="container-fluid fs-7">
         <div class="row ps-0">
-            <div class="col border-1 border-ccc">
+            <div class="col border-1 border-ccc mr-2">
                 <div class="row">
                     <div class="col bg-title p-1 ps-2 fs-7">
-                        项目列表
+                        医院列表
                     </div>
                 </div>
-                <div class="row border-top-0 p-1 ps-1">
+                <div class="row border-top border-ccc p-1 ps-1">
                     <div class="accordion m-0 p-0" id="accordion-main">
-                        <table class="table border border-ccc w-100">
-                            @{
-                                foreach (Project item in Model.Product) {
-                                    var user_id = Model.Member.Where(t => t.ProjectId == item.Id).Select(t => t.UserId).Distinct();
-                                    <tr id="tr-@item.Id" class="bg-light" onclick="$('#content-@item.Id').toggle();">
-                                        <td>
-                                        <i class="bi bi-chevron-right"></i>&nbsp;@item.Name&nbsp;<span class="badge fw-normal bg-dark">@user_id.Count()</span>
-                                            <span class="float-end">@item.Description</span>
-                                        </td>
-                                    </tr>
-                                    <tr id="content-@item.Id">
-                                        <td class="ps-1">
-                                            <table class="table table-bordered table-hover">
-                                                @{
-                                                    foreach (User user in Model.Project.Where(t => user_id.Contains(t.Id))) {
-                                                        <tr>
-                                                            <td>@user.Id</td>
-                                                            <td>@user.Firstname</td>
-                                                            <td>@user.pinyin</td>
-                                                        </tr>
-                                                    }
-                                                }
-                                            </table>
-                                        </td>
-                                    </tr>
+                        <table class="table table-hover border border-ccc w-100">
+                            <thead>
+                                <tr>
+                                    <th width="80px">#</th>
+                                    <th width="50%">医院名称</th>
+                                    <th>HIS对接</th>
+                                    <th>设备对接</th>
+                                    <th>单点登录</th>
+                                    <th>人员科室</th>
+                                    <th width="15%">拼音检索</th>
+                                    <th class="text-right">操作&nbsp;</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @{
+                                    foreach (Project item in Model.Product) {
+                                        var user_id = Model.Member.Where(t => t.ProjectId == item.Id).Select(t => t.UserId).Distinct();
+                                        <tr id="tr-@item.Id" class="bg-light">
+                                            <td class="p-1" colspan="8">
+                                                <a href="#Temp" class="link-btn fw-bold collapsed" onclick="$('tr.class-@item.Name').toggle(); $(this).toggleClass('collapsed');">@item.Name</a>&nbsp;
+                                                @*<i class="bi bi-chevron-right"></i>&nbsp;<span class="fw-bold">@item.Name</span>&nbsp;*@
+                                                <span class="badge fw-normal bg-dark">@user_id.Count()</span>
+                                                <span class="float-none ms-5">@item.Description</span>
+                                            </td>
+                                        </tr>
+                                        @foreach (User user in Model.Project.Where(t => user_id.Contains(t.Id))) {
+                                            <tr id="content-@item.Id" class="class-@item.Name text-666">
+                                                <td class="p-1">@user.Id</td>
+                                                <td class="p-1"><a id="project_@user.Id" name="project_@user.Id" href="#Temp">@user.Firstname</a>&nbsp;&nbsp;<span class="m-0 p-0 fw-normal badge bg-light fs-7 text-dark">New</span></td>
+                                                <td class="p-1"><i class="bi bi-record"></i></td>
+                                                <td class="p-1"><i class="bi bi-record"></i></td>
+                                                <td class="p-1"><i class="bi bi-record2"></i></td>
+                                                <td class="p-1"><i class="bi bi-record-fill"></i></td>
+                                                <td class="p-1">@user.pinyin</td>
+                                                <td class="p-1 text-right"><a href="#Temp">查看本院需求</a></td>
+                                            </tr>
+                                        }
+                                    }
                                 }
-                            }
+                            </tbody>
                         </table>
                     </div>
                 </div>
             </div>
-                <div class="col-3"></div>
+            <div class="col-3 p-0 border border-ccc">
+                <div class="row bg-title p-0 m-0 border-bottom border-ccc">
+                    <div class="col ps-0 m-1">
+                        拼音检索：
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col m-3 p-3 pt-0">
+                        <label for="exampleDataList" class="form-label">医院名称</label>
+                        <input class="form-control fs-7" list="custom_project_options" id="custom_project" placeholder="Type to search..." autocomplete="off">
+                        <datalist id="custom_project_options" class="fs-7">
+                            @foreach (User user in Model.Project) {
+                                <option class="m-0 p-0 fs-7" value="@user.Id-@user.Firstname - @user.pinyin" id="@user.Id" />
+                            }
+                        </datalist>
+                    </div>
+                </div>
+            </div>
         </div>
+    </div>
 </body>
+<script>
+    $("#custom_project").on('focus', function () {
+        $(this).select();
+    });
+
+    $("#custom_project").on('input', function () {
+        var val = this.value;
+        if ($('#custom_project_options option').filter(function () {
+            return this.value.toUpperCase() === val.toUpperCase();
+        }).length) {
+            var id = this.value.split('-')[0];
+            scrollToAnchor("project_" + id);
+            $("#project_" + id).css("color", "red");
+            $("#custom_project").val('');
+            //alert(id);
+        }
+    });
+    function scrollToAnchor(aid) {
+        var aTag = $("a[name='" + aid + "']");
+        $('html,body').animate({ scrollTop: aTag.offset().top }, 'fast');
+    }
+
+    $("#link").click(function () {
+        scrollToAnchor('id3');
+    });
+
+</script>

@@ -111,4 +111,11 @@ th[htmlValue="issue"] {
 }
 
 
-
+::-moz-selection { /* Code for Firefox */
+    color: red;
+    background: yellow;
+}
+::selection {
+    color: red !important;
+    background: yellow !important;
+}

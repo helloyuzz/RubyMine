@@ -33,7 +33,7 @@ namespace RubyMine.Pages.Issues {
             Tracker_id = Request.Query["tracker_id"];
             Tracker = await _context.Trackers.OrderBy(x => x.Position).ToListAsync();
 
-            CustomField = await _context.CustomFields.Where(t => t.Type.Equals("IssueCustomField")).OrderBy(t=>t.Position).ToListAsync();
+            CustomField = await _context.CustomFields.Where(t => t.Type.Equals("IssueCustomField") && t.Description.Equals("hide") == false).OrderBy(t => t.Position).ToListAsync();
 
             // 项目和自定义属性对应关系
             var db_CustomFieldProject = await _context.CustomFieldsProjects.OrderBy(t => t.ProjectId).ToListAsync();

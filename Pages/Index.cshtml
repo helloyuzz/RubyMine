@@ -6,10 +6,91 @@
     User cua = SessionUtils.Get<User>(HttpContext.Session, "cua");
     bool aleradyLogin = cua != null;
 }
+<style>
+    @@keyframes move_wave {
+        0% {
+            transform: translateX(0) translateZ(0) scaleY(1)
+        }
 
+        50% {
+            transform: translateX(-35%) translateZ(0) scaleY(0.55)
+        }
+
+        100% {
+            transform: translateX(-50%) translateZ(0) scaleY(1)
+        }
+    }
+    .waveWrapper {
+        overflow: hidden;
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        top: 0;
+        margin: auto;
+        z-index: -999;
+    }
+    .waveWrapperInner {
+        position: absolute;
+        width: 100%;
+        overflow: hidden;
+        height: 100%;
+        bottom: -1px;
+        z-index: -999;
+        background-image: linear-gradient(to top, #8cbdd2 20%,#5e6fa3 80%);
+    }
+    .bgTop {
+        z-index: 15;
+        opacity: 0.5;
+    }
+    .bgMiddle {
+        z-index: 10;
+        opacity: 0.75;
+    }
+    .bgBottom {
+        z-index: 5;
+    }
+    .wave {
+        position: absolute;
+        left: 0;
+        width: 200%;
+        height: 100%;
+        background-repeat: repeat no-repeat;
+        background-position: 0 bottom;
+        transform-origin: center bottom;
+        z-index: -999;
+    }
+    .waveTop {
+        background-size: 50% 100px;
+        z-index: -999;
+    }
+    .waveAnimation .waveTop {
+        animation: move-wave 1s;
+        -webkit-animation: move-wave 1s;
+        -webkit-animation-delay: 1s;
+        animation-delay: 0.6s;
+        z-index: -999;
+    }
+    .waveMiddle {
+        background-size: 50% 120px;
+        z-index: -999;
+    }
+    .waveAnimation .waveMiddle {
+        animation: move_wave 10s linear infinite;
+        z-index: -999;
+    }
+    .waveBottom {
+        background-size: 50% 100px;
+        z-index: -999;
+    }
+    .waveAnimation .waveBottom {
+        animation: move_wave 15s linear infinite;
+        z-index: -999;
+    }
+</style>
 @if (aleradyLogin == false) {
 <form method="post">
-    <div class="container fw-bold rounded-3 border-1 border-ccc bg-light shadow p-4 fs-7" style="margin-top:8%;max-width:25%;">
+    <div class="container fw-bold rounded-1 shadow-sm bg-light p-4 fs-7" style="margin-top:9%;max-width:25%;min-width:500px;">
         <div class="row pb-3">
             <div class="col ps-3">
                 <h4 class="text-269"><i class="bi bi-arrow-right-circle"></i>&nbsp;请先登录</h4>
@@ -17,9 +98,9 @@
         </div>
         <div class="row">
             <div class="col ps-4 pr-4">
-                <label for="basic-url" class="form-label">登录帐号</label>
+                <label for="basic-url" class="form-label">输入帐号</label>
                 <div class="input-group mb-3">
-                    <span class="input-group-text m-0 p-3 pt-1 pb-1" id="basic-addon3"><i class="bi bi-person-circle"></i></span>
+                    <span class="input-group-text border-end-0 m-0 p-3 pt-1 pb-1" id="basic-addon3"><i class="bi bi-person-circle"></i></span>
                     <input type="text" class="form-control m-0 p-0 ps-1 text-666 fs-7" asp-for="Login" autocomplete="off" placeholder="请输入登录帐号">
                 </div>
             </div>
@@ -28,7 +109,7 @@
             <div class="col ps-4 pr-4">
                 <label for="basic-url" class="form-label">密码</label>
                 <div class="input-group mb-3">
-                    <span class="input-group-text m-0 p-3 pt-1 pb-1" id="basic-addon3"><i class="bi bi-gender-ambiguous"></i></span>
+                    <span class="input-group-text border-end-0 m-0 p-3 pt-1 pb-1" id="basic-addon3"><i class="bi bi-gender-ambiguous"></i></span>
                     <input type="password" class="form-control m-0 p-0 ps-1 text-666 fs-7" asp-for="Password" autocomplete="off" placeholder="请输入密码" value="aa123456">
                 </div>
             </div>
@@ -42,7 +123,7 @@
         </div>
         <div class="row mt-2 mb-3">
             <div class="col ps-4 pr-4">
-                <button type="submit" class="btn pt-2 pb-2 w-100 btn-light border-1 border-ccc bg-success text-light fs-7">登录</button>
+                <button type="submit" class="btn pt-2 pb-2 w-100 btn-light border-1 border-ccc bg-success shadow text-light fs-7">登录</button>
             </div>
         </div>
         @*<div class="row mt-3">
@@ -55,6 +136,17 @@
             </div>*@
     </div>
 </form>
+<div class="waveWrapper waveAnimation" style="margin-bottom:33px;margin-top:43px;">
+    <div class="waveWrapperInner bgTop">
+        <div class="wave waveTop" style="background-image: url('/images/wave-png/wave-top.png')"></div>
+    </div>
+    <div class="waveWrapperInner bgMiddle">
+        <div class="wave waveMiddle" style="background-image: url('/images/wave-png/wave-mid.png')"></div>
+    </div>
+    <div class="waveWrapperInner bgBottom">
+        <div class="wave waveBottom" style="background-image: url('/images/wave-png/wave-bot.png')"></div>
+    </div>
+</div>
 <script>
     $(document).ready(function () {
         if ($('#Login').val() == "") {

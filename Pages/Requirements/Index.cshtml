@@ -38,297 +38,285 @@
             /*text-decoration: line-through !important;*/
             color: #ccc;
         }
-        .table tbody tr.highlight td {
-            background-color: #56de833b;
-            font-weight:bold;
-            color: red !important;
-        }
     </style>
+    <link rel="stylesheet" href="~/css/hightlight.css" />
 </head>
 <body>
-    <div class="container-fluid">
-        <div class="row ps-0">
-            <div class="col border-1 border-ccc">
-                <div class="row">
-                    <div class="col border-bottom-1 border-ccc bg-title p-1 ps-2 fs-7">
-                        需求&nbsp;(@Model.Issue.Count)
-                        @*<a href="#offcanvasExample" class="text-decoration-none text-269 float-end mr-2" data-bs-toggle="offcanvas" role="button" aria-controls="offcanvasExample"><i class="bi bi-lightning"></i>&nbsp;新建问题</a>*@
-                        <a asp-page="/Issues/New" class="text-decoration-none text-269 float-end mr-2"><i class="bi bi-lightning"></i>&nbsp;新建问题</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-
-        <div class="row border-1 border-ccc bg-title border-top-0">
-            <div class="m-0 p-0 bg-white p-1">
-                @*过滤器*@
-                <div class="row text-secondary">
-                    <div class="col">
-                        <a id="btn_Condition" href="#Temp" class="m-0 p-0 fs-7 text-dark text-decoration-none" onclick="$('#div_Condition').toggle();changeIcon('icon_Condition');">
-                            <i id="icon_Condition" class="bi bi-chevron-down"></i>&nbsp;过滤器
-                        </a>
-                        <div id="div_Condition" class="card-body m-0 p-0 fs-7">
-                            <table class="w-100 text-666 m-0">
-                                <tr>
-                                    <td width="16px"><i class="bi bi-x"></i></td>
-                                    <td width="130px">状态</td>
-                                    <td width="60px">
-                                        <select class="form-select form-select-sm w-auto fs-7" aria-label=".form-select-sm example">
-                                            <option selected>打开</option>
-                                            <option value="1">等于</option>
-                                            <option value="2">不等于</option>
-                                            <option value="3">关闭</option>
-                                            <option value="4">全部</option>
-                                        </select>
-                                    </td>
-                                    <td></td>
-                                    <td width="80px">增加过滤器</td>
-                                    <td width="266px">
-                                        <select class="form-select form-select-sm w-auto pt-0 pb-0 fs-7" style="width:180px !important;">
-                                            <option>&nbsp;</option>
-                                        </select>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td><i class="bi bi-x"></i></td>
-                                    <td>根据此条件分组</td>
-                                    <td>
-                                        <select class="form-select form-select-sm w-auto pt-0 pb-0 fs-7">
-                                            <option>&nbsp;</option>
-                                        </select>
-                                    </td>
-                                    <td colspan="3"></td>
-                                </tr>
-                            </table>
+    <form method="get">
+        <div class="container-fluid">
+            <div class="row ps-0">
+                <div class="col border-1 border-ccc">
+                    <div class="row">
+                        <div class="col border-bottom-1 border-ccc bg-title p-1 ps-2 fs-7">
+                            需求&nbsp;(@Model.Issue.Count)
+                            @*<a href="#offcanvasExample" class="text-decoration-none text-269 float-end mr-2" data-bs-toggle="offcanvas" role="button" aria-controls="offcanvasExample"><i class="bi bi-lightning"></i>&nbsp;新建问题</a>*@
+                            <a asp-page="/Issues/New" class="text-decoration-none float-end mr-2" target="_blank"><img src="~/images/add.png" />&nbsp;登记</a>
                         </div>
                     </div>
                 </div>
-                <div class="row mt-1 pt-1 ps-1">
-                    <div class="col fs-7">
-                        <a href="#Temp" class="mr-3"><i class="bi bi-check-lg"></i>&nbsp;应用</a>
-                        <a href="#Temp" class="mr-3"><i class="bi bi-arrow-clockwise"></i>&nbsp;清除</a>
-                        <a href="#Temp" class="mr-3"><i class="bi bi-save"></i>&nbsp;保存</a>
+            </div>
+
+
+            <div class="row border-1 border-ccc bg-title border-top-0">
+                <div class="m-0 p-0 bg-white p-1">
+                    @*过滤器*@
+                    <div class="row text-secondary">
+                        <div class="col">
+                            <a id="btn_Condition" href="#Temp" class="m-0 p-0 fs-7 text-dark text-decoration-none" onclick="$('#div_Condition').toggle();changeIcon('icon_Condition');">
+                                <i id="icon_Condition" class="bi bi-chevron-down"></i>&nbsp;过滤器
+                            </a>
+                            <div id="div_Condition" class="card-body m-0 p-0 fs-7">
+                                <table class="w-100 text-666 m-0">
+                                    <tr>
+                                        <td width="16px"><i class="bi bi-x"></i></td>
+                                        <td width="130px">状态</td>
+                                        <td width="60px">
+                                            <select class="form-select form-select-sm w-auto fs-7" aria-label=".form-select-sm example">
+                                                <option selected>打开</option>
+                                                <option value="1">等于</option>
+                                                <option value="2">不等于</option>
+                                                <option value="3">关闭</option>
+                                                <option value="4">全部</option>
+                                            </select>
+                                        </td>
+                                        <td></td>
+                                        <td width="80px">增加过滤器</td>
+                                        <td width="266px">
+                                            <select class="form-select form-select-sm w-auto pt-0 pb-0 fs-7" style="width:180px !important;">
+                                                <option>&nbsp;</option>
+                                            </select>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><i class="bi bi-x"></i></td>
+                                        <td>根据此条件分组</td>
+                                        <td>
+                                            <select class="form-select form-select-sm w-auto pt-0 pb-0 fs-7">
+                                                <option>&nbsp;</option>
+                                            </select>
+                                        </td>
+                                        <td colspan="3"></td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mt-1 pt-1 ps-1">
+                        <div class="col fs-7">
+                            <a href="#Temp" class="mr-3"><i class="bi bi-check-lg"></i>&nbsp;应用</a>
+                            <a href="#Temp" class="mr-3"><i class="bi bi-arrow-clockwise"></i>&nbsp;清除</a>
+                            <a href="#Temp" class="mr-3"><i class="bi bi-save"></i>&nbsp;保存</a>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-        <div class="row">
-            <table id="mainTable" class="table table-hover lh-1 fs-7 border-1 border-ccc">
-                <thead>
-                    <tr style="background:#eee;">
-                        <th htmlValue="issue" width="40px" class="text-269 border-bottom-0">
-                            #
-                        </th>
-                        <th htmlValue="issue" width="60px" class="text-269 border-bottom-0">
-                            @Html.DisplayNameFor(model => model.Issue[0].TrackerId)
-                        </th>
-                        <th htmlValue="issue" width="80px" class="text-269 border-bottom-0">
-                            @Html.DisplayNameFor(model => model.Issue[0].ProjectId)
-                        </th>
-                        <th htmlValue="issue" width="40%" class="text-269 border-bottom-0">
-                            @Html.DisplayNameFor(model => model.Issue[0].Subject)
-                        </th>
-                        <th htmlValue="issue" width="136px" class="text-269 border-bottom-0">
-                            @Html.DisplayNameFor(model => model.Issue[0].StatusId)
-                        </th>
-                        <th htmlValue="issue" width="60px" class="text-269 border-bottom-0">
-                            @Html.DisplayNameFor(model => model.Issue[0].PriorityId)
-                        </th>
-                        <th htmlValue="issue" width="80px" class="text-269 border-bottom-0">
-                            @Html.DisplayNameFor(model => model.Issue[0].AuthorId)
-                        </th>
-                        <th htmlValue="issue" width="80px" class="text-269 border-bottom-0">
-                            @Html.DisplayNameFor(model => model.Issue[0].AssignedToId)
-                        </th>
-                        <th htmlValue="issue" width="123px" class="text-269 border-bottom-0">
-                            @Html.DisplayNameFor(model => model.Issue[0].CreatedOn)
-                        </th>
-                        <th htmlValue="issue" class="text-269 border-bottom-0">
-                            @Html.DisplayNameFor(model => model.Issue[0].IsPrivate)
-                        </th>
-                        <th width="30px" htmlValue="issue" class="text-269 text-center border-bottom-0">
-                            <div class="btn-group dropstart">
-                                <a href="#column" class="text-decoration-none fw-bold" data-bs-toggle="dropdown" aria-expanded="false">
-                                    <i class="bi bi-caret-down-square-fill"></i>
-                                </a>
-                                <ul class="dropdown-menu shadow fs-7">
-                                    <li><a class="dropdown-item ps-2 fw-bold disabled">显示&排序</a></li>
-                                    <li class="ps-2">
-                                        <table class="w-100">
-                                            <tr>
-                                                <td width="30px">
-                                                    <div class="form-check form-switch lh-0 fs-6">
-                                                        <input class="form-check-input" type="checkbox" id="flexSwitchCheckChecked" checked>
-                                                    </div>
-                                                </td>
-                                                <td>主题</td>
-                                                <td><i class="bi bi-arrows-expand"></i></td>
-                                            </tr>
-                                            <tr>
-                                                <td width="30px">
-                                                    <div class="form-check form-switch lh-0 fs-6">
-                                                        <input class="form-check-input" type="checkbox" id="flexSwitchCheckChecked" checked>
-                                                    </div>
-                                                </td>
-                                                <td>主题</td>
-                                                <td><i class="bi bi-arrows-expand"></i></td>
-                                            </tr>
-                                            <tr>
-                                                <td width="30px">
-                                                    <div class="form-check form-switch lh-0 fs-6">
-                                                        <input class="form-check-input" type="checkbox" id="flexSwitchCheckChecked" checked>
-                                                    </div>
-                                                </td>
-                                                <td>主题</td>
-                                                <td><i class="bi bi-arrows-expand"></i></td>
-                                            </tr>
-                                            <tr>
-                                                <td width="30px">
-                                                    <div class="form-check form-switch lh-0 fs-6">
-                                                        <input class="form-check-input" type="checkbox" id="flexSwitchCheckChecked" checked>
-                                                    </div>
-                                                </td>
-                                                <td>主题</td>
-                                                <td><i class="bi bi-arrows-expand"></i></td>
-                                            </tr>
-                                            <tr>
-                                                <td width="30px">
-                                                    <div class="form-check form-switch lh-0 fs-6">
-                                                        <input class="form-check-input" type="checkbox" id="flexSwitchCheckChecked" checked>
-                                                    </div>
-                                                </td>
-                                                <td>主题</td>
-                                                <td><i class="bi bi-arrows-expand"></i></td>
-                                            </tr>
-                                        </table>
-                                    </li>
-                                </ul>
-                            </div>
-                        </th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var item in Model.Issue) {
-                        <tr class="clickable-row">
-                            <td htmlValue="issue" class="fs-7">
-                                <a asp-page="./Details" asp-route-id="@item.Id" target="_blank" class="text-666">@Html.DisplayFor(modelItem => item.Id)</a>
-                            </td>
-                            <td htmlValue="issue">
-                                @Html.DisplayFor(modelItem => item.Tracker.Name)
-                            </td>
-                            <td htmlValue="issue">
-                                @Html.DisplayFor(modelItem => item.Project.Name)
-                            </td>
-                            <td htmlValue="issue">
-                                <a class="text-666 issue_subject_@item.StatusId" asp-page="./Details" asp-route-id="@item.Id" target="_blank">@Html.DisplayFor(modelItem => item.Subject)</a>
-                            </td>
-                            <td htmlValue="issue" class="text-start">
-                                <div class="btn-group m-0 p-0">
-                                    <a class="btn btn-sm text-666 m-0 p-0 fs-7 lh-0 issue_subject_@item.StatusId" data-bs-toggle="dropdown">@Html.DisplayFor(modelItem => item.Status.Name)</a>
+            <div class="row">
+                <table id="mainTable" class="table table-hover lh-1 fs-7 border-1 border-ccc">
+                    <thead>
+                        <tr style="background:#eee;">
+                            <th htmlValue="issue" width="40px" class="text-269 border-bottom-0">
+                                #
+                            </th>
+                            <th htmlValue="issue" width="60px" class="text-269 border-bottom-0">
+                                @Html.DisplayNameFor(model => model.Issue[0].TrackerId)
+                            </th>
+                            <th htmlValue="issue" width="80px" class="text-269 border-bottom-0">
+                                @Html.DisplayNameFor(model => model.Issue[0].ProjectId)
+                            </th>
+                            <th htmlValue="issue" width="40%" class="text-269 border-bottom-0">
+                                @Html.DisplayNameFor(model => model.Issue[0].Subject)
+                            </th>
+                            <th htmlValue="issue" width="136px" class="text-269 border-bottom-0">
+                                @Html.DisplayNameFor(model => model.Issue[0].StatusId)
+                            </th>
+                            <th htmlValue="issue" width="60px" class="text-269 border-bottom-0">
+                                @Html.DisplayNameFor(model => model.Issue[0].PriorityId)
+                            </th>
+                            <th htmlValue="issue" width="80px" class="text-269 border-bottom-0">
+                                @Html.DisplayNameFor(model => model.Issue[0].AuthorId)
+                            </th>
+                            <th htmlValue="issue" width="80px" class="text-269 border-bottom-0">
+                                @Html.DisplayNameFor(model => model.Issue[0].AssignedToId)
+                            </th>
+                            <th htmlValue="issue" width="123px" class="text-269 border-bottom-0">
+                                @Html.DisplayNameFor(model => model.Issue[0].CreatedOn)
+                            </th>
+                            <th htmlValue="issue" class="text-269 border-bottom-0">
+                                @Html.DisplayNameFor(model => model.Issue[0].IsPrivate)
+                            </th>
+                            <th width="30px" htmlValue="issue" class="text-269 text-center border-bottom-0">
+                                <div class="btn-group dropstart">
+                                    <a href="#column" class="text-decoration-none fw-bold" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <i class="bi bi-caret-down-square-fill"></i>
+                                    </a>
                                     <ul class="dropdown-menu shadow fs-7">
-                                        <li><a class="dropdown-item disabled lh-0 text-dark" href="#">更改[@Html.DisplayFor(modelItem => item.Id)]为:</a></li>
-                                        <li><hr class="dropdown-divider"></li>
-                                        <li><a class="dropdown-item" href="#">新建</a></li>
-                                        <li><hr class="dropdown-divider"></li>
-                                        <li><a class="dropdown-item" href="#">Copy Text</a></li>
+                                        <li><a class="dropdown-item ps-2 fw-bold disabled">显示&排序</a></li>
+                                        <li class="ps-2">
+                                            <table class="w-100">
+                                                <tr>
+                                                    <td width="30px">
+                                                        <div class="form-check form-switch lh-0 fs-6">
+                                                            <input class="form-check-input" type="checkbox" id="flexSwitchCheckChecked" checked>
+                                                        </div>
+                                                    </td>
+                                                    <td>主题</td>
+                                                    <td><i class="bi bi-arrows-expand"></i></td>
+                                                </tr>
+                                                <tr>
+                                                    <td width="30px">
+                                                        <div class="form-check form-switch lh-0 fs-6">
+                                                            <input class="form-check-input" type="checkbox" id="flexSwitchCheckChecked" checked>
+                                                        </div>
+                                                    </td>
+                                                    <td>主题</td>
+                                                    <td><i class="bi bi-arrows-expand"></i></td>
+                                                </tr>
+                                                <tr>
+                                                    <td width="30px">
+                                                        <div class="form-check form-switch lh-0 fs-6">
+                                                            <input class="form-check-input" type="checkbox" id="flexSwitchCheckChecked" checked>
+                                                        </div>
+                                                    </td>
+                                                    <td>主题</td>
+                                                    <td><i class="bi bi-arrows-expand"></i></td>
+                                                </tr>
+                                                <tr>
+                                                    <td width="30px">
+                                                        <div class="form-check form-switch lh-0 fs-6">
+                                                            <input class="form-check-input" type="checkbox" id="flexSwitchCheckChecked" checked>
+                                                        </div>
+                                                    </td>
+                                                    <td>主题</td>
+                                                    <td><i class="bi bi-arrows-expand"></i></td>
+                                                </tr>
+                                                <tr>
+                                                    <td width="30px">
+                                                        <div class="form-check form-switch lh-0 fs-6">
+                                                            <input class="form-check-input" type="checkbox" id="flexSwitchCheckChecked" checked>
+                                                        </div>
+                                                    </td>
+                                                    <td>主题</td>
+                                                    <td><i class="bi bi-arrows-expand"></i></td>
+                                                </tr>
+                                            </table>
+                                        </li>
                                     </ul>
                                 </div>
-                            </td>
-                            <td htmlValue="issue">
-                                <div class="btn-group m-0 p-0">
-                                    <a class="btn btn-sm m-0 p-0 fs-7 lh-0" data-bs-toggle="dropdown">@Html.DisplayFor(modelItem => item.Priority.Name)</a>
-                                    <ul class="dropdown-menu shadow fs-7">
-                                        <li><a class="dropdown-item lh-0" href="#">所有</a></li>
-                                        <li><hr class="dropdown-divider"></li>
-                                        <li><a class="dropdown-item" href="#">普通</a></li>
-                                        <li><a class="dropdown-item" href="#">Something else here</a></li>
-                                        <li><hr class="dropdown-divider"></li>
-                                        <li><a class="dropdown-item" href="#">Copy Text</a></li>
-                                    </ul>
-                                </div>
-                            </td>
-                            <td htmlValue="issue">
-                                @Html.DisplayFor(modelItem => item.Author.Firstname)
-                            </td>
-                            <td htmlValue="issue">
-                                @Html.DisplayFor(modelItem => item.AssignedTo.Firstname)
-                            </td>
-                            <td htmlValue="issue">
-                                @Html.Raw(RMUtils.ParseDate(item.CreatedOn, true))
-                            </td>
-                            <td htmlValue="issue">
-                                @Html.DisplayFor(modelItem => item.IsPrivate)
-                            </td>
-                            <td htmlValue="issue" class="text-center">
-                                <a asp-page="./Edit" asp-route-id="@item.Id">Edit</a>
-                                @*|
-                                <a asp-page="./Details" asp-route-id="@item.Id">Details</a> |
-                                <a asp-page="./Delete" asp-route-id="@item.Id">Delete</a>*@
-                            </td>
+                            </th>
                         </tr>
-                    }
-                </tbody>
-            </table>
-            共 @Model.Issue.Count 条数据。
-            <nav aria-label="Page navigation example" class="pr-0">
-                <ul class="pagination justify-content-end mr-0 fs-7">
-                    <li class="page-item disabled">
-                        <a class="page-link" href="#" tabindex="-1" aria-disabled="true">共xxx条记录.</a>
-                    </li>
-                    <li class="page-item">
-                        <a class="page-link" href="#" tabindex="-1" aria-disabled="true">第一页</a>
-                    </li>
-                    <li class="page-item"><a class="page-link" href="#">1</a></li>
-                    <li class="page-item"><a class="page-link" href="#">2</a></li>
-                    <li class="page-item"><a class="page-link" href="#">3</a></li>
-                    <li class="page-item">
-                        <a class="page-link" href="#">末页</a>
-                    </li>
-                </ul>
-            </nav>
-        </div>
-    </div>
-    <div id="offcanvasExample" class="offcanvas p-0 bg-white offcanvas-end" style="width:30%" data-bs-scroll="true" tabindex="-1" aria-labelledby="offcanvasExampleLabel">
-        <div class="row m-0 p-0 offcanvas-header bg-title border-1 border-ccc p-2">
-            <div class="col text-start ps-0">
-                <span class="offcanvas-title fw-bold text-start" id="offcanvasExampleLabel"><i class="bi bi-lightning"></i>&nbsp;新建问题</span>
-            </div>&nbsp;
-            <div class="col-sm-3 ps-0 pr-0">
-                <select id="ruby_Project" class="form-select w-100 form-select-sm shadow fs-7" aria-label=".form-select-sm example" onchange="changeProject(this.value);">
-                    @{
-                        foreach (var item in Model.Project) {
-                            <option value="@item.Id">@item.Name</option>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.Issue) {
+                            <tr class="clickable-row">
+                                <td htmlValue="issue" class="fs-7">
+                                    <a asp-page="./Details" asp-route-id="@item.Id" target="_blank" class="text-666">@Html.DisplayFor(modelItem => item.Id)</a>
+                                </td>
+                                <td htmlValue="issue">
+                                    @Html.DisplayFor(modelItem => item.Tracker.Name)
+                                </td>
+                                <td htmlValue="issue">
+                                    @Html.DisplayFor(modelItem => item.Project.Name)
+                                </td>
+                                <td htmlValue="issue">
+                                    <a class="text-666 issue_subject_@item.StatusId" asp-page="./Details" asp-route-id="@item.Id" target="_blank">@Html.DisplayFor(modelItem => item.Subject)</a>
+                                </td>
+                                <td htmlValue="issue" class="text-start">
+                                    <div class="btn-group m-0 p-0">
+                                        <a class="btn btn-sm text-666 m-0 p-0 fs-7 lh-0 issue_subject_@item.StatusId" data-bs-toggle="dropdown">@Html.DisplayFor(modelItem => item.Status.Name)</a>
+                                        <ul class="dropdown-menu shadow fs-7">
+                                            <li><a class="dropdown-item disabled lh-0 text-dark" href="#">更改[@Html.DisplayFor(modelItem => item.Id)]为:</a></li>
+                                            <li><hr class="dropdown-divider"></li>
+                                            <li><a class="dropdown-item" href="#">新建</a></li>
+                                            <li><hr class="dropdown-divider"></li>
+                                            <li><a class="dropdown-item" href="#">Copy Text</a></li>
+                                        </ul>
+                                    </div>
+                                </td>
+                                <td htmlValue="issue">
+                                    <div class="btn-group m-0 p-0">
+                                        <a class="btn btn-sm m-0 p-0 fs-7 lh-0" data-bs-toggle="dropdown">@Html.DisplayFor(modelItem => item.Priority.Name)</a>
+                                        <ul class="dropdown-menu shadow fs-7">
+                                            <li><a class="dropdown-item lh-0" href="#">所有</a></li>
+                                            <li><hr class="dropdown-divider"></li>
+                                            <li><a class="dropdown-item" href="#">普通</a></li>
+                                            <li><a class="dropdown-item" href="#">Something else here</a></li>
+                                            <li><hr class="dropdown-divider"></li>
+                                            <li><a class="dropdown-item" href="#">Copy Text</a></li>
+                                        </ul>
+                                    </div>
+                                </td>
+                                <td htmlValue="issue">
+                                    @Html.DisplayFor(modelItem => item.Author.Firstname)
+                                </td>
+                                <td htmlValue="issue">
+                                    @Html.DisplayFor(modelItem => item.AssignedTo.Firstname)
+                                </td>
+                                <td htmlValue="issue">
+                                    @Html.Raw(RMUtils.ParseDate(item.CreatedOn, true))
+                                </td>
+                                <td htmlValue="issue">
+                                    @Html.DisplayFor(modelItem => item.IsPrivate)
+                                </td>
+                                <td htmlValue="issue" class="text-center">
+                                    <a asp-page="./Edit" asp-route-id="@item.Id">Edit</a>
+                                    @*|
+                                        <a asp-page="./Details" asp-route-id="@item.Id">Details</a> |
+                                        <a asp-page="./Delete" asp-route-id="@item.Id">Delete</a>*@
+                                </td>
+                            </tr>
                         }
-                    }
-                </select>
+                    </tbody>
+                </table>
+                共 @Model.Issue.Count 条数据。
+                <nav aria-label="Page navigation example" class="fixed-bottom">
+                    <ul class="pagination justify-content-end mr-0 fs-7">
+                        <li class="page-item disabled">
+                            <a class="page-link" href="#" tabindex="-1" aria-disabled="true">每页</a>
+                        </li>
+                        <li class="page-item"><input type="text" class="m-0 p-0 fs-7" asp-for="PageSize" style="width:60px" /></li>
+                        <li class="page-item">
+                            <a class="page-link" href="#" tabindex="-1" aria-disabled="true">第一页</a>
+                        </li>
+                        <li class="page-item"><a class="page-link" href="#">1</a></li>
+                        <li class="page-item"><a class="page-link" href="#">2</a></li>
+                        <li class="page-item"><a class="page-link" href="#">3</a></li>
+                        <li class="page-item">
+                            <a class="page-link" href="#">末页</a>
+                        </li>
+                    </ul>
+                </nav>
             </div>
-            <div class="col-sm-3">
-                <select id="ruby_Tracker" class="form-select form-select-sm shadow fs-7" aria-label=".form-select-sm example" onchange="changeTracker();">
-                    @*<option value="-1" selected>选择登记类型</option>*@
-                    @{
-                        foreach (var item in Model.Tracker) {
-                            <option id="ruby_Tracker_id_@item.Id" value="@item.Id" class="d-block">@item.Name</option>
+        </div>
+        <div id="offcanvasExample" class="offcanvas p-0 bg-white offcanvas-end" style="width:30%" data-bs-scroll="true" tabindex="-1" aria-labelledby="offcanvasExampleLabel">
+            <div class="row m-0 p-0 offcanvas-header bg-title border-1 border-ccc p-2">
+                <div class="col text-start ps-0">
+                    <span class="offcanvas-title fw-bold text-start" id="offcanvasExampleLabel"><i class="bi bi-lightning"></i>&nbsp;新建问题</span>
+                </div>&nbsp;
+                <div class="col-sm-3 ps-0 pr-0">
+                    <select id="ruby_Project" class="form-select w-100 form-select-sm shadow fs-7" aria-label=".form-select-sm example" onchange="changeProject(this.value);">
+                        @{
+                            foreach (var item in Model.Project) {
+                                <option value="@item.Id">@item.Name</option>
+                            }
                         }
-                    }
-                </select>
-            </div>
-            <div class="col"></div>
-        </div>
-        <div class="row m-0 p-0 offcanvas-body fs-7">
-            <iframe id="frm_NewIssue" src="~/Issues/New" class="w-100 p-0 m-0" frameborder="0" style="height:100%;"></iframe>
-        </div>
-        @*<div class="row fixed-bottom position-absolute bottom-0 end-0 mr-0 bg-title border-1 border-ccc p-1" style="width:30%">
-            <div class="col mr-0">
-                <div class="float-right text-right justify-content-end">
-                    <button type="button" class="btn btn-primary btn-sm p-1 ps-2 pr-3 text-end shadow fs-7"><i class="bi bi-check-lg fs-7 m-0 p-0"></i>&nbsp;&nbsp;保存</button>
-                    <button type="button" class="btn btn-secondary btn-sm shadow fs-7" data-bs-toggle="offcanvas" role="button" aria-controls="offcanvasExample">取消</button>
+                    </select>
                 </div>
+                <div class="col-sm-3">
+                    <select id="ruby_Tracker" class="form-select form-select-sm shadow fs-7" aria-label=".form-select-sm example" onchange="changeTracker();">
+                        @*<option value="-1" selected>选择登记类型</option>*@
+                        @{
+                            foreach (var item in Model.Tracker) {
+                                <option id="ruby_Tracker_id_@item.Id" value="@item.Id" class="d-block">@item.Name</option>
+                            }
+                        }
+                    </select>
+                </div>
+                <div class="col"></div>
             </div>
-        </div>*@
-    </div>
-            <div id="result"></div>
-            <script>
+        </div>
+        <div id="result"></div>
+    </form>
+    <script>
         var temp = @Html.Raw(Model.ProjectTracker);
         function changeProject(project_id) {
             var arr = [];
@@ -375,34 +363,7 @@
                 $('#' + html_id).attr('class', 'bi bi-chevron-down');
             }
         }
-
-        //$('#mainTable').on('click', '.clickable', function (event) {
-        //    $(this).addClass('active').siblings().removeClass('active');
-        //});
-        var ctrlKey = false;
-        $('#mainTable').on('click', 'tbody tr', function (event) {
-            if (ctrlKey) {
-                $(this).addClass('highlight');
-            } else {
-                $(this).addClass('highlight').siblings().removeClass('highlight');
-            }
-        });
-        $(document).keydown(function (event) {
-            //console.log(event);
-            if (!event.ctrlKey) {
-                ctrlKey = false;
-                return true;
-            }
-            ctrlKey = true;
-            event.preventDefault();
-        });
-        $(document).keyup(function (event) {
-            //console.log(event);
-            if (!event.ctrlKey) {
-                ctrlKey = false;
-                return true;
-            }
-        });
-            </script>
+    </script>
+    <script src="~/js/highlight.js"></script>
 </body>
 </html>

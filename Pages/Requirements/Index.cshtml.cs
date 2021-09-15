@@ -27,7 +27,9 @@ namespace RubyMine.Pages.Requirements {
         public IList<RubyMine.Models.Version> Version { get; set; }
         
         public string ProjectTracker { get; set; }
-        public int PageSize = 30;
+
+        [BindProperty(SupportsGet = true)]
+        public int PageSize { get; set; } = 30;
         public int PageIndex = 1;
 
         public async Task OnGetAsync() {
@@ -38,7 +40,7 @@ namespace RubyMine.Pages.Requirements {
             ProjectTracker = JsonConvert.SerializeObject(db_ProjectTracker);
             Setting setting = _config.GetPerPageOptions();
             if (setting != null) {
-                PageSize = RMUtils.ParseInt(setting.Value);
+                //PageSize = RMUtils.ParseInt(setting.Value);
             }
             int skipRecordCount = (PageIndex - 1) * PageSize;
 

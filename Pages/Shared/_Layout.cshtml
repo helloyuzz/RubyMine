@@ -54,13 +54,13 @@
                                                 <a class="nav-link text-decoration-none text-white fs-7 menu-@requestPath.Contains("Products")" asp-area="" asp-page="/Products/Index">项目列表</a>
                                             </li>
                                             <li class="nav-item">
+                                                <a class="nav-link text-decoration-none text-white fs-7 menu-@requestPath.Contains("Versions")" asp-area="" asp-page="/Versions/Index">版本管理</a>
+                                            </li>
+                                            <li class="nav-item">
                                                 <a class="nav-link text-decoration-none text-white fs-7 menu-@requestPath.Contains("Requirements")" asp-area="" asp-page="/Requirements/Index">需求跟踪</a>
                                             </li>
                                             <li class="nav-item">
                                                 <a class="nav-link text-decoration-none text-white fs-7 menu-@requestPath.Contains("Plans")" asp-area="" asp-page="/Plans/Index">开发管理</a>
-                                            </li>
-                                            <li class="nav-item">
-                                                <a class="nav-link text-decoration-none text-white fs-7 menu-@requestPath.Contains("Versions")" asp-area="" asp-page="/Versions/Index">版本管理</a>
                                             </li>
                                             <li class="nav-item">
                                                 <a class="nav-link text-decoration-none text-white fs-7 menu-@requestPath.Contains("Clocks")" asp-area="" asp-page="/Clocks/Index">工时统计</a>
@@ -99,7 +99,7 @@
                 </div>
             </nav>
         </header>}
-    <div class="container-fluid p-2">
+    <div class="container-fluid p-2" style="overflow-x:hidden;">
         <main role="main" class="pb-3">
             @RenderBody()
         </main>
