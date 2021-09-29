@@ -20,23 +20,61 @@
     .w-35 {
         width: 35% !important;
     }
+    select::after {
+        background: transparent;
+        width: 268px;
+        padding: 5px;
+        font-size: 16px;
+        line-height: 1;
+        border: 0;
+        border-radius: 0;
+        height: 34px;
+        -webkit-appearance: none;
+    }
+    select::-ms-expand {
+        display: none;
+    }
 </style>
 <form id="newForm" method="post">
-    <div class="container-fluid fs-7">
-        <div class="row ps-0 border-1 border-ccc">
-            <div class="col">
-                <div class="row border-bottom-1 border-ccc">
-                    <div class="col bg-title p-1 ps-2 fw-bold fs-7">
-                        <span>新建问题</span>
-                        <div class="float-end pr-2">
-                            <a href="#Temp" class="btn-sm p-0 fs-7 text-269" onclick="$('#newForm').submit();">保存</a>&nbsp;
-                            <a asp-page="/Requirements/Index" class="p-0 fs-7 text-269">取消</a>
+    <div class="container-fluid m-0 p-0 border-1 border-ccc bg-white fs-7 overflow-hidden">
+        <div class="row">
+            <div class="col bg-title p-1 ps-3 fw-bold">
+                新建问题
+            </div>
+        </div>
+        <div class="row m-2 border-1 pb-3 border-ccc" style="background-color:#fcfcfc;">
+            <div class="col m-2">
+                @{
+                    var row = Model.CustomField.Count / 2 + 1;
+                    foreach (CustomField customField in Model.CustomField.OrderBy(t => t.Position)) {
+                        <div class="row">
+                            @if (row++ % 2 == 0) {
+                                <div class="col">
+
+                                </div>
+                            } else {
+                                <div class="col">
+
+                                </div>
+                            }
                         </div>
-                    </div>
-                </div>
-                <div class="row p-3 pt-1 border-top border-ccc" style="background:#fcfcfc">
+                    }
+                }
+                <div class="row" style="background:#fcfcfc">
                     <div class="col">
                         <table width="100%" class="mt-1 mr-1">
+                            <tr>
+                                <td width="76px" class="p-0 text-right"><label for="inputPassword" class="col-form-label form-control-sm fw-bold fs-7">项目&nbsp;<span class="text-danger fw-bold">*</span></label></td>
+                                <td>
+                                    @Html.DropDownList("issue_Project", new SelectList(Model.Project, "Id", "Name"), new { @class = "form-select form-select-sm text-666 fs-7" ,@style="width:123px;"})
+                                </td>
+                            </tr>
+                            <tr>
+                                <td width="76px" class="p-0 text-right"><label for="inputPassword" class="col-form-label form-control-sm fw-bold fs-7">跟踪&nbsp;<span class="text-danger fw-bold">*</span></label></td>
+                                <td>
+                                    @Html.DropDownList("issue_Tracker", new SelectList(Model.Tracker, "Id", "Name"), new { @class = "form-select form-select-sm text-666 fs-7", @style = "width:90px;" })
+                                </td>
+                            </tr>
                             <tr>
                                 <td width="76px" class="p-0 text-right">
                                     <label for="inputPassword" class="col-form-label form-control-sm fw-bold fs-7">主题&nbsp;<span class="text-danger fw-bold">*</span></label>
@@ -50,7 +88,23 @@
                                     <label for="inputPassword" class="col-form-label form-control-sm fw-bold fs-7">状态&nbsp;<span class="text-danger fw-bold">*</span></label>
                                 </td>
                                 <td class="line-height-row">
-                                    @Html.DropDownList("issue_IssueStatus", new SelectList(Model.DB_IssueStatus, "Id", "Name"), new { @class = "form-select m-0 w-auto p-1 text-666 fs-7" })
+                                    @Html.DropDownList("issue_IssueStatus", new SelectList(Model.DB_IssueStatus, "Id", "Name"), new { @class = "form-select form-select-sm text-666 fs-7", @style = "width:123px;" })
+                                </td>
+                            </tr>
+                            <tr>
+                                <td width="76px" class="p-0 text-right" valign="top">
+                                    <label for="inputPassword" class="col-form-label form-control-sm fw-bold fs-7">描述</label>
+                                </td>
+                                <td>
+                                    <textarea class="form-control fs-7 text-666" id="exampleFormControlTextarea1" rows="8" autocomplete="off"></textarea>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td valign="top" class="text-right">
+                                    <label for="inputPassword" class="col-form-label form-control-sm fs-7">文件<br /><i class="bi bi-arrow-up-right-square fs-6"></i></label>
+                                </td>
+                                <td>
+                                    <input type="file" id="myFile" name="filename">
                                 </td>
                             </tr>
                         </table>
@@ -58,7 +112,7 @@
                     <div class="col">
                         <table class="w-100">
                             @{
-                                foreach (CustomField customField in Model.CustomField.Where(t=>string.IsNullOrEmpty(t.Description))) {
+                                foreach (CustomField customField in Model.CustomField.OrderBy(t => t.Position)) {
                                     <tr id="tr_@customField.Id">
                                         <td width="76px" class="p-0 text-right" valign="top">
                                             <label for="inputPassword" class="col-form-label form-control-sm fw-bold fs-7">@customField.Name@Html.Raw(RMUtils.Html_IsRequired(customField.IsRequired))</label>
@@ -68,15 +122,13 @@
                                                 case "user":
                                                 case "version":
                                                 case "list":
-                                                    @:<!--@Html.Raw(customField.Name)-->
                                                     <div id="cfMenu_@customField.Id" class="dropdown">
                                                         <div class="row">
                                                             <div class="col">
                                                                 <button id="cf_@customField.Id" cf_Type="@customField.FieldFormat" cf_Id="" cf_Text="" class="btn btn-light w-auto border-1 border-ccc bg-white btn-sm dropdown-toggle text-666 text-start fs-7" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="min-width:30%;">
-                                                                    &nbsp;
                                                                 </button>
                                                                 <ul id="cfDropdown_@customField.Id" class="dropdown-menu w-auto shadow text-666" aria-labelledby="cf_@customField.Id" style="min-width:300px;max-height:400px;overflow-y:auto">
-                                                                    <div class="row p-0 m-0 pt-0 p-1 pr-2 rounded-1 bg-title border-bottom">
+                                                                    <div class="row p-0 m-0 pt-0 pb-2 pr-2 rounded-1 border-bottom">
                                                                         <div class="col">
                                                                             <input id="cfInput_@customField.Id" class="form-control m-0 pt-0 p-1 bg-white border-1 border-ccc rounded-1 fs-7" type="text" placeholder="筛选 @customField.Name" autocomplete="off" />
                                                                         </div>
@@ -119,19 +171,9 @@
                                                                         }
                                                                     }
                                                                 </ul>
-
                                                             </div>
-                                                            @*@if (customField.Multiple.Value == true) {
-                                            <div class="col-1">
-                                                <div class="col-1 p-0 pt-1">
-                                                    <i id="btnClear_cf_@customField.Id" htmlType="btnClear" class="bi bi-trash" style="cursor:pointer" onclick="$('#cf_Multiple_@customField.Id').empty();"></i>
-                                                </div>
-                                            </div>
-                                        }*@
                                                             @if (customField.Multiple.Value == true) {
-                                                                <div id="cf_Multiple_@customField.Id" class="container">
-                                                                    @*<span class="badge m-0 p-1 bg-eee text-dark fw-normal" htmlId="" htmlText="">Primary</span>*@
-                                                                </div>
+                                                                <div id="cf_Multiple_@customField.Id" class="container" />
                                                             }
                                                         </div>
                                                     </div>
@@ -162,41 +204,13 @@
                         </table>
                     </div>
                 </div>
-                <div class="row">
-                    <table>
-                        <tr>
-                            <td width="76px" class="p-0 text-right" valign="top">
-                                <label for="inputPassword" class="col-form-label form-control-sm fw-bold fs-7">描述</label>
-                            </td>
-                            <td>
-                                <textarea class="form-control fs-7 text-666" id="exampleFormControlTextarea1" rows="3" autocomplete="off"></textarea>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td valign="top">
-                                <label for="inputPassword" class="col-form-label form-control-sm fs-7">附件<br /><i class="bi bi-arrow-up-right-square fs-6"></i></label>
-                            </td>
-                            <td>
-                                <table class="table table-sm table-hover w-100 table-bordered fs-7 rounded-3">
-                                    <tbody>
-                                        <tr>
-                                            <td>Otto</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Thornton</td>
-                                        </tr>
-                                        <tr>
-                                            <td colspan="2">Larry the Bird</td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </td>
-                        </tr>
-                    </table>
-                </div>
-                <div style="margin-bottom:30px">
-                    &nbsp;
-                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row fixed-bottom ps-3 mb-5">
+        <div class="float-end pr-2">
+            <a href="#Temp" class="btn btn-primary fs-7 text-white shadow" onclick="$('#newForm').submit();">创建</a>&nbsp;
+            <a href="#Temp" class=" btn btn-secondary fs-7 text-white shadow">创建并继续</a>
         </div>
     </div>
 </form>
@@ -232,6 +246,7 @@
                         @:    $("a[htmlType='source_@customField.Id']").filter(function () {
                         @:        $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
                         @:    });
+
                         @:});
                         @: // 选择
                         @:$('#cfDropdown_@customField.Id .dropdown-item').on("click", function () {
@@ -246,7 +261,7 @@
                         @:        $(this).show();
                         @:    });
                         if (customField.Multiple.Value == true) {
-                        @:    var span = "<button id='cf_span_" + cf_Id + "' class='btn badge m-0 mr-2 border-1 border-ccc p-1 bg-eee text-dark fw-normal' cf_Id='" + cf_Id + "' cf_Text='" + cf_Text + "' onclick='$(this).remove();'>" + cf_Text + "&nbsp;<i class=\"bi bi-x-circle\"></i></button>";
+                        @:    var span = "<button id='cf_span_" + cf_Id + "' class='btn badge m-0 mt-1 mr-2 border-1 border-ccc p-1 bg-eee text-dark fw-normal' cf_Id='" + cf_Id + "' cf_Text='" + cf_Text + "' onclick='$(this).remove();'>" + cf_Text + "&nbsp;<i class=\"bi bi-x-circle\"></i></button>";
                         @:    if ($('#cf_Multiple_@customField.Id').children('#cf_span_' + cf_Id).length <=0) {
                         @:        $('#cf_Multiple_@customField.Id').prepend(span);
                         @:    }

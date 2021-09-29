@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using RubyMine.Models;
+using System;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
@@ -41,6 +42,9 @@ namespace RubyMine.Pages {
             if (string.IsNullOrEmpty(Login) == false) {
                 jsScript = "$('#Password').focus();";
             }
+            if (string.IsNullOrEmpty(ShowMessage)) {
+                ShowMessage = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss fff");
+            }
         }
         public async Task<IActionResult> OnPostAsync() {
             if (!ModelState.IsValid) {
@@ -49,11 +53,11 @@ namespace RubyMine.Pages {
             ShowLogin = "block";
             TempLogin = Login;
             TempPassword = Password;
-            Response.Cookies.Append("cache_Account", Login);
             if (string.IsNullOrEmpty(Login)) {
                 ShowMessage = "登录帐号不能为空!";
                 jsScript = "$('#Login').focus();";
             } else if (string.IsNullOrEmpty(Password)) {
+                Response.Cookies.Append("cache_Account", Login);
                 ShowMessage = "密码不能为空!";
                 jsScript = "$('#Password').focus();";
             } else {
@@ -66,8 +70,10 @@ namespace RubyMine.Pages {
                     encrypt_Password = RMUtils.SHA1(item.Salt + encrypt_Password);
 
                     if (item.HashedPassword.Equals(encrypt_Password)) {
+                        ShowMessage = "登陆成功";
                         ShowLogin = "";
                         SessionUtils.Set<User>(HttpContext.Session, "cua", item);
+                        ShowMessage += "cua设置成功";
                     } else {
                         ShowMessage = "帐号或密码错误!";
                         jsScript = "$('#Password').focus();";

@@ -3,6 +3,7 @@
 @using RubyMine.Models;
 @{
     ViewData["Title"] = "Home page";
+    ViewData["showFooter"] = "footer";
     User cua = SessionUtils.Get<User>(HttpContext.Session, "cua");
     bool aleradyLogin = cua != null;
 }
@@ -20,6 +21,7 @@
             transform: translateX(-50%) translateZ(0) scaleY(1)
         }
     }
+
     .waveWrapper {
         overflow: hidden;
         position: absolute;
@@ -30,6 +32,7 @@
         margin: auto;
         z-index: -999;
     }
+
     .waveWrapperInner {
         position: absolute;
         width: 100%;
@@ -39,17 +42,21 @@
         z-index: -999;
         background-image: linear-gradient(to top, #8cbdd2 20%,#5e6fa3 80%);
     }
+
     .bgTop {
         z-index: 15;
         opacity: 0.5;
     }
+
     .bgMiddle {
         z-index: 10;
         opacity: 0.75;
     }
+
     .bgBottom {
         z-index: 5;
     }
+
     .wave {
         position: absolute;
         left: 0;
@@ -60,10 +67,12 @@
         transform-origin: center bottom;
         z-index: -999;
     }
+
     .waveTop {
         background-size: 50% 100px;
         z-index: -999;
     }
+
     .waveAnimation .waveTop {
         animation: move-wave 1s;
         -webkit-animation: move-wave 1s;
@@ -71,71 +80,196 @@
         animation-delay: 0.6s;
         z-index: -999;
     }
+
     .waveMiddle {
         background-size: 50% 120px;
         z-index: -999;
     }
+
     .waveAnimation .waveMiddle {
         animation: move_wave 10s linear infinite;
         z-index: -999;
     }
+
     .waveBottom {
         background-size: 50% 100px;
         z-index: -999;
     }
+
     .waveAnimation .waveBottom {
         animation: move_wave 15s linear infinite;
         z-index: -999;
     }
 </style>
+@Model.ShowMessage
+@aleradyLogin
 @if (aleradyLogin == false) {
-<form method="post">
-    <div class="container fw-bold rounded-1 shadow-sm bg-light p-4 fs-7" style="margin-top:9%;max-width:25%;min-width:500px;">
-        <div class="row pb-3">
-            <div class="col ps-3">
-                <h4 class="text-269"><i class="bi bi-arrow-right-circle"></i>&nbsp;请先登录</h4>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col ps-4 pr-4">
-                <label for="basic-url" class="form-label">输入帐号</label>
-                <div class="input-group mb-3">
-                    <span class="input-group-text border-end-0 m-0 p-3 pt-1 pb-1" id="basic-addon3"><i class="bi bi-person-circle"></i></span>
-                    <input type="text" class="form-control m-0 p-0 ps-1 text-666 fs-7" asp-for="Login" autocomplete="off" placeholder="请输入登录帐号">
+    <form method="post">
+        <div class="container fw-bold rounded-1 shadow-sm bg-light p-4 fs-7" style="margin-top:9%;max-width:25%;min-width:500px;">
+            <div class="row pb-3">
+                <div class="col ps-3">
+                    <h4 class="text-269"><i class="bi bi-arrow-right-circle"></i>&nbsp;请先登录</h4>
                 </div>
             </div>
-        </div>
-        <div class="row">
-            <div class="col ps-4 pr-4">
-                <label for="basic-url" class="form-label">密码</label>
-                <div class="input-group mb-3">
-                    <span class="input-group-text border-end-0 m-0 p-3 pt-1 pb-1" id="basic-addon3"><i class="bi bi-gender-ambiguous"></i></span>
-                    <input type="password" class="form-control m-0 p-0 ps-1 text-666 fs-7" asp-for="Password" autocomplete="off" placeholder="请输入密码" value="aa123456">
-                </div>
-            </div>
-        </div>
-        <div class="row mt-0 fs-7" style="display:none @TempData.Peek("ShowLogin");">
-            <div class="col ps-4 pr-4">
-                <div class="alert mt-0 pt-2 pb-2 mb-2 alert-danger" role="alert">
-                    @TempData.Peek("ShowMessage")
-                </div>
-            </div>
-        </div>
-        <div class="row mt-2 mb-3">
-            <div class="col ps-4 pr-4">
-                <button type="submit" class="btn pt-2 pb-2 w-100 btn-light border-1 border-ccc bg-success shadow text-light fs-7">登录</button>
-            </div>
-        </div>
-        @*<div class="row mt-3">
-                <div class="col">
-                    <div class="form-check form-switch fs-6">
-                        <input class="form-check-input" type="checkbox" asp-for="SaveOnline">
-                        <label class="form-check-label fs-7" for="flexSwitchCheckDefault">保持登录状态</label>
+            <div class="row">
+                <div class="col ps-4 pr-4">
+                    <label for="basic-url" class="form-label">输入帐号</label>
+                    <div class="input-group mb-3">
+                        <span class="input-group-text border-end-0 m-0 p-3 pt-1 pb-1" id="basic-addon3"><i class="bi bi-person-circle"></i></span>
+                        <input type="text" class="form-control m-0 p-0 ps-1 text-666 fs-7" asp-for="Login" autocomplete="off" placeholder="请输入登录帐号">
                     </div>
                 </div>
-            </div>*@
+            </div>
+            <div class="row">
+                <div class="col ps-4 pr-4">
+                    <label for="basic-url" class="form-label">密码</label>
+                    <div class="input-group mb-3">
+                        <span class="input-group-text border-end-0 m-0 p-3 pt-1 pb-1" id="basic-addon3"><i class="bi bi-gender-ambiguous"></i></span>
+                        <input type="password" class="form-control m-0 p-0 ps-1 text-666 fs-7" asp-for="Password" autocomplete="off" placeholder="请输入密码" value="aa123456">
+                    </div>
+                </div>
+            </div>
+            <div class="row mt-0 fs-7" style="display:none @TempData.Peek("ShowLogin");">
+                <div class="col ps-4 pr-4">
+                    <div class="alert mt-0 pt-2 pb-2 mb-2 alert-danger" role="alert">
+                        @TempData.Peek("ShowMessage")
+                    </div>
+                </div>
+            </div>
+            <div class="row mt-2 mb-3">
+                <div class="col ps-4 pr-4">
+                    <button type="submit" class="btn pt-2 pb-2 w-100 btn-light border-1 border-ccc bg-success shadow text-light fs-7">登录</button>
+                </div>
+            </div>
+            @*<div class="row mt-3">
+                    <div class="col">
+                        <div class="form-check form-switch fs-6">
+                            <input class="form-check-input" type="checkbox" asp-for="SaveOnline">
+                            <label class="form-check-label fs-7" for="flexSwitchCheckDefault">保持登录状态</label>
+                        </div>
+                    </div>
+                </div>*@
+        </div>
+    </form>
+} else {
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        /*body {
+          font-family: Arial, Helvetica, sans-serif;
+        }
+        */
+        /* Float four columns side by side */
+        .column {
+            float: left;
+            width: 20%;
+            padding: 0 8px;
+        }
+
+        .row {
+            margin: 0 -5px;
+        }
+
+            /* Clear floats after the columns */
+            .row:after {
+                content: "";
+                display: table;
+                clear: both;
+            }
+
+        /* Responsive columns */
+        @@media screen and (max-width: 600px) {
+            .column {
+                width: 100%;
+                display: block;
+                margin-bottom: 10px;
+            }
+        }
+
+        /* Style the counter cards */
+        .card {
+            box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+            padding: 16px;
+            text-align: center;
+            background-color: #9d9d9d;
+            color: white;
+        }
+
+        .fa {
+            font-size: 50px;
+        }
+    </style>
+    <div class="container-fluid pt-3">
+        <div class="row mb-3">
+            <div class="column">
+                <div class="card bg-primary bg-transparent">
+                    <p><i class="fa fa-user"></i></p>
+                    <h3>2</h3>
+                    <p>Project</p>
+                </div>
+            </div>
+
+            <div class="column">
+                <div class="card bg-danger bg-transparent">
+                    <p><i class="fa fa-check"></i></p>
+                    <h3>56</h3>
+                    <p>Issue</p>
+                </div>
+            </div>
+
+            <div class="column">
+                <div class="card bg-dark bg-transparent">
+                    <p><i class="fa fa-smile-o"></i></p>
+                    <h3>123</h3>
+                    <p>我登记的</p>
+                </div>
+            </div>
+
+            <div class="column">
+                <div class="card bg-gradient bg-transparent">
+                    <p><i class="fa fa-coffee"></i></p>
+                    <h3>31</h3>
+                    <p>缺陷</p>
+                </div>
+            </div>
+            <div class="column">
+                <div class="card bg-info bg-transparent">
+                    <p><i class="fa fa-user"></i></p>
+                    <h3>2</h3>
+                    <p>Project</p>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+
+            <div class="column">
+                <div class="card bg-transparent">
+                    <p><i class="fa fa-check"></i></p>
+                    <h3>56</h3>
+                    <p>Issue</p>
+                </div>
+            </div>
+
+            <div class="column">
+                <div class="card bg-transparent">
+                    <p><i class="fa fa-smile-o"></i></p>
+                    <h3>123</h3>
+                    <p>我登记的</p>
+                </div>
+            </div>
+
+            <div class="column">
+                <div class="card bg-transparent">
+                    <p><i class="fa fa-coffee"></i></p>
+                    <h3>31</h3>
+                    <p>缺陷</p>
+                </div>
+            </div>
+        </div>
     </div>
-</form>
+}
 <div class="waveWrapper waveAnimation" style="margin-bottom:33px;margin-top:43px;">
     <div class="waveWrapperInner bgTop">
         <div class="wave waveTop" style="background-image: url('/images/wave-png/wave-top.png')"></div>
@@ -157,4 +291,3 @@
         @Html.Raw(TempData.Peek("jsScript"))
     });
 </script>
-}

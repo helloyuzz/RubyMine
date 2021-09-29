@@ -1,0 +1,219 @@
+﻿@page
+@model RubyMine.Pages.ThridParty.VersionModel
+@{
+    //Layout = null;
+
+    Layout = "~/Pages/Shared/_ThridPartyLayout.cshtml";
+}
+<style>
+    td {
+        padding: 0px !important;
+        font-size: 9pt;
+    }
+
+    .td_open {
+    }
+
+    .td_locked {
+        color: #b9b9b9 !important;
+    }
+
+    .td_closed {
+        color: #b9b9b9 !important;
+    }
+
+    .td_system {
+        font-weight: bold;
+    }
+
+    .accordion-button::after {
+        display: none;
+    }
+
+    .row {
+        margin-left: unset !important;
+    }
+</style>
+<p class="mt-3 mb-2">已规划版本<span class="badge rounded-pill bg-eee text-dark fw-normal">@Model.Version.Count</span><a href="@Model.RedmineUrl/issues?utf8=✓&set_filter=1&sort=tracker,cf_22,status&f[]=status_id&op[status_id]==&v[status_id][]=1&f[]=tracker_id&op[tracker_id]==&v[tracker_id][]=2&f[]=&c[]=author&c[]=tracker&c[]=subject&c[]=status&c[]=cf_3&c[]=cf_6&c[]=cf_4&c[]=cf_30&c[]=cf_22&group_by=author&t[]=" target="_top" class="btn btn-sm text-decoration-none btn-primary text-white fs-7 float-end p-0 p-1">新需求</a></p>
+<div class="accordion accordion-flush" id="accordionFlushExample">
+    @foreach (var item in Model.Version.OrderBy(t => t.ProjectId).ThenByDescending(t => t.Sharing).ThenByDescending(t => t.Status).ThenByDescending(t => t.EffectiveDate)) {
+        <div class="accordion-item">
+            @{
+                string expireDay = "";
+                string expireTitle = "";
+                string description = item.Description;
+
+                // 常规版本或交付版本
+                var version_type = Model.CustomValue.FirstOrDefault(t => t.CustomizedId == item.Id);
+
+                // 常规版本
+                bool is_normal = true;
+
+                if (version_type != null && "交付版本".Equals(version_type.Value)) {    // 交付版本
+                    is_normal = false;
+                }
+                // 常规版本链接路径
+                string urlPath = Model.Project.FirstOrDefault(t => t.Id == item.ProjectId).Name;
+                string url_All, url_Item;
+
+                // 交付版本链接路径
+                if (is_normal) {
+                    url_All = Model.RedmineUrl + "/projects/" + urlPath + "/issues??utf8=✓&set_filter=1&sort=status,id:desc&f[]=status_id&op[status_id]=*&f[]=fixed_version_id&op[fixed_version_id]==&v[fixed_version_id][]=" + item.Id + "&group_by=tracker";
+                    url_Item = Model.RedmineUrl + "/projects/" + urlPath + "/issues??utf8=✓&set_filter=1&sort=status,id:desc&f[]=status_id&op[status_id]=*&f[]=fixed_version_id&op[fixed_version_id]==&v[fixed_version_id][]=" + item.Id + "&f[]=tracker_id&op[tracker_id]==&v[tracker_id][]=???&group_by=tracker";
+                } else {
+                    url_All = Model.RedmineUrl + "/projects/" + urlPath + "/issues??utf8=✓&set_filter=1&sort=status,id:desc&f[]=status_id&op[status_id]=*&f[]=cf_50&op[cf_50]==&v[cf_50][]=" + item.Id + "&c[]=author&c[]=tracker&c[]=subject&c[]=status&c[]=cf_35&c[]=cf_3&c[]=cf_6&c[]=cf_4&c[]=cf_30&c[]=cf_36&c[]=cf_50&group_by=tracker";
+                    url_Item = Model.RedmineUrl + "/projects/" + urlPath + "/issues??utf8=✓&set_filter=1&sort=status,id:desc&f[]=status_id&op[status_id]=*&f[]=cf_50&op[cf_50]==&v[cf_50][]=" + item.Id + "&c[]=author&c[]=tracker&c[]=subject&c[]=status&c[]=cf_35&c[]=cf_3&c[]=cf_6&c[]=cf_4&c[]=cf_30&c[]=cf_36&c[]=cf_50&f[]=tracker_id&op[tracker_id]==&v[tracker_id][]=???&group_by=tracker"; ;
+                }
+
+                if (string.IsNullOrEmpty(description)) {
+                    description = "版本描述:&nbsp;?null";
+                }
+                if (item.Status.Equals("locked")) {
+                    expireDay = item.EffectiveDate.HasValue ? item.EffectiveDate.Value.ToString("yyyy-MM-dd") : "?null";
+                    expireTitle = item.EffectiveDate.HasValue ? item.EffectiveDate.Value.ToString("yyyy-MM-dd") : "已发布";
+                } else {
+                    if (item.Sharing.Equals("system")) {
+                        expireTitle = "LTS";
+                        expireDay = "长期维护版本";
+
+                        url_All = Model.RedmineUrl + "/projects/" + urlPath + "/issues?c[]=author&c[]=tracker&c[]=subject&c[]=status&c[]=cf_35&c[]=cf_3&c[]=cf_6&c[]=cf_4&c[]=cf_30&c[]=cf_36&c[]=cf_50&f[]=fixed_version_id&f[]=&group_by=cf_50&op[fixed_version_id]==&set_filter=1&sort=cf_50,status,id:desc&t[]=&utf8=✓&v[fixed_version_id][]=" + item.Id;
+                        url_Item = Model.RedmineUrl + "/projects/" + urlPath + "/issues?c[]=author&c[]=tracker&c[]=subject&c[]=status&c[]=cf_35&c[]=cf_3&c[]=cf_6&c[]=cf_4&c[]=cf_30&c[]=cf_36&c[]=cf_50&f[]=fixed_version_id&f[]=&group_by=cf_50&op[fixed_version_id]==&set_filter=1&sort=cf_50,status,id:desc&t[]=&utf8=✓&v[fixed_version_id][]=" + item.Id + "&f[]=tracker_id&op[tracker_id]==&v[tracker_id][]=???";
+                    } else {
+                        expireTitle = "开发中";
+                        if (item.EffectiveDate != null) {
+                            var dt = DateTime.Now - item.EffectiveDate;
+                            if (dt.Value.Days > 0 && item.Status.Equals("open")) {
+                                expireTitle = "超期" + dt.Value.Days + "天";
+                                expireDay = "<span style=\"color:red;\">计划发布：" + item.EffectiveDate.Value.ToString("yyyy-MM-dd") + "，已超期" + dt.Value.Days + "天。</span>";
+                            } else {
+                                expireDay = item.EffectiveDate.Value.ToString("yyyy-MM-dd");
+                            }
+                        } else {
+                            expireTitle = "?null";
+                            expireDay = "计划发布:&nbsp;?null";
+                        }
+                    }
+                }
+            }
+            <div class="accordion-header" id="flush-headingOne-@item.Id" title="@if (is_normal==false) { @version_type.Value} ">
+                <div class="row accordion-button collapsed ms-0 p-0" style="background:#f5f5f5;font-size:9pt;" data-bs-toggle="collapse" data-bs-target="#flush-collapseOne-@item.Id" aria-expanded="false" aria-controls="flush-collapseOne-@item.Id">
+                    <div class="col-1 text-start ps-0" style="width:18px;">
+                        @{
+                            if (item.Status.Equals("locked")) {
+                                <i class="bi bi-lock"></i>
+                            } else {
+                                if (is_normal) {
+                                    <span>✔️</span>
+                                } else {
+                                    <span>📁</span>
+                                }
+                            }
+                        }
+                    </div>
+                    <div class="col ps-0">
+                        <a href="#Temp" class="text-decoration-none text-269 td_@item.Status td_@item.Sharing" target="_top">@item.Name</a>
+                    </div>
+                    <div class="col-1 ps-0" style="width:78px;">
+                        <a href="#Temp" class="td_@item.Status" data-bs-toggle="collapse" data-bs-target="#flush-collapseOne-@item.Id" aria-expanded="false" aria-controls="flush-collapseOne-@item.Id">
+                            @Html.Raw(expireTitle)
+                        </a>
+                    </div>
+                    <div class="col-1 text-right ps-0" style="width:18px;">
+                        @if (string.IsNullOrEmpty(item.Description) == false) {
+                            <a href="#Temp" data-bs-toggle="collapse" data-bs-target="#flush-collapseOne-@item.Id" aria-expanded="false" aria-controls="flush-collapseOne-@item.Id">
+                                <i class="bi bi-chat-square-text"></i>
+                            </a>
+                        }
+                    </div>
+                </div>
+            </div>
+            <div id="flush-collapseOne-@item.Id" style="padding-left:18px;" class="accordion-collapse collapse fs-7 text-666" aria-labelledby="flush-headingOne-@item.Id" data-bs-parent="#accordionFlushExample">
+                <p class="pt-2 pb-2 mb-0">
+                    @Html.Raw(expireDay)
+                    <br />
+                    @Html.Raw(description)
+                    <br />
+                    @foreach (var count in Model.Tracker) {
+                        <span>@count.Name：<a href="@url_Item.Replace("???",count.Id.ToString())" target="_top">@Model.Issue.Count(t => t.FixedVersionId == item.Id && t.TrackerId == count.Id)</a></span><br />
+                    }
+                    <a href="@url_All" class="text-269 fw-normal td_@item.Status td_@item.Sharing" target="_top">查看版本详情</a>
+                </p>
+            </div>
+        </div>
+    }
+</div>
+
+@*<table class="table table-hover p-0">
+        @foreach (var item in Model.Version.OrderBy(t => t.ProjectId).ThenByDescending(t => t.Status).ThenByDescending(t => t.Name).ThenByDescending(t => t.EffectiveDate)) {
+            <tr>
+                @{
+                    string expireDay = "";
+                    string expireTitle = "";
+                    string description = item.Description;
+                    if (string.IsNullOrEmpty(description)) {
+                        description = "版本描述:null";
+                    }
+                    if (item.Status.Equals("locked")) {
+                        expireDay = item.EffectiveDate.HasValue ? item.EffectiveDate.Value.ToString("yyyy-MM-dd") : "null";
+                        expireTitle = item.EffectiveDate.HasValue ? item.EffectiveDate.Value.ToString("yyyy-MM-dd") : "已发布";
+                    } else {
+                        if (item.Sharing.Equals("system")) {
+                            expireTitle = "LTS";
+                        } else {
+                            expireTitle = "开发中";
+                            if (item.EffectiveDate != null) {
+                                var dt = DateTime.Now - item.EffectiveDate;
+                                if (dt.Value.Days > 0 && item.Status.Equals("open")) {
+                                    expireTitle = "超期" + dt.Value.Days + "天";
+                                    expireDay = "<span style=\"color:red;\">" + item.EffectiveDate.Value.ToString("yyyy-MM-dd") + "</span>";
+                                } else {
+                                    expireDay = item.EffectiveDate.Value.ToString("yyyy-MM-dd");
+                                }
+                            } else {
+                                expireTitle = "?null";
+                                expireDay = "计划发布:null";
+                            }
+                        }
+                    }
+
+                    string urlPath = Model.Project.FirstOrDefault(t => t.Id == item.ProjectId).Name;
+                    urlPath = "http://localhost/projects/" + urlPath + "/issues??utf8=✓&set_filter=1&sort=status,id:desc&f[]=status_id&op[status_id]=*&f[]=fixed_version_id&op[fixed_version_id]==&v[fixed_version_id][]=" + item.Id + "&group_by=tracker";
+                }
+                <td scope="row" style="width:18px;">
+                    @{
+                        if (item.Status.Equals("locked")) {
+                            <i class="bi bi-lock"></i>
+                        } else {
+                            <span>✔️</span>
+                        }
+                    }
+                </td>
+                <td class="">
+                    <a href="@urlPath" class="text-269 td_@item.Status td_@item.Sharing" target="_top">@item.Name</a>
+                </td>
+                <td style="width:78px;">
+                    <a class="fs-7 td_@item.Status" data-bs-toggle="collapse" href="#collapseExample-@item.Id" role="button" aria-expanded="false" aria-controls="collapseExample">
+                        @Html.Raw(expireTitle)
+                    </a>
+                    @{
+                        if (string.IsNullOrEmpty(expireDay) == false) {
+                        }
+                    }
+                </td>
+                <td class="text-right" style="width:18px;">
+                    @if (string.IsNullOrEmpty(item.Description) == false) {
+                        <a class="fs-7" data-bs-toggle="collapse" href="#collapseExample-@item.Id" role="button" aria-expanded="false" aria-controls="collapseExample">
+                            <i class="bi bi-chat-square-text"></i>
+                        </a>
+                    }
+                </td>
+            </tr>
+            <tr>
+                <td colspan="4">
+                    <div class="collapse text-666" id="collapseExample-@item.Id" style="padding-left:18px;">
+                        @description<br />@Html.Raw(expireDay)
+                    </div>
+                </td>
+            </tr>
+        }
+    </table>*@

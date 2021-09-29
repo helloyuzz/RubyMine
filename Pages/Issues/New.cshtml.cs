@@ -13,6 +13,7 @@ namespace RubyMine.Pages.Issues {
     public class NewModel : PageModel {
         private readonly RubyMine.DbContexts.RubyRemineDbContext _context;
         public IList<Tracker> Tracker { get; set; }
+        public IList<Project> Project { get; set; }
         public IList<CustomField> CustomField { get; set; }
         public string CustomFieldProject { get; set; }
         public string CustomFieldTracker { get; set; }
@@ -31,7 +32,8 @@ namespace RubyMine.Pages.Issues {
         public async Task OnGetAsync() {
             Project_id = Request.Query["project_id"];
             Tracker_id = Request.Query["tracker_id"];
-            Tracker = await _context.Trackers.OrderBy(x => x.Position).ToListAsync();
+            Tracker = await _context.Trackers.Where(x => x.Description.Equals("hide") == false).OrderBy(x => x.Position).Select(x => new Tracker { Id = x.Id, Name = x.Name }).ToListAsync();
+            Project = await _context.Projects.Where(t => t.IsPublic.Value).Select(t => new Project { Id = t.Id, Name = t.Name }).ToListAsync();
 
             CustomField = await _context.CustomFields.Where(t => t.Type.Equals("IssueCustomField") && t.Description.Equals("hide") == false).OrderBy(t => t.Position).ToListAsync();
 

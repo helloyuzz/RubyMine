@@ -14,58 +14,18 @@
 <link rel="stylesheet" href="~/css/hightlight.css" />
 <div class="container-fluid fs-7">
     <div class="row">
-        <div class="col-2 border-1 border-ccc mr-2">
-            <div class="container p-0">
-                <div class="row bg-title border-bottom border-ccc">
-                    <div class="col ps-2 pt-1 pb-1">
-                        <span class="fs-7 fw-bold">版本</span>&nbsp;<a asp-page="New" class="float-end fs-7 text-269"><i class="bi bi-plus-lg fs-7"></i>&nbsp;新增</></a>
-                    </div>
-                </div><form id="frmVersion" method="get">
-                    <div class="row">
-                        <div class="col p-2">
-                            <table class="fs-7">
-                                <tr>
-                                    <td>公司项目</td>
-                                    <td>
-                                        <select class="form-select p-1 pr-5 fs-7 mb-1 w-auto" aria-label="" asp-for="project_id" onchange="$('#frmVersion').submit();">
-                                            <option value="">全部</option>
-                                            @foreach (RubyMine.Models.Project item in Model.Project) {
-                                                <option value="@item.Id">@item.Name</option>
-                                            }
-                                        </select>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>状态</td>
-                                    <td>
-                                        <select class="form-select p-1 pr-5 fs-7 mb-1 w-auto" aria-label="" asp-for="status" onchange="$('#frmVersion').submit();">
-                                            <option value="">全部</option>
-                                            <option value="open">开发中</option>
-                                            <option value="locked">已发布</option>
-                                        </select>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td width="60px">版本号</td>
-                                    <td><input type="text" class="form-control p-1 fs-7 mb-1" aria-label="" placeholder="Ctrl+F"></td>
-                                </tr>
-                                <tr>
-                                    <td width="60px">数量</td>
-                                    <td><label class="form-control p-1 fs-7 border-0">@Model.Version.Count</label></td>
-                                </tr>
-                            </table>
-                        </div>
-                    </div>
-                </form>
+        <div class="col border-1 border-ccc mr-2">
+            <div class="row">
+                <div class="col fw-bold bg-title p-1 ps-2 fs-7">
+                    版本
+                </div>
             </div>
-        </div>
-        <div class="col border-1 border-ccc">
             <div class="row fs-7 pr-0 bgt">
-                <div class="col p-0 border-0">
-                    <table id="mainTable" class="table table-hover lh-1 fs-7">
+                <div class="col p-1 border-0">
+                    <table id="mainTable" class="table table-hover table-bordered lh-1 fs-7">
                         <thead>
-                            <tr class="bg-title">
-                                <th class="border-ccc text-666">#</th>
+                            <tr>
+                                <th class="border-ccc text-666" width="80px">#</th>
                                 <th class="border-ccc text-666">版本号</th>
                                 <th class="border-ccc text-666">发布日期</th>
                                 <th class="border-ccc text-666">状态</th>
@@ -86,7 +46,7 @@
                                     switch (item.Status) {
                                         case "open":
                                             htmlClass = "text-269";
-                                            var day = DateTime.Now -item.EffectiveDate;
+                                            var day = DateTime.Now - item.EffectiveDate;
                                             if (item.EffectiveDate != null && day.Value.Days > 0) {
                                                 htmlClass = "text-danger";
                                                 htmlIcon = "bi bi-exclamation-triangle-fill";
@@ -155,6 +115,51 @@
                     </table>
                     <span class="text-269 ps-1 pb-3">共：@Model.Version.Count 条数据</span>
                 </div>
+            </div>
+        </div>
+        <div class="col-3 border-1 border-ccc">
+            <div class="container p-0">
+                <div class="row bg-title border-bottom border-ccc">
+                    <div class="col ps-2 pt-1 pb-1">
+                        <span class="fs-7 fw-bold">过滤</span>&nbsp;<a asp-page="New" class="float-end fs-7 text-269"><i class="bi bi-plus-lg fs-7"></i>&nbsp;新增</></a>
+                    </div>
+                </div><form id="frmVersion" method="get">
+                    <div class="row">
+                        <div class="col p-2">
+                            <table class="fs-7">
+                                <tr>
+                                    <td>公司项目</td>
+                                    <td>
+                                        <select class="form-select p-1 pr-5 fs-7 mb-1 w-auto" aria-label="" asp-for="project_id" onchange="$('#frmVersion').submit();">
+                                            <option value="">全部</option>
+                                            @foreach (RubyMine.Models.Project item in Model.Project) {
+                                                <option value="@item.Id">@item.Name</option>
+                                            }
+                                        </select>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>状态</td>
+                                    <td>
+                                        <select class="form-select p-1 pr-5 fs-7 mb-1 w-auto" aria-label="" asp-for="status" onchange="$('#frmVersion').submit();">
+                                            <option value="">全部</option>
+                                            <option value="open">开发中</option>
+                                            <option value="locked">已发布</option>
+                                        </select>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td width="60px">版本号</td>
+                                    <td><input type="text" class="form-control p-1 fs-7 mb-1" aria-label="" placeholder="Ctrl+F"></td>
+                                </tr>
+                                <tr>
+                                    <td width="60px">数量</td>
+                                    <td><label class="form-control p-1 fs-7 border-0">@Model.Version.Count</label></td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </form>
             </div>
         </div>
     </div>

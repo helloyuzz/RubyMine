@@ -1,0 +1,105 @@
+﻿@page
+@model RubyMine.Pages.ThridParty.CustomModel
+@{
+    Layout = "~/Pages/Shared/_ThridPartyLayout.cshtml";
+}
+<style>
+    td {
+        padding: 0px !important;
+        font-size: 9pt;
+    }
+
+    .td_open {
+    }
+
+    .td_locked {
+        color: #b9b9b9 !important;
+    }
+
+    .td_closed {
+        color: #b9b9b9 !important;
+    }
+
+    .td_system {
+        font-weight: bold;
+    }
+
+    .accordion-button::after {
+        display: none;
+    }
+
+    .row {
+        margin-left: unset !important;
+    }
+
+    .bg-author {
+        background: #f5e6e6 !important;
+    }
+</style>
+<p class="mt-3 mb-2">在建项目列表<span class="badge rounded-pill bg-eee text-dark fw-normal">@Model.User.Count</span></p>
+<div class="input-group mb-3">
+    <input id="quickSearch" placeholder="快速检索" type="text" class="form-control fs-7" aria-label="Example text with button addon" aria-describedby="button-addon1">
+    <button class="btn btn-outline-secondary border-ccc fs-7" type="button" id="btn_Clear" onclick="$('#quickSearch').val(''); $('#quickSearch').keyup();"><i class="bi bi-x"></i></button>
+</div>
+<div class="accordion accordion-flush" id="accordionFlushExample">
+    @{ foreach (var item in Model.User) {
+            item.AuthSourceId = Model.IssueTemp.Count(t => t.Cf22.Equals(item.Id.ToString()));
+        }
+        foreach (var item in Model.User.OrderByDescending(t => t.AuthSourceId)) {
+            var url_all = Model.RedmineUrl + "/issues?utf8=✓&set_filter=1&sort=status,id:desc&f[]=status_id&op[status_id]=*&f[]=cf_22&op[cf_22]==&v[cf_22][]=" + item.Id + "&f[]=&c[]=author&c[]=tracker&c[]=subject&c[]=status&c[]=cf_35&c[]=cf_3&c[]=cf_6&c[]=cf_4&c[]=cf_30&c[]=fixed_version&c[]=cf_36&group_by=tracker";
+            var url_item = Model.RedmineUrl + "/issues?utf8=✓&set_filter=1&sort=status,id:desc&f[]=status_id&op[status_id]=*&f[]=cf_22&op[cf_22]==&v[cf_22][]=" + item.Id + "&f[]=tracker_id&op[tracker_id]==&v[tracker_id][]=???&f[]=&c[]=author&c[]=tracker&c[]=subject&c[]=status&c[]=cf_35&c[]=cf_3&c[]=cf_6&c[]=cf_4&c[]=cf_30&c[]=fixed_version&c[]=cf_36&group_by=author";
+
+            var linkText = item.Firstname;
+            var linkClass = "text-269";
+            if (item.AuthSourceId > 0) {
+                linkText += "<span class=\"badge fw-normal rounded-pill bg-author text-269\">" + item.AuthSourceId + "</span>";
+            } else {
+                linkClass = "td_locked";
+            }
+
+            <div class="accordion-item" htmlType="pinyin" pinyin="@item.pinyin">
+                <div class="accordion-header" id="flush-headingOne-@item.Id">
+                    <div class="row accordion-button collapsed ms-0 p-0 fs-7" style="background:#f5f5f5;font-size:9pt;" data-bs-toggle="collapse" data-bs-target="#flush-collapseOne-@item.Id" aria-expanded="false" aria-controls="flush-collapseOne-@item.Id">
+                        <div class="col-1 text-start ps-0" style="width:18px;">
+                            🏣
+                        </div>
+                        <div class="col ps-0 p-1" style="cursor:default">
+                            <span class="@linkClass text-decoration-none" target="_top">@Html.Raw(linkText)</span>
+                        </div>
+                        <div class="col-1 text-right ps-0" style="width:18px;">
+                        </div>
+                    </div>
+                    <div id="flush-collapseOne-@item.Id" style="padding-left:18px;font-size:9pt;" class="accordion-collapse collapse text-666" aria-labelledby="flush-headingOne-@item.Id" data-bs-parent="#accordionFlushExample">
+                        <p class="pt-2 pb-2 mb-0">
+                            @{
+                                int sum = 0;
+                                foreach (var tracker in Model.Tracker) {
+                                    var count = Model.IssueTemp.Count(t => t.TrackerId == tracker.Id && t.Cf22.Equals(item.Id.ToString()));
+                                    sum += count;
+                                    <span>@tracker.Name：&nbsp;<a href="@url_item.Replace("???",tracker.Id.ToString())" target="_top">@count</a></span><br />
+                                }
+                            }
+                            <a href="@url_all" class="text-269 fw-normal" target="_top">[查看本院需求]</a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        }
+    }
+</div>
+<script>
+    $(document).ready(function () {
+        $('#quickSearch').on("keyup", function () {
+            var value = $(this).val().toLowerCase();
+            $("div[htmlType='pinyin']").filter(function () {
+                if ($(this).attr("pinyin") != undefined) {
+                    console.log(value);
+                    console.log($(this).attr("pinyin").toLowerCase());
+                    $(this).toggle($(this).attr("pinyin").toLowerCase().indexOf(value) > -1);
+                } else {
+                    $(this).toggle();
+                }
+            });
+        });
+    });
+</script>

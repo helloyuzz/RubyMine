@@ -1,24 +1,24 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Console;
+using RubyMine.Models;
 
 #nullable disable
 
-namespace RubyMine.Models
-{
-    public partial class bitnami_redmineplusagileContext : DbContext {
+namespace RubyMine.DbContexts {
+    public partial class RubyRemineDbContext : DbContext {
         public static readonly ILoggerFactory loggerFactory = LoggerFactory.Create(builder => builder.AddConsole());
-        public bitnami_redmineplusagileContext()
-        {
+        private readonly IConfiguration _configuration;
+        public RubyRemineDbContext() { 
+        }
+        public RubyRemineDbContext(DbContextOptions<RubyRemineDbContext> options)
+            : base(options) {
         }
 
-        public bitnami_redmineplusagileContext(DbContextOptions<bitnami_redmineplusagileContext> options)
-            : base(options)
-        {
-        }
-
+        public virtual DbSet<ViewIssuetemp> ViewIssuetemps { get; set; }
         public virtual DbSet<AgileColor> AgileColors { get; set; }
         public virtual DbSet<AgileDatum> AgileData { get; set; }
         public virtual DbSet<AgileSprint> AgileSprints { get; set; }
@@ -72,7 +72,7 @@ namespace RubyMine.Models
         public virtual DbSet<TrackerMapping> TrackerMappings { get; set; }
         public virtual DbSet<User> Users { get; set; }
         public virtual DbSet<UserPreference> UserPreferences { get; set; }
-        public virtual DbSet<Version> Versions { get; set; }
+        public virtual DbSet<RubyMine.Models.Version> Versions { get; set; }
         public virtual DbSet<Watcher> Watchers { get; set; }
         public virtual DbSet<Wiki> Wikis { get; set; }
         public virtual DbSet<WikiContent> WikiContents { get; set; }
@@ -81,24 +81,45 @@ namespace RubyMine.Models
         public virtual DbSet<WikiRedirect> WikiRedirects { get; set; }
         public virtual DbSet<Workflow> Workflows { get; set; }
 
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            if (!optionsBuilder.IsConfigured)
-            {
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) {
+            if (!optionsBuilder.IsConfigured) {
                 optionsBuilder.UseLoggerFactory(loggerFactory).EnableSensitiveDataLogging();
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
                 //optionsBuilder.UseMySql("server=localhost;port=3306;database=bitnami_redmineplusagile;uid=bitnami;pwd=e32a9b7bd9;sslmode=None;allowpublickeyretrieval=true", Microsoft.EntityFrameworkCore.ServerVersion.Parse("5.7.32-mysql"));
-                optionsBuilder.UseMySql("server=192.168.3.65;port=3306;database=bitnami_redmineplusagile;uid=rubymine;pwd=aa123456;sslmode=None;allowpublickeyretrieval=true", Microsoft.EntityFrameworkCore.ServerVersion.Parse("5.7.32-mysql"));
+                string db_connectionString = _configuration["ConnectionStrings:MySQL_product"];
+                string db_version = _configuration["ConnectionStrings:Version"];
+                optionsBuilder.UseMySql(db_connectionString, Microsoft.EntityFrameworkCore.ServerVersion.Parse(db_version));
             }
         }
 
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
+        protected override void OnModelCreating(ModelBuilder modelBuilder) {
             modelBuilder.HasCharSet("utf8mb4")
                 .UseCollation("utf8mb4_unicode_ci");
 
-            modelBuilder.Entity<AgileColor>(entity =>
-            {
+            //modelBuilder.Ignore<IssusTemp>();
+            //modelBuilder.Entity<IssusTemp>().ToView("view_issuetemp").HasKey(p => new { p.Id, p.Issue_id, p.cf_22, p.Tracker_id });
+
+            modelBuilder.Entity<ViewIssuetemp>(entity => {
+                entity.HasNoKey();
+
+                entity.ToView("view_issuetemp");
+
+                entity.Property(e => e.Cf22).HasColumnName("cf_22");
+
+                entity.Property(e => e.Id)
+                    .HasColumnType("int(11)")
+                    .HasColumnName("id");
+
+                entity.Property(e => e.IssueId)
+                    .HasColumnType("int(11)")
+                    .HasColumnName("issue_id");
+
+                entity.Property(e => e.TrackerId)
+                    .HasColumnType("int(11)")
+                    .HasColumnName("tracker_id");
+            });
+
+            modelBuilder.Entity<AgileColor>(entity => {
                 entity.ToTable("agile_colors");
 
                 entity.HasIndex(e => e.ContainerId, "index_agile_colors_on_container_id");
@@ -120,8 +141,7 @@ namespace RubyMine.Models
                 entity.Property(e => e.ContainerType).HasColumnName("container_type");
             });
 
-            modelBuilder.Entity<AgileDatum>(entity =>
-            {
+            modelBuilder.Entity<AgileDatum>(entity => {
                 entity.ToTable("agile_data");
 
                 entity.HasIndex(e => e.IssueId, "index_agile_data_on_issue_id");
@@ -149,8 +169,7 @@ namespace RubyMine.Models
                     .HasColumnName("story_points");
             });
 
-            modelBuilder.Entity<AgileSprint>(entity =>
-            {
+            modelBuilder.Entity<AgileSprint>(entity => {
                 entity.ToTable("agile_sprints");
 
                 entity.Property(e => e.Id)
@@ -191,8 +210,7 @@ namespace RubyMine.Models
                     .HasColumnName("updated_at");
             });
 
-            modelBuilder.Entity<ArInternalMetadatum>(entity =>
-            {
+            modelBuilder.Entity<ArInternalMetadatum>(entity => {
                 entity.HasKey(e => e.Key)
                     .HasName("PRIMARY");
 
@@ -216,8 +234,7 @@ namespace RubyMine.Models
                     .HasColumnName("value");
             });
 
-            modelBuilder.Entity<Attachment>(entity =>
-            {
+            modelBuilder.Entity<Attachment>(entity => {
                 entity.ToTable("attachments");
 
                 entity.HasIndex(e => e.AuthorId, "index_attachments_on_author_id");
@@ -287,8 +304,7 @@ namespace RubyMine.Models
                     .HasColumnName("filesize");
             });
 
-            modelBuilder.Entity<AuthSource>(entity =>
-            {
+            modelBuilder.Entity<AuthSource>(entity => {
                 entity.ToTable("auth_sources");
 
                 entity.HasIndex(e => new { e.Id, e.Type }, "index_auth_sources_on_id_and_type");
@@ -364,8 +380,7 @@ namespace RubyMine.Models
                     .HasDefaultValueSql("'1'");
             });
 
-            modelBuilder.Entity<Board>(entity =>
-            {
+            modelBuilder.Entity<Board>(entity => {
                 entity.ToTable("boards");
 
                 entity.HasIndex(e => e.ProjectId, "boards_project_id");
@@ -411,8 +426,7 @@ namespace RubyMine.Models
                     .HasColumnName("topics_count");
             });
 
-            modelBuilder.Entity<Change>(entity =>
-            {
+            modelBuilder.Entity<Change>(entity => {
                 entity.ToTable("changes");
 
                 entity.HasIndex(e => e.ChangesetId, "changesets_changeset_id");
@@ -453,8 +467,7 @@ namespace RubyMine.Models
                     .HasColumnName("revision");
             });
 
-            modelBuilder.Entity<Changeset>(entity =>
-            {
+            modelBuilder.Entity<Changeset>(entity => {
                 entity.ToTable("changesets");
 
                 entity.HasIndex(e => new { e.RepositoryId, e.Revision }, "changesets_repos_rev")
@@ -501,8 +514,7 @@ namespace RubyMine.Models
                     .HasColumnName("user_id");
             });
 
-            modelBuilder.Entity<ChangesetParent>(entity =>
-            {
+            modelBuilder.Entity<ChangesetParent>(entity => {
                 entity.HasNoKey();
 
                 entity.ToTable("changeset_parents");
@@ -520,8 +532,7 @@ namespace RubyMine.Models
                     .HasColumnName("parent_id");
             });
 
-            modelBuilder.Entity<ChangesetsIssue>(entity =>
-            {
+            modelBuilder.Entity<ChangesetsIssue>(entity => {
                 entity.HasNoKey();
 
                 entity.ToTable("changesets_issues");
@@ -540,8 +551,7 @@ namespace RubyMine.Models
                     .HasColumnName("issue_id");
             });
 
-            modelBuilder.Entity<Comment>(entity =>
-            {
+            modelBuilder.Entity<Comment>(entity => {
                 entity.ToTable("comments");
 
                 entity.HasIndex(e => e.AuthorId, "index_comments_on_author_id");
@@ -579,8 +589,7 @@ namespace RubyMine.Models
                     .HasColumnName("updated_on");
             });
 
-            modelBuilder.Entity<CustomField>(entity =>
-            {
+            modelBuilder.Entity<CustomField>(entity => {
                 entity.ToTable("custom_fields");
 
                 entity.HasIndex(e => new { e.Id, e.Type }, "index_custom_fields_on_id_and_type");
@@ -664,8 +673,7 @@ namespace RubyMine.Models
                     .HasDefaultValueSql("'1'");
             });
 
-            modelBuilder.Entity<CustomFieldEnumeration>(entity =>
-            {
+            modelBuilder.Entity<CustomFieldEnumeration>(entity => {
                 entity.ToTable("custom_field_enumerations");
 
                 entity.Property(e => e.Id)
@@ -692,8 +700,7 @@ namespace RubyMine.Models
                     .HasDefaultValueSql("'1'");
             });
 
-            modelBuilder.Entity<CustomFieldsMapping>(entity =>
-            {
+            modelBuilder.Entity<CustomFieldsMapping>(entity => {
                 entity.ToTable("custom_fields_mapping");
 
                 entity.Property(e => e.Id)
@@ -713,8 +720,7 @@ namespace RubyMine.Models
                     .HasColumnName("custom_name");
             });
 
-            modelBuilder.Entity<CustomFieldsProject>(entity =>
-            {
+            modelBuilder.Entity<CustomFieldsProject>(entity => {
                 entity.HasNoKey();
 
                 entity.ToTable("custom_fields_projects");
@@ -731,8 +737,7 @@ namespace RubyMine.Models
                     .HasColumnName("project_id");
             });
 
-            modelBuilder.Entity<CustomFieldsRole>(entity =>
-            {
+            modelBuilder.Entity<CustomFieldsRole>(entity => {
                 entity.HasNoKey();
 
                 entity.ToTable("custom_fields_roles");
@@ -749,8 +754,7 @@ namespace RubyMine.Models
                     .HasColumnName("role_id");
             });
 
-            modelBuilder.Entity<CustomFieldsTracker>(entity =>
-            {
+            modelBuilder.Entity<CustomFieldsTracker>(entity => {
                 entity.HasNoKey();
 
                 entity.ToTable("custom_fields_trackers");
@@ -767,8 +771,7 @@ namespace RubyMine.Models
                     .HasColumnName("tracker_id");
             });
 
-            modelBuilder.Entity<CustomValue>(entity =>
-            {
+            modelBuilder.Entity<CustomValue>(entity => {
                 entity.ToTable("custom_values");
 
                 entity.HasIndex(e => new { e.CustomizedType, e.CustomizedId }, "custom_values_customized");
@@ -796,8 +799,7 @@ namespace RubyMine.Models
                 entity.Property(e => e.Value).HasColumnName("value");
             });
 
-            modelBuilder.Entity<Document>(entity =>
-            {
+            modelBuilder.Entity<Document>(entity => {
                 entity.ToTable("documents");
 
                 entity.HasIndex(e => e.ProjectId, "documents_project_id");
@@ -833,8 +835,7 @@ namespace RubyMine.Models
                     .HasDefaultValueSql("''");
             });
 
-            modelBuilder.Entity<EmailAddress>(entity =>
-            {
+            modelBuilder.Entity<EmailAddress>(entity => {
                 entity.ToTable("email_addresses");
 
                 entity.HasIndex(e => e.UserId, "index_email_addresses_on_user_id");
@@ -868,8 +869,7 @@ namespace RubyMine.Models
                     .HasColumnName("user_id");
             });
 
-            modelBuilder.Entity<EnabledModule>(entity =>
-            {
+            modelBuilder.Entity<EnabledModule>(entity => {
                 entity.ToTable("enabled_modules");
 
                 entity.HasIndex(e => e.ProjectId, "enabled_modules_project_id");
@@ -888,8 +888,7 @@ namespace RubyMine.Models
                     .HasColumnName("project_id");
             });
 
-            modelBuilder.Entity<Enumeration>(entity =>
-            {
+            modelBuilder.Entity<Enumeration>(entity => {
                 entity.ToTable("enumerations");
 
                 entity.HasIndex(e => new { e.Id, e.Type }, "index_enumerations_on_id_and_type");
@@ -932,8 +931,7 @@ namespace RubyMine.Models
                 entity.Property(e => e.Type).HasColumnName("type");
             });
 
-            modelBuilder.Entity<GroupsUser>(entity =>
-            {
+            modelBuilder.Entity<GroupsUser>(entity => {
                 entity.HasNoKey();
 
                 entity.ToTable("groups_users");
@@ -950,8 +948,7 @@ namespace RubyMine.Models
                     .HasColumnName("user_id");
             });
 
-            modelBuilder.Entity<Import>(entity =>
-            {
+            modelBuilder.Entity<Import>(entity => {
                 entity.ToTable("imports");
 
                 entity.Property(e => e.Id)
@@ -989,8 +986,7 @@ namespace RubyMine.Models
                     .HasColumnName("user_id");
             });
 
-            modelBuilder.Entity<ImportItem>(entity =>
-            {
+            modelBuilder.Entity<ImportItem>(entity => {
                 entity.ToTable("import_items");
 
                 entity.HasIndex(e => new { e.ImportId, e.UniqueId }, "index_import_items_on_import_id_and_unique_id");
@@ -1018,8 +1014,7 @@ namespace RubyMine.Models
                 entity.Property(e => e.UniqueId).HasColumnName("unique_id");
             });
 
-            modelBuilder.Entity<Issue>(entity =>
-            {
+            modelBuilder.Entity<Issue>(entity => {
                 entity.ToTable("issues");
 
                 entity.HasIndex(e => e.AssignedToId, "index_issues_on_assigned_to_id");
@@ -1137,8 +1132,7 @@ namespace RubyMine.Models
                     .HasColumnName("updated_on");
             });
 
-            modelBuilder.Entity<IssueCategory>(entity =>
-            {
+            modelBuilder.Entity<IssueCategory>(entity => {
                 entity.ToTable("issue_categories");
 
                 entity.HasIndex(e => e.AssignedToId, "index_issue_categories_on_assigned_to_id");
@@ -1164,8 +1158,7 @@ namespace RubyMine.Models
                     .HasColumnName("project_id");
             });
 
-            modelBuilder.Entity<IssueRelation>(entity =>
-            {
+            modelBuilder.Entity<IssueRelation>(entity => {
                 entity.ToTable("issue_relations");
 
                 entity.HasIndex(e => e.IssueFromId, "index_issue_relations_on_issue_from_id");
@@ -1198,8 +1191,7 @@ namespace RubyMine.Models
                     .HasDefaultValueSql("''");
             });
 
-            modelBuilder.Entity<IssueStatus>(entity =>
-            {
+            modelBuilder.Entity<IssueStatus>(entity => {
                 entity.ToTable("issue_statuses");
 
                 entity.HasIndex(e => e.IsClosed, "index_issue_statuses_on_is_closed");
@@ -1227,8 +1219,7 @@ namespace RubyMine.Models
                     .HasColumnName("position");
             });
 
-            modelBuilder.Entity<Journal>(entity =>
-            {
+            modelBuilder.Entity<Journal>(entity => {
                 entity.ToTable("journals");
 
                 entity.HasIndex(e => e.CreatedOn, "index_journals_on_created_on");
@@ -1266,8 +1257,7 @@ namespace RubyMine.Models
                     .HasColumnName("user_id");
             });
 
-            modelBuilder.Entity<JournalDetail>(entity =>
-            {
+            modelBuilder.Entity<JournalDetail>(entity => {
                 entity.ToTable("journal_details");
 
                 entity.HasIndex(e => e.JournalId, "journal_details_journal_id");
@@ -1297,8 +1287,7 @@ namespace RubyMine.Models
                 entity.Property(e => e.Value).HasColumnName("value");
             });
 
-            modelBuilder.Entity<Member>(entity =>
-            {
+            modelBuilder.Entity<Member>(entity => {
                 entity.ToTable("members");
 
                 entity.HasIndex(e => e.ProjectId, "index_members_on_project_id");
@@ -1327,8 +1316,7 @@ namespace RubyMine.Models
                     .HasColumnName("user_id");
             });
 
-            modelBuilder.Entity<MemberRole>(entity =>
-            {
+            modelBuilder.Entity<MemberRole>(entity => {
                 entity.ToTable("member_roles");
 
                 entity.HasIndex(e => e.InheritedFrom, "index_member_roles_on_inherited_from");
@@ -1354,8 +1342,7 @@ namespace RubyMine.Models
                     .HasColumnName("role_id");
             });
 
-            modelBuilder.Entity<Message>(entity =>
-            {
+            modelBuilder.Entity<Message>(entity => {
                 entity.ToTable("messages");
 
                 entity.HasIndex(e => e.AuthorId, "index_messages_on_author_id");
@@ -1420,8 +1407,7 @@ namespace RubyMine.Models
                     .HasColumnName("updated_on");
             });
 
-            modelBuilder.Entity<News>(entity =>
-            {
+            modelBuilder.Entity<News>(entity => {
                 entity.ToTable("news");
 
                 entity.HasIndex(e => e.AuthorId, "index_news_on_author_id");
@@ -1466,8 +1452,7 @@ namespace RubyMine.Models
                     .HasDefaultValueSql("''");
             });
 
-            modelBuilder.Entity<OpenIdAuthenticationAssociation>(entity =>
-            {
+            modelBuilder.Entity<OpenIdAuthenticationAssociation>(entity => {
                 entity.ToTable("open_id_authentication_associations");
 
                 entity.Property(e => e.Id)
@@ -1499,8 +1484,7 @@ namespace RubyMine.Models
                     .HasColumnName("server_url");
             });
 
-            modelBuilder.Entity<OpenIdAuthenticationNonce>(entity =>
-            {
+            modelBuilder.Entity<OpenIdAuthenticationNonce>(entity => {
                 entity.ToTable("open_id_authentication_nonces");
 
                 entity.Property(e => e.Id)
@@ -1521,8 +1505,7 @@ namespace RubyMine.Models
                     .HasColumnName("timestamp");
             });
 
-            modelBuilder.Entity<Project>(entity =>
-            {
+            modelBuilder.Entity<Project>(entity => {
                 entity.ToTable("projects");
 
                 entity.HasIndex(e => e.Lft, "index_projects_on_lft");
@@ -1593,8 +1576,7 @@ namespace RubyMine.Models
                     .HasColumnName("updated_on");
             });
 
-            modelBuilder.Entity<ProjectsTracker>(entity =>
-            {
+            modelBuilder.Entity<ProjectsTracker>(entity => {
                 entity.HasNoKey();
 
                 entity.ToTable("projects_trackers");
@@ -1613,8 +1595,7 @@ namespace RubyMine.Models
                     .HasColumnName("tracker_id");
             });
 
-            modelBuilder.Entity<QueriesRole>(entity =>
-            {
+            modelBuilder.Entity<QueriesRole>(entity => {
                 entity.HasNoKey();
 
                 entity.ToTable("queries_roles");
@@ -1631,8 +1612,7 @@ namespace RubyMine.Models
                     .HasColumnName("role_id");
             });
 
-            modelBuilder.Entity<Query>(entity =>
-            {
+            modelBuilder.Entity<Query>(entity => {
                 entity.ToTable("queries");
 
                 entity.HasIndex(e => e.ProjectId, "index_queries_on_project_id");
@@ -1687,8 +1667,7 @@ namespace RubyMine.Models
                     .HasDefaultValueSql("'0'");
             });
 
-            modelBuilder.Entity<Repository>(entity =>
-            {
+            modelBuilder.Entity<Repository>(entity => {
                 entity.ToTable("repositories");
 
                 entity.HasIndex(e => e.ProjectId, "index_repositories_on_project_id");
@@ -1749,8 +1728,7 @@ namespace RubyMine.Models
                     .HasDefaultValueSql("''");
             });
 
-            modelBuilder.Entity<Role>(entity =>
-            {
+            modelBuilder.Entity<Role>(entity => {
                 entity.ToTable("roles");
 
                 entity.Property(e => e.Id)
@@ -1807,8 +1785,7 @@ namespace RubyMine.Models
                     .HasDefaultValueSql("'all'");
             });
 
-            modelBuilder.Entity<RolesManagedRole>(entity =>
-            {
+            modelBuilder.Entity<RolesManagedRole>(entity => {
                 entity.HasNoKey();
 
                 entity.ToTable("roles_managed_roles");
@@ -1825,8 +1802,7 @@ namespace RubyMine.Models
                     .HasColumnName("role_id");
             });
 
-            modelBuilder.Entity<SchemaMigration>(entity =>
-            {
+            modelBuilder.Entity<SchemaMigration>(entity => {
                 entity.HasKey(e => e.Version)
                     .HasName("PRIMARY");
 
@@ -1838,8 +1814,7 @@ namespace RubyMine.Models
                     .HasCharSet("utf8");
             });
 
-            modelBuilder.Entity<Setting>(entity =>
-            {
+            modelBuilder.Entity<Setting>(entity => {
                 entity.ToTable("settings");
 
                 entity.HasIndex(e => e.Name, "index_settings_on_name");
@@ -1862,8 +1837,7 @@ namespace RubyMine.Models
                     .HasColumnName("value");
             });
 
-            modelBuilder.Entity<TimeEntry>(entity =>
-            {
+            modelBuilder.Entity<TimeEntry>(entity => {
                 entity.ToTable("time_entries");
 
                 entity.HasIndex(e => e.ActivityId, "index_time_entries_on_activity_id");
@@ -1931,8 +1905,7 @@ namespace RubyMine.Models
                     .HasColumnName("user_id");
             });
 
-            modelBuilder.Entity<Token>(entity =>
-            {
+            modelBuilder.Entity<Token>(entity => {
                 entity.ToTable("tokens");
 
                 entity.HasIndex(e => e.UserId, "index_tokens_on_user_id");
@@ -1969,8 +1942,7 @@ namespace RubyMine.Models
                     .HasDefaultValueSql("''");
             });
 
-            modelBuilder.Entity<Tracker>(entity =>
-            {
+            modelBuilder.Entity<Tracker>(entity => {
                 entity.ToTable("trackers");
 
                 entity.Property(e => e.Id)
@@ -2008,8 +1980,7 @@ namespace RubyMine.Models
                     .HasColumnName("position");
             });
 
-            modelBuilder.Entity<TrackerMapping>(entity =>
-            {
+            modelBuilder.Entity<TrackerMapping>(entity => {
                 entity.ToTable("tracker_mapping");
 
                 entity.Property(e => e.Id)
@@ -2029,8 +2000,7 @@ namespace RubyMine.Models
                     .HasColumnName("tracker_name");
             });
 
-            modelBuilder.Entity<User>(entity =>
-            {
+            modelBuilder.Entity<User>(entity => {
                 entity.ToTable("users");
 
                 entity.HasIndex(e => e.AuthSourceId, "index_users_on_auth_source_id");
@@ -2118,8 +2088,7 @@ namespace RubyMine.Models
                     .HasColumnName("updated_on");
             });
 
-            modelBuilder.Entity<UserPreference>(entity =>
-            {
+            modelBuilder.Entity<UserPreference>(entity => {
                 entity.ToTable("user_preferences");
 
                 entity.HasIndex(e => e.UserId, "index_user_preferences_on_user_id");
@@ -2145,8 +2114,7 @@ namespace RubyMine.Models
                     .HasColumnName("user_id");
             });
 
-            modelBuilder.Entity<Version>(entity =>
-            {
+            modelBuilder.Entity<RubyMine.Models.Version>(entity => {
                 entity.ToTable("versions");
 
                 entity.HasIndex(e => e.Sharing, "index_versions_on_sharing");
@@ -2199,8 +2167,7 @@ namespace RubyMine.Models
                     .HasColumnName("wiki_page_title");
             });
 
-            modelBuilder.Entity<Watcher>(entity =>
-            {
+            modelBuilder.Entity<Watcher>(entity => {
                 entity.ToTable("watchers");
 
                 entity.HasIndex(e => e.UserId, "index_watchers_on_user_id");
@@ -2227,8 +2194,7 @@ namespace RubyMine.Models
                     .HasDefaultValueSql("''");
             });
 
-            modelBuilder.Entity<Wiki>(entity =>
-            {
+            modelBuilder.Entity<Wiki>(entity => {
                 entity.ToTable("wikis");
 
                 entity.HasIndex(e => e.ProjectId, "wikis_project_id");
@@ -2252,8 +2218,7 @@ namespace RubyMine.Models
                     .HasDefaultValueSql("'1'");
             });
 
-            modelBuilder.Entity<WikiContent>(entity =>
-            {
+            modelBuilder.Entity<WikiContent>(entity => {
                 entity.ToTable("wiki_contents");
 
                 entity.HasIndex(e => e.AuthorId, "index_wiki_contents_on_author_id");
@@ -2288,8 +2253,7 @@ namespace RubyMine.Models
                     .HasColumnName("version");
             });
 
-            modelBuilder.Entity<WikiContentVersion>(entity =>
-            {
+            modelBuilder.Entity<WikiContentVersion>(entity => {
                 entity.ToTable("wiki_content_versions");
 
                 entity.HasIndex(e => e.UpdatedOn, "index_wiki_content_versions_on_updated_on");
@@ -2333,8 +2297,7 @@ namespace RubyMine.Models
                     .HasColumnName("wiki_content_id");
             });
 
-            modelBuilder.Entity<WikiPage>(entity =>
-            {
+            modelBuilder.Entity<WikiPage>(entity => {
                 entity.ToTable("wiki_pages");
 
                 entity.HasIndex(e => e.ParentId, "index_wiki_pages_on_parent_id");
@@ -2366,8 +2329,7 @@ namespace RubyMine.Models
                     .HasColumnName("wiki_id");
             });
 
-            modelBuilder.Entity<WikiRedirect>(entity =>
-            {
+            modelBuilder.Entity<WikiRedirect>(entity => {
                 entity.ToTable("wiki_redirects");
 
                 entity.HasIndex(e => e.WikiId, "index_wiki_redirects_on_wiki_id");
@@ -2397,8 +2359,7 @@ namespace RubyMine.Models
                     .HasColumnName("wiki_id");
             });
 
-            modelBuilder.Entity<Workflow>(entity =>
-            {
+            modelBuilder.Entity<Workflow>(entity => {
                 entity.ToTable("workflows");
 
                 entity.HasIndex(e => e.NewStatusId, "index_workflows_on_new_status_id");
@@ -2450,7 +2411,6 @@ namespace RubyMine.Models
 
             OnModelCreatingPartial(modelBuilder);
         }
-
         partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
     }
 }
