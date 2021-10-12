@@ -54,6 +54,7 @@ namespace RubyMine.DbContexts {
         public virtual DbSet<Member> Members { get; set; }
         public virtual DbSet<MemberRole> MemberRoles { get; set; }
         public virtual DbSet<Message> Messages { get; set; }
+        public virtual DbSet<Module> Modules { get; set; }
         public virtual DbSet<News> News { get; set; }
         public virtual DbSet<OpenIdAuthenticationAssociation> OpenIdAuthenticationAssociations { get; set; }
         public virtual DbSet<OpenIdAuthenticationNonce> OpenIdAuthenticationNonces { get; set; }
@@ -1405,6 +1406,34 @@ namespace RubyMine.DbContexts {
                 entity.Property(e => e.UpdatedOn)
                     .HasColumnType("datetime")
                     .HasColumnName("updated_on");
+            });
+
+            modelBuilder.Entity<Module>(entity => {
+                entity.ToTable("modules");
+
+                entity.Property(e => e.Id)
+                    .HasColumnType("int(11)")
+                    .HasColumnName("id");
+
+                entity.Property(e => e.Index)
+                    .HasColumnType("int(11)")
+                    .HasColumnName("index");
+
+                entity.Property(e => e.Name)
+                    .HasMaxLength(60)
+                    .HasColumnName("name");
+
+                entity.Property(e => e.Pinyin)
+                    .HasMaxLength(100)
+                    .HasColumnName("pinyin");
+
+                entity.Property(e => e.Disabled)
+                    .HasColumnType("bit")
+                    .HasColumnName("disabled");
+
+                entity.Property(e => e.PId)
+                    .HasColumnType("int(11)")
+                    .HasColumnName("p_id");
             });
 
             modelBuilder.Entity<News>(entity => {

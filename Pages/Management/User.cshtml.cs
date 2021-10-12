@@ -17,7 +17,7 @@ namespace RubyMine.Pages.Management {
         }
         public IList<User> User { get; set; }
         public async Task<IActionResult> OnGetAsync() {
-            User = await _context.Users.Where(x => x.Login.StartsWith("p_") == false).ToListAsync();
+            User = await _context.Users.Where(x => x.Lastname.Equals("u") && x.Status==1).ToListAsync();
             return Page();
         }
     }

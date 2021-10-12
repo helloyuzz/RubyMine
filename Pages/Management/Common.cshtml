@@ -20,7 +20,7 @@
             </div>
         </div>
     </div>
-    <div class="row overflow-scroll" style="overflow-x:hidden !important; height:800px;">
+    <div class="row">
         <div class="col p-0">
             <table class="table border-1 border-ccc table-hover border-top-0">
                 <thead>
@@ -50,15 +50,15 @@
                             @Html.DisplayFor(modelItem => item.Name)
                         </td>
                         <td>
-                            @Html.DisplayFor(modelItem => item.Value)
+                            @*@Html.DisplayFor(modelItem => item.Value)*@
                         </td>
                         <td>
                             @Html.DisplayFor(modelItem => item.UpdatedOn)
                         </td>
                         <td>
-                            <a asp-page="./Edit" asp-route-id="@item.Id">Edit</a> |
+                            @*<a asp-page="./Edit" asp-route-id="@item.Id">Edit</a> |
                             <a asp-page="./Details" asp-route-id="@item.Id">Details</a> |
-                            <a asp-page="./Delete" asp-route-id="@item.Id">Delete</a>
+                            <a asp-page="./Delete" asp-route-id="@item.Id">Delete</a>*@
                         </td>
                     </tr>
                     }

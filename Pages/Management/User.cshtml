@@ -40,24 +40,24 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach (var item in Model.User) {
+                    @foreach (var item in Model.User.OrderByDescending(x=>x.LastLoginOn)) {
                         <tr>
                             <td>
                                 @Html.DisplayFor(modelItem => item.Id)
                             </td>
                             <td>
-                                @Html.DisplayFor(modelItem => item.Lastname) @Html.DisplayFor(modelItem => item.Firstname)
+                               @Html.DisplayFor(modelItem => item.Firstname)
                             </td>
                             <td>
-                                @Html.DisplayFor(modelItem => item.LastLoginOn)
+                                @RMUtils.ParseDate(item.LastLoginOn,true)
                             </td>
                             <td>
-                                @Html.DisplayFor(modelItem => item.Status)
+                                @RMUtils.ParseUserStatus(item.Status)
                             </td>
-                            <td>
-                                <a asp-page="./Edit" asp-route-id="@item.Id">Edit</a> |
+                            <td>N/A
+                                @*<a asp-page="./Edit" asp-route-id="@item.Id">Edit</a> |
                                 <a asp-page="./Details" asp-route-id="@item.Id">Details</a> |
-                                <a asp-page="./Delete" asp-route-id="@item.Id">Delete</a>
+                                <a asp-page="./Delete" asp-route-id="@item.Id">Delete</a>*@
                             </td>
                         </tr>
                     }

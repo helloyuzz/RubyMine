@@ -55,10 +55,7 @@
                                 @{ if (aleradyLogin) {
                                         <div class="col">
                                             <ul class="navbar-nav flex-grow-1">
-                                                <li class="nav-item">
-                                                    <a class="nav-link text-decoration-none text-white fs-7 menu-@requestPath.Equals("/")" asp-area="" asp-page="/Index" title="">个人工作台</a>
-                                                </li>
-                                                <li class="nav-item">
+                                                @*<li class="nav-item">
                                                     <a class="nav-link text-decoration-none text-white fs-7 menu-@requestPath.Contains("Products")" asp-area="" asp-page="/Products/Index">项目列表</a>
                                                 </li>
                                                 <li class="nav-item">
@@ -69,27 +66,31 @@
                                                 </li>
                                                 <li class="nav-item">
                                                     <a class="nav-link text-decoration-none text-white fs-7 menu-@requestPath.Contains("Plans")" asp-area="" asp-page="/Plans/Index">开发管理</a>
-                                                </li>
+                                                </li>*@
                                                 <li class="nav-item">
-                                                    <a class="nav-link text-decoration-none text-white fs-7 menu-@requestPath.Contains("Clocks")" asp-area="" asp-page="/Clocks/Index">工时统计</a>
-                                                </li>
-                                                <li class="nav-item">
-                                                    <a class="nav-link text-decoration-none text-white fs-7 menu-@requestPath.Contains("Creation")" asp-area="" asp-page="/Creation/Index">新产品研发</a>
+                                                    <a class="nav-link text-decoration-none text-white fs-7 menu-@requestPath.Contains("Creation")" asp-area="" asp-page="/Creation/Index">3.0 新产品开发平台</a>
                                                 </li>
                                                 <li class="nav-item">
                                                     <a class="nav-link text-decoration-none text-white fs-7 menu-@requestPath.Contains("Leaks")" asp-area="" asp-page="/Leaks/Index">缺陷列表</a>
                                                 </li>
                                                 <li class="nav-item">
+                                                    <a class="nav-link text-decoration-none text-white fs-7 menu-@requestPath.Contains("Clocks")" asp-area="" asp-page="/Clocks/Index">工时统计</a>
+                                                </li>
+                                                @*
+                                                <li class="nav-item">
                                                     <a class="nav-link text-decoration-none text-white fs-7 menu-@requestPath.Contains("Wiki")" asp-area="" asp-page="/Wiki/Index">Wiki</a>
-                                                </li>
+                                                </li>*@
                                                 <li class="nav-item">
-                                                    <a class="nav-link text-decoration-none text-white fs-7 menu-@requestPath.Contains("Documents")" asp-area="" asp-page="/Documents/Index">文档附件</a>
+                                                    <a class="nav-link text-decoration-none text-white fs-7 menu-@requestPath.Contains("Documents")" asp-area="" asp-page="/Documents/Index">文档及附件</a>
                                                 </li>
-                                                <li class="nav-item">
+                                                @*<li class="nav-item">
                                                     <a class="nav-link text-decoration-none text-white fs-7 menu-@requestPath.Contains("Helps")" asp-area="" asp-page="/Helps/Index">使用帮助</a>
-                                                </li>
-                                                <li class="nav-item">
+                                                </li>*@
+                                                @*<li class="nav-item">
                                                     <a class="nav-link text-decoration-none text-white fs-7 menu-@requestPath.Contains("Privacy")" asp-area="" asp-page="/Privacy">Privacy</a>
+                                                </li>*@
+                                                <li class="nav-item">
+                                                    <a class="nav-link text-decoration-none text-white fs-7 menu-@requestPath.Equals("/")" asp-area="" asp-page="/Index" title="">个人工作台</a>
                                                 </li>
                                             </ul>
                                         </div>

@@ -7267,7 +7267,9 @@ textarea.form-control-lg {
 .fs-7 {
   font-size: 0.65rem !important;
 }
-
+.fs-9 {
+    font-size: 9pt !important;
+}
 .fst-italic {
   font-style: italic !important;
 }

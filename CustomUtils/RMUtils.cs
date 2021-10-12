@@ -1,4 +1,5 @@
-﻿using RubyMine.Models;
+﻿using Microsoft.AspNetCore.Http;
+using RubyMine.Models;
 using RubyMine.Models.CustomModels;
 using System;
 using System.Collections.Generic;
@@ -39,6 +40,12 @@ namespace RubyMine {
             }
             return RMProjects;
         }
+
+        internal static int QueryInt(HttpRequest request, string key) {
+            string urlValue = request.Query[key];
+            return ParseInt(urlValue);
+        }
+
         internal static List<RMIssue> ParseToRMIssues(IList<Issue> db_Issues, List<CustomField> db_CustomFields, List<CustomValue> db_CustomValues) {
             List<RMIssue> RMIssues = new List<RMIssue>();
             foreach (Issue db_Issue in db_Issues) {

@@ -6,17 +6,21 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Models_temp\**" />
     <Compile Remove="wwwroot\lib\bootstrap\**" />
+    <Content Remove="Models_temp\**" />
     <Content Remove="wwwroot\lib\bootstrap\**" />
+    <EmbeddedResource Remove="Models_temp\**" />
     <EmbeddedResource Remove="wwwroot\lib\bootstrap\**" />
+    <None Remove="Models_temp\**" />
     <None Remove="wwwroot\lib\bootstrap\**" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Abp" Version="6.4.0" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="5.0.6" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="5.0.8" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="5.0.8">
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="5.0.10" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="5.0.10">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
