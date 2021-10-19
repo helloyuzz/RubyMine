@@ -1,0 +1,258 @@
+﻿@page
+@model RubyMine.Pages.Platform.IndexModel
+@using RubyMine.Models
+@{
+    ViewData["showFooter"] = "footer";
+}
+<style>
+    ul, #myUL {
+        list-style-type: none;
+    }
+
+    #myUL {
+        margin: 0;
+        padding: 0;
+    }
+
+    .caret {
+        cursor: pointer;
+        -webkit-user-select: none; /* Safari 3.1+ */
+        -moz-user-select: none; /* Firefox 2+ */
+        -ms-user-select: none; /* IE 10+ */
+        user-select: none;
+    }
+
+        .caret::before {
+            content: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='9' height='9' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='rgba%280,0,0,.5%29' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M5 14l6-6-6-6'/%3e%3c/svg%3e");
+            color: black;
+            display: inline-block;
+            margin-right: 6px;
+            transition: transform 0.13s ease;
+            transform-origin: .5em 50%;
+        }
+
+    .caret-down::before {
+        -ms-transform: rotate(90deg); /* IE 9 */
+        -webkit-transform: rotate(90deg); /* Safari */
+        transform: rotate(90deg);
+    }
+
+    .nested {
+        display: none;
+    }
+    ul, li {
+        margin-left: 0;
+        padding-left: 0;
+    }
+    ul {
+        margin-left: 16px;
+        padding-left: 0;
+    }
+    .activeTreeNode {
+        display: block;
+    }
+    ul li:hover, ul li:focus {
+        background-color: #eff5f8;
+        color:#0026ff;
+    }
+    .footer {
+        bottom:auto !important;
+    }
+</style>
+
+@functions{
+    string BuildTree(int? parent_id) {
+        string htmlTree = "";
+        if (parent_id == null) {
+            htmlTree = "<ul id=\"myUL\" class=\"activeTreeNode\">";
+        } else {
+            htmlTree = "<ul id=\"ul_" + parent_id + "\" htmlId=\""+ parent_id+"\" class=\"nested activeTreeNode\">";
+        }
+
+        var itemCount = Model.Module.Count(t => t.PId == parent_id);
+        if (itemCount > 0) {
+            int nodeCursor = 1;
+            foreach (Module item in Model.Module.Where(t => t.PId == parent_id).OrderBy(t => t.Index)) {
+                int subNode = Model.Module.Count(t => t.PId == item.Id);
+
+                string tempTitle = item.Name;
+                if (tempTitle.Length > 6) {
+                    tempTitle = tempTitle.Substring(0,6) + "...";
+                }
+                var linkContent = "";
+
+                linkContent += "<div class=\"btn-group m-0 p-0 float-end dropend\">";
+                linkContent += "    <a href=\"#op\" class=\"text-666 m-0 p-0 fs-7 lh-0\" data-bs-toggle=\"dropdown\"><i class=\"bi bi-pencil-square\"></i></a>";
+                linkContent += "    <ul class=\"dropdown-menu pt-0 pb-0 shadow fs-7\">";
+                linkContent += "	<li><a class=\"dropdown-item text-269 text-decoration-none ps-1 border-bottom border-ccc fw-bold bg-title\" href=\"#Temp\">" + item.Name + "</a></li>";
+                linkContent += "	<li><a class=\"dropdown-item text-269 text-decoration-none\" href=\"#\"><i class=\"bi bi-folder-plus\"></i>&nbsp;新增下级模块</a></li>";
+                linkContent += "	<li><a class=\"dropdown-item text-269 text-decoration-none\" href=\"#\"><i class=\"bi bi-file-earmark-medical\"></i>&nbsp;登记需求</a></li>";
+                linkContent += "	<li><hr class=\"m-0 dropdown-divider\"></li>";
+                //linkContent += "<span class=\"float-end\">";
+                if (parent_id != null) {
+                    if (nodeCursor == 1) {
+                        //linkContent += "&nbsp;<a href=\"?action=up&id=" + item.Id + "\" title=\"上移\"><i class=\"bi bi-arrow-up\"></i></a>";
+                        linkContent += "	<li><a class=\"dropdown-item text-decoration-none disabled\" href=\"#\"><i class=\"bi bi-arrow-up\"></i>&nbsp;上移</a></li>";
+                        linkContent += "	<li><a class=\"dropdown-item text-269 text-decoration-none\" href=\"#\"><i class=\"bi bi-arrow-down\"></i>&nbsp;下移</a></li>";
+                    } else if (nodeCursor == itemCount) {
+                        //linkContent += "&nbsp;<a href=\"?action=down&id=" + item.Id + "\" title=\"下移\"><i class=\"bi bi-arrow-down\"></i></a>";
+                        linkContent += "	<li><a class=\"dropdown-item text-269 text-decoration-none\" href=\"#\"><i class=\"bi bi-arrow-up\"></i>&nbsp;上移</a></li>";
+                        linkContent += "	<li><a class=\"dropdown-item text-decoration-none disabled\" href=\"#\"><i class=\"bi bi-arrow-down\"></i>&nbsp;下移</a></li>";
+                    } else {
+                        linkContent += "	<li><a class=\"dropdown-item text-269 text-decoration-none\" href=\"#\"><i class=\"bi bi-arrow-up\"></i>&nbsp;上移</a></li>";
+                        linkContent += "	<li><a class=\"dropdown-item text-269 text-decoration-none\" href=\"#\"><i class=\"bi bi-arrow-down\"></i>&nbsp;下移</a></li>";
+                    }
+                    //linkContent += "&nbsp;<a href=\"/Modules/Delete?id=" + item.Id + "\" title=\"禁用\"><i class=\"bi bi-trash\"></i></a>";
+                    linkContent += "	<li><hr class=\"m-0 dropdown-divider\"></li>";
+                }
+
+                linkContent += "	<li><a class=\"dropdown-item text-269 text-decoration-none\" href=\"#\"><i class=\"bi bi-pencil\"></i>&nbsp;编辑</a></li>";
+                linkContent += "	<li><hr class=\"m-0 dropdown-divider\"></li>";
+                linkContent += "	<li><a class=\"dropdown-item text-269 text-decoration-none\" href=\"#\"><i class=\"bi bi-toggle-off\"></i>&nbsp;禁用</a></li>";
+                linkContent += "    </ul>";
+                linkContent += "</div>";
+
+                //linkContent += "&nbsp;<a href=\"/Modules/Create?pid=" + item.Id + "\" title=\"新增下级节点\"><i class=\"bi bi-plus-circle\"></i></a>";
+                //linkContent += "&nbsp;<a href=\"\" title=\"登记需求\"><i class=\"bi bi-file-earmark\"></i></a>";
+                //linkContent += "&nbsp;<a href=\"/Modules/Edit?id=" + item.Id + "\" title=\"编辑\"><i class=\"bi bi-pencil float-right\"></i></a>";
+                //linkContent += "</span>";
+
+                if (subNode > 0) {
+                    htmlTree += "<li id=\"li_" + item.Id + "\"><span class=\"caret fs-7\" htmlId=\"" + item.Id + "\"><i class=\"bi bi-folder-check\"></i>&nbsp;" + item.Name + "</span>" + linkContent;
+
+                    htmlTree += "</li>";
+                    string tempTree = BuildTree(item.Id);
+                    if (string.IsNullOrEmpty(tempTree) == false) {
+                        htmlTree += tempTree;
+                    }
+                } else {
+                    htmlTree += "<li><a class=\"text-269 text-decoration-none\" href=\"?action=load&module_id=\"><span class=\"fs-7\"><i class=\"bi bi-file-earmark-ppt\"></i>&nbsp;" + item.Name + "</span></a>" + linkContent + "</li>";
+                }
+                nodeCursor++;
+            }
+        }
+        htmlTree += "</ul>";
+        return htmlTree;
+    }
+}
+<div class="container-fluid border-1 border-ccc fs-7 h-100">
+    <div class="row p-1">
+        <div class="col-2 border-1 border-ccc p-0 mr-1 pb-2">
+            <div class="p-0 bg-title border-bottom border-ccc ps-2 lh-lg">
+                <span class="fw-bold">3.0产品开发管理平台</span>
+            </div>
+            <div class="row m-1 p-1 pt-0 ps-0">
+                @Html.Raw(BuildTree(null))
+            </div>
+        </div>
+        <div class="col-6 p-0">
+            <table id="mainTable" class="table table-hover lh-1 fs-7">
+                <thead>
+                    <tr style="background:#eee;">
+                        <th htmlValue="issue" width="40px" class="text-269 border-bottom-0">
+                            #
+                        </th>
+                        <th htmlValue="issue" width="60px" class="text-269 border-bottom-0">
+                            @Html.DisplayNameFor(model => model.Issue[0].TrackerId)
+                        </th>
+                        <th htmlValue="issue" width="80px" class="text-269 border-bottom-0">
+                            @Html.DisplayNameFor(model => model.Issue[0].ProjectId)
+                        </th>
+                        <th htmlValue="issue" width="40%" class="text-269 border-bottom-0">
+                            @Html.DisplayNameFor(model => model.Issue[0].Subject)
+                        </th>
+                        <th htmlValue="issue" width="136px" class="text-269 border-bottom-0">
+                            @Html.DisplayNameFor(model => model.Issue[0].StatusId)
+                        </th>
+                        @*<th htmlValue="issue" width="60px" class="text-269 border-bottom-0">
+                            @Html.DisplayNameFor(model => model.Issue[0].PriorityId)
+                        </th>*@
+                        <th htmlValue="issue" width="80px" class="text-269 border-bottom-0">
+                            @Html.DisplayNameFor(model => model.Issue[0].AuthorId)
+                        </th>
+                        <th htmlValue="issue" width="80px" class="text-269 border-bottom-0">
+                            @Html.DisplayNameFor(model => model.Issue[0].AssignedToId)
+                        </th>
+                        <th htmlValue="issue" width="123px" class="text-269 border-bottom-0">
+                            @Html.DisplayNameFor(model => model.Issue[0].CreatedOn)
+                        </th>
+                        @*<th htmlValue="issue" class="text-269 border-bottom-0">
+                            @Html.DisplayNameFor(model => model.Issue[0].IsPrivate)
+                        </th>*@
+                        <th width="40px" htmlValue="issue" class="text-269 text-center border-bottom-0">
+                           
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.Issue) {
+                        <tr class="clickable-row">
+                            <td htmlValue="issue" class="fs-7">
+                                <a asp-page="./Details" asp-route-id="@item.Id" target="_blank" class="text-666">@Html.DisplayFor(modelItem => item.Id)</a>
+                            </td>
+                            <td htmlValue="issue">
+                                @Html.DisplayFor(modelItem => item.Tracker.Name)
+                            </td>
+                            <td htmlValue="issue">
+                                @Html.DisplayFor(modelItem => item.Project.Name)
+                            </td>
+                            <td htmlValue="issue">
+                                <a class="text-666 issue_subject_@item.StatusId" asp-page="./Details" asp-route-id="@item.Id" target="_blank">@Html.DisplayFor(modelItem => item.Subject)</a>
+                            </td>
+                            <td htmlValue="issue" class="text-start">
+                                <div class="btn-group m-0 p-0">
+                                    <a class="btn btn-sm text-666 m-0 p-0 fs-7 lh-0 issue_subject_@item.StatusId" data-bs-toggle="dropdown">@Html.DisplayFor(modelItem => item.Status.Name)</a>
+                                    <ul class="dropdown-menu shadow fs-7">
+                                        <li><a class="dropdown-item disabled lh-0 text-dark" href="#">更改[@Html.DisplayFor(modelItem => item.Id)]为:</a></li>
+                                        <li><hr class="dropdown-divider"></li>
+                                        <li><a class="dropdown-item" href="#">新建</a></li>
+                                        <li><hr class="dropdown-divider"></li>
+                                        <li><a class="dropdown-item" href="#">Copy Text</a></li>
+                                    </ul>
+                                </div>
+                            </td>
+                            <td htmlValue="issue">
+                                @Html.DisplayFor(modelItem => item.Author.Firstname)
+                            </td>
+                            <td htmlValue="issue">
+                                @Html.DisplayFor(modelItem => item.AssignedTo.Firstname)
+                            </td>
+                            <td htmlValue="issue">
+                                @Html.Raw(RMUtils.ParseDate(item.CreatedOn, true))
+                            </td>
+                            <td htmlValue="issue">
+                                <div class="btn-group m-0 p-0">
+                                    <a href="#op" class="text-666 m-0 p-0 fs-7 lh-0" data-bs-toggle="dropdown">操作</a>
+                                    <ul class="dropdown-menu shadow fs-7">
+                                        <li><a class="dropdown-item text-decoration-none" href="#">登记需求</a></li>
+                                        <li><hr class="dropdown-divider"></li>
+                                        <li><a class="dropdown-item text-decoration-none" href="#">在之前插入</a></li>
+                                        <li><a class="dropdown-item text-decoration-none" href="#">编辑</a></li>
+                                        <li><hr class="dropdown-divider"></li>
+                                        <li><a class="dropdown-item text-decoration-none" href="#">禁用</a></li>
+                                    </ul>
+                                </div>
+                                @*
+                                <a asp-page="./Edit" asp-route-id="@item.Id">Edit</a>|
+        <a asp-page="./Details" asp-route-id="@item.Id">Details</a> |
+        <a asp-page="./Delete" asp-route-id="@item.Id">Delete</a>*@
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+    var toggler = document.getElementsByClassName("caret");
+
+    for (var i = 0; i < toggler.length; i++) {
+        toggler[i].addEventListener("click", function () {
+            $('#ul_' + $(this).attr('htmlId')).toggleClass("activeTreeNode");
+            //this.parentElement.querySelector(".nested").classList.toggle("active");
+            this.classList.toggle("caret-down");
+        });
+    }
+</script>

@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using RubyMine.Models;
 
-namespace RubyMine.Pages.Creation {
+namespace RubyMine.Pages.Platform {
     public class IndexModel : PageModel {
         private readonly RubyMine.DbContexts.RubyRemineDbContext _context;
 
@@ -18,6 +18,7 @@ namespace RubyMine.Pages.Creation {
             //Issue = await _context.Issues.Where(t => t.TrackerId == 8).Select(t => new Models.Issue { Id = t.Id, Subject = t.Subject, ParentId = t.ParentId, RootId = t.RootId, Lft = t.Lft, Rgt = t.Rgt }).ToListAsync();
             string action = Request.Query["action"];
             int id = RMUtils.QueryInt(Request, "id");
+            int module_id = RMUtils.QueryInt(Request, "module_id");
 
             switch (action) {
                 case "up":
@@ -40,10 +41,14 @@ namespace RubyMine.Pages.Creation {
                         _context.SaveChanges();
                     }
                     break;
+                case "load":
+                    break;
                 default:
                     break;
             }
             Module = await _context.Modules.ToListAsync();
+
+            Issue = await _context.Issues.Take(30).ToListAsync();
         }
     }
 }

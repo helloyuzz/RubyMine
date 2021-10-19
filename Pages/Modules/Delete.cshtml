@@ -12,68 +12,53 @@
     <meta name="viewport" content="width=device-width" />
     <title>Delete</title>
 </head>
-<body>
+<body class="fs-9">
 
     <div class="container-fluid p-3">
         @*<h3>是否禁用该模块？</h3>*@
         <div>
             <h4>是否禁用该模块？</h4>
             <hr />
-            <dl class="row">
-                <dt class="col-sm-2">
-                    @Html.DisplayNameFor(model => model.Module.Name)
-                </dt>
-            </dl>
-            <dl>
-                <dd class="col-sm-10">
-                    @Html.DisplayFor(model => model.Module.Name)
-                </dd>
-            </dl>
-            <dl class="row">
-                <dt class="col-sm-2">
-                    @Html.DisplayNameFor(model => model.Module.PId)
-                </dt>
-            </dl>
-            <dl>
-                <dd class="col-sm-10">
-                    @Html.DisplayFor(model => model.Module.PId)
-                </dd>
-            </dl>
-            <dl class="row">
-                <dt class="col-sm-2">
-                    @Html.DisplayNameFor(model => model.Module.Pinyin)
-                </dt>
-            </dl>
-            <dl>
-                <dd class="col-sm-10">
-                    @Html.DisplayFor(model => model.Module.Pinyin)
-                </dd>
-            </dl>
-            <dl class="row">
-                <dt class="col-sm-2">
-                    @Html.DisplayNameFor(model => model.Module.Index)
-                </dt>
-            </dl>
-            <dl>
-                <dd class="col-sm-10">
-                    @Html.DisplayFor(model => model.Module.Index)
-                </dd>
-            </dl>
-            <dl class="row">
-                <dt class="col-sm-2">
-                    @Html.DisplayNameFor(model => model.Module.Disabled)
-                </dt>
-            </dl>
-            <dl>
-                <dd class="col-sm-10">
-                    @Html.DisplayFor(model => model.Module.Disabled)
-                </dd>
-            </dl>
-
             <form method="post">
-                <input type="hidden" asp-for="Module.Id" />
-                <input type="submit" value="禁用" class="btn btn-danger" /> <br /><br />
-                <a asp-page="/Creation/Index">Back to List</a>
+                <div class="row fs-9pt">
+                    <div class="col-md-4 fs-9">
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                        <input type="hidden" asp-for="Module.Id" />
+                        <div class="form-group fs-9 mb-1">
+                            @Html.DisplayNameFor(model => model.Module.Name)
+                            <input asp-for="Module.Name" class="form-control fs-9" readonly/>
+                            <span asp-validation-for="Module.Name" class="text-danger"></span>
+                        </div>
+                        <div class="form-group mb-1">
+                            @Html.DisplayNameFor(model => model.Module.Pinyin)
+                            <input asp-for="Module.Pinyin" class="form-control fs-9" readonly/>
+                            <span asp-validation-for="Module.Pinyin" class="text-danger"></span>
+                        </div>
+                        <div class="form-group mb-1">
+                            @Html.DisplayNameFor(model => model.Module.PId)
+                            <input asp-for="Module.PId" class="form-control" readonly/>
+                            <span asp-validation-for="Module.PId" class="text-danger fs-9"></span>
+                        </div>
+                        <div class="form-group mb-1">
+                            @Html.DisplayNameFor(model => model.Module.Disabled)
+                            <input asp-for="Module.Disabled" class="form-control fs-9" readonly />
+                            <span asp-validation-for="Module.Disabled" class="text-danger"></span>
+                        </div>
+                        <div class="form-group mb-1">
+                            @Html.DisplayNameFor(model => model.Module.Index)
+                            <input asp-for="Module.Index" class="form-control fs-9" readonly />
+                            <span asp-validation-for="Module.Index" class="text-danger"></span>
+                        </div>
+                        <div class="form-group mb-1 mt-2">
+                            <input type="hidden" asp-for="Module.Id" />
+                            <input type="submit" value="禁用" class="btn btn-danger fs-9" />
+                        </div>
+                    </div>
+
+                    <div class="mt-3">
+                        <a asp-page="/Creation/Index"><i class="bi bi-arrow-return-left"></i>&nbsp;Back to List</a>
+                    </div>
+                </div>
             </form>
         </div>
     </div>

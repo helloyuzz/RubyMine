@@ -81,7 +81,7 @@ namespace RubyMine.Pages {
                 }
             }
 
-            return RedirectToPage("./Index");
+            return RedirectToPage("./Platform/Index");
         }
     }
 }

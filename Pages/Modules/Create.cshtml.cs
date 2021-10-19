@@ -16,7 +16,7 @@ namespace RubyMine.Pages.Modules {
         public CreateModel(RubyMine.DbContexts.RubyRemineDbContext context) {
             _context = context;
         }
-        [BindProperty(SupportsGet =true)]
+        [BindProperty(SupportsGet = true)]
         public int Pid { get; set; }
         public IActionResult OnGet() {
             var pid = Request.Query["pid"];
@@ -35,26 +35,23 @@ namespace RubyMine.Pages.Modules {
         public Module Module { get; set; }
 
         // To protect from overposting attacks, see https://aka.ms/RazorPagesCRUD
-        public async Task<IActionResult> OnPostAsync() {
+        public async Task<IActionResult> OnPost() {
             if (!ModelState.IsValid) {
                 return Page();
             }
-            saveChange();
+            _context.Modules.Add(Module);
+            await _context.SaveChangesAsync();
+
             return RedirectToPage("/Creation/Index");
         }
         public async Task<IActionResult> OnPostCreateAndNew() {
             if (!ModelState.IsValid) {
                 return Page();
             }
-            saveChange(true);
-            return RedirectToPage("/Modules/Create", new { pid = Module.PId });
-        }
-
-        private async void saveChange(bool newAction = false) {
-            PageResult pageResult = new PageResult();
-
             _context.Modules.Add(Module);
             await _context.SaveChangesAsync();
+
+            return RedirectToPage("/Modules/Create", new { pid = Module.PId });
         }
     }
 }
