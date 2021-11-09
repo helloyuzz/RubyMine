@@ -12,5 +12,6 @@
     <RazorPage_SelectedScaffolderCategoryPath>root/Common/RazorPage</RazorPage_SelectedScaffolderCategoryPath>
     <ShowAllFiles>true</ShowAllFiles>
     <NameOfLastUsedPublishProfile>D:\Bitnami\RubyMine\RubyMine\Properties\PublishProfiles\FolderProfile.pubxml</NameOfLastUsedPublishProfile>
+    <WebStackScaffolding_EnablerDialogWidth>650</WebStackScaffolding_EnablerDialogWidth>
   </PropertyGroup>
 </Project>

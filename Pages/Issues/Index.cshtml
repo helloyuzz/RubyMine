@@ -1,0 +1,176 @@
+﻿@page
+@model RubyMine.Pages.Issues.IndexModel
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Index</title>
+</head>
+<body>
+<p>
+    <a asp-page="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Issue[0].Subject)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Issue[0].Description)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Issue[0].DueDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Issue[0].CategoryId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Issue[0].FixedVersionId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Issue[0].LockVersion)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Issue[0].CreatedOn)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Issue[0].UpdatedOn)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Issue[0].StartDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Issue[0].DoneRatio)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Issue[0].EstimatedHours)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Issue[0].ParentId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Issue[0].RootId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Issue[0].Lft)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Issue[0].Rgt)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Issue[0].IsPrivate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Issue[0].ClosedOn)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Issue[0].Tracker)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Issue[0].Project)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Issue[0].Status)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Issue[0].AssignedTo)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Issue[0].Priority)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Issue[0].Author)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model.Issue) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Subject)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Description)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DueDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CategoryId)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FixedVersionId)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.LockVersion)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CreatedOn)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.UpdatedOn)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.StartDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DoneRatio)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.EstimatedHours)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ParentId)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.RootId)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Lft)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Rgt)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.IsPrivate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ClosedOn)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Tracker.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Project.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Status.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.AssignedTo.Firstname)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Priority.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Author.Firstname)
+            </td>
+            <td>
+                <a asp-page="./Edit" asp-route-id="@item.Id">Edit</a> |
+                <a asp-page="./Details" asp-route-id="@item.Id">Details</a> |
+                <a asp-page="./Delete" asp-route-id="@item.Id">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
+</body>
+</html>

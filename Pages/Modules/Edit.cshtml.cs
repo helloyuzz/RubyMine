@@ -19,10 +19,16 @@ namespace RubyMine.Pages.Modules {
 
         [BindProperty]
         public Module Module { get; set; }
+        [BindProperty(SupportsGet =true)]
+        public string UrlReferer { get; set; }
 
         public async Task<IActionResult> OnGetAsync(int? id) {
             if (id == null) {
                 return NotFound();
+            }
+            UrlReferer = Request.Headers["Referer"].ToString();
+            if (string.IsNullOrEmpty(UrlReferer)) {
+                UrlReferer = "/Platform";
             }
 
             Module = await _context.Modules.FirstOrDefaultAsync(m => m.Id == id);
@@ -40,6 +46,7 @@ namespace RubyMine.Pages.Modules {
                 return Page();
             }
 
+            string urlReferer = Request.Form["UrlReferer"];
             _context.Attach(Module).State = EntityState.Modified;
 
             try {
@@ -51,8 +58,11 @@ namespace RubyMine.Pages.Modules {
                     throw;
                 }
             }
-
-            return RedirectToPage("/Creation/Index");
+            if (string.IsNullOrEmpty(urlReferer) == false) {
+                return Redirect(urlReferer);
+            } else {
+                return RedirectToPage("/Platform/Index");
+            }
         }
 
         private bool ModuleExists(int id) {

@@ -1,0 +1,102 @@
+﻿@page
+@model RubyMine.Pages.Issues.CreateModel
+
+@{
+    //Layout = null;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Create</title>
+    <style>
+        .form-control {
+            font-size: 9pt;
+            padding: 3px;
+            -webkit-appearance: button;
+            -moz-appearance: button;
+            appearance: button;
+        }
+    </style>
+</head>
+<body class="fs-7">
+    <form method="post">
+    <h4>新增</h4>
+    <hr />
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <div class="form-group mb-1">
+                        <div class="row">
+                            <div class="col-sm-1"><label asp-for="Issue.ProjectId" class="control-label"></label></div>
+                            <div class="col"><select asp-for="Issue.ProjectId" class="form-control w-auto" asp-items="ViewBag.ProjectId"></select></div>
+                        </div>
+                    </div>
+                    <div class="form-group mb-1">
+                        <div class="row">
+                            <div class="col-sm-1"><label asp-for="Issue.TrackerId" class="control-label"></label></div>
+                            <div class="col"><select asp-for="Issue.TrackerId" class="form-control w-auto" asp-items="ViewBag.TrackerId"></select></div>
+                        </div>
+                    </div>
+                    <div class="form-group mb-1">
+                        <div class="row">
+                            <div class="col-sm-1"><label asp-for="Issue.StatusId" class="control-label"></label></div>
+                            <div class="col"><select asp-for="Issue.StatusId" class="form-control w-auto" asp-items="ViewBag.StatusId"></select></div>
+                        </div>
+                    </div>
+                    <div class="form-group mb-1">
+                        <div class="row">
+                            <div class="col-sm-1">所属模块</div>
+                            <div class="col"><select asp-for="Issue.StatusId" class="form-control w-auto" asp-items="ViewBag.StatusId"></select></div>
+                        </div>
+                    </div>
+                    <div class="form-group mb-1">
+                        <div class="row">
+                            <div class="col-sm-1"><label asp-for="Issue.AuthorId" class="control-label"></label></div>
+                            <div class="col"><select asp-for="Issue.AuthorId" class="form-control w-auto" asp-items="ViewBag.AuthorId"></select></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="form-group mb-1">
+                        <div class="row">
+                            <div class="col-sm-1"><label asp-for="Issue.DueDate" class="control-label"></label></div>
+                            <div class="col"><input asp-for="Issue.DueDate" type="date" class="form-control w-auto input-content" /></div>
+                        </div>
+                    </div>
+                    <div class="form-group mb-1">
+                        <div class="row">
+                            <div class="col-sm-1"><label asp-for="Issue.AssignedToId" class="control-label"></label></div>
+                            <div class="col"><select asp-for="Issue.AssignedToId" class="form-control w-auto" asp-items="ViewBag.AssignedToId"></select></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="form-group mb-1">
+                    <label asp-for="Issue.Subject" class="control-label mb-1"></label>
+                    <input asp-for="Issue.Subject" class="form-control" />
+                    <span asp-validation-for="Issue.Subject" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Issue.Description" class="control-label mb-1"></label>
+                    <textarea asp-for="Issue.Description" class="form-control" rows="8"></textarea>
+                    <span asp-validation-for="Issue.Description" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+
+            <div>
+                <a asp-page="Index">Back to List</a>
+            </div>
+        </div>
+    </form>
+    @section Scripts {
+        @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    }
+</body>
+</html>

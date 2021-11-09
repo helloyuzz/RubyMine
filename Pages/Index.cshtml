@@ -2,6 +2,7 @@
 @model IndexModel
 @using RubyMine.Models;
 @{
+    Layout = "~/Pages/Shared/_NavicatLayout.cshtml";
     ViewData["Title"] = "Home page";
     ViewData["showFooter"] = "footer";
     User cua = SessionUtils.Get<User>(HttpContext.Session, "cua");

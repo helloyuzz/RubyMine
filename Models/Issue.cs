@@ -16,6 +16,7 @@ namespace RubyMine.Models {
         public string Subject { get; set; }
         [Display(Name = "描述")]
         public string Description { get; set; }
+        [Display(Name = "计划完成")]
         public DateTime? DueDate { get; set; }
         [Display(Name = "类别")]
         public int? CategoryId { get; set; }

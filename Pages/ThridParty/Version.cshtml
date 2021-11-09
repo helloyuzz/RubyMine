@@ -76,7 +76,8 @@
                         expireTitle = "LTS";
                         expireDay = "长期维护版本";
 
-                        url_All = Model.RedmineUrl + "/projects/" + urlPath + "/issues?c[]=author&c[]=tracker&c[]=subject&c[]=status&c[]=cf_35&c[]=cf_3&c[]=cf_6&c[]=cf_4&c[]=cf_30&c[]=cf_36&c[]=cf_50&f[]=fixed_version_id&f[]=&group_by=cf_50&op[fixed_version_id]==&set_filter=1&sort=cf_50,status,id:desc&t[]=&utf8=✓&v[fixed_version_id][]=" + item.Id;
+                        //url_All = Model.RedmineUrl + "/projects/" + urlPath + "/issues?c[]=author&c[]=tracker&c[]=subject&c[]=status&c[]=cf_35&c[]=cf_3&c[]=cf_6&c[]=cf_4&c[]=cf_30&c[]=cf_36&c[]=cf_50&f[]=fixed_version_id&f[]=&group_by=cf_50&op[fixed_version_id]==&set_filter=1&sort=cf_50,status,id:desc&t[]=&utf8=✓&v[fixed_version_id][]=" + item.Id;
+                        url_All = Model.RedmineUrl + "/projects/gorilla/issues?query_id=59";
                         url_Item = Model.RedmineUrl + "/projects/" + urlPath + "/issues?c[]=author&c[]=tracker&c[]=subject&c[]=status&c[]=cf_35&c[]=cf_3&c[]=cf_6&c[]=cf_4&c[]=cf_30&c[]=cf_36&c[]=cf_50&f[]=fixed_version_id&f[]=&group_by=cf_50&op[fixed_version_id]==&set_filter=1&sort=cf_50,status,id:desc&t[]=&utf8=✓&v[fixed_version_id][]=" + item.Id + "&f[]=tracker_id&op[tracker_id]==&v[tracker_id][]=???";
                     } else {
                         expireTitle = "开发中";

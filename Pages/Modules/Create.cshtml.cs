@@ -18,8 +18,14 @@ namespace RubyMine.Pages.Modules {
         }
         [BindProperty(SupportsGet = true)]
         public int Pid { get; set; }
+        [BindProperty(SupportsGet = true)]
+        public string UrlReferer { get; set; }
         public IActionResult OnGet() {
             var pid = Request.Query["pid"];
+            UrlReferer = Request.Headers["Referer"].ToString();
+            if (string.IsNullOrEmpty(UrlReferer)) {
+                UrlReferer = "/Platform";
+            }
             if (Module == null) {
                 Module = new Module();
             }
@@ -42,7 +48,14 @@ namespace RubyMine.Pages.Modules {
             _context.Modules.Add(Module);
             await _context.SaveChangesAsync();
 
-            return RedirectToPage("/Creation/Index");
+
+            string urlReferer = Request.Form["UrlReferer"];
+
+            if (string.IsNullOrEmpty(urlReferer) == false) {
+                return Redirect(urlReferer);
+            } else {
+                return RedirectToPage("/Platform/Index");
+            }            
         }
         public async Task<IActionResult> OnPostCreateAndNew() {
             if (!ModelState.IsValid) {

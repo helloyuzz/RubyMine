@@ -60,7 +60,7 @@ html {
 
 body {
   /* Margin bottom by footer height */
-  margin-bottom: 60px;
+  margin-bottom: 40px;
 }
 .footer {
   position: absolute;
@@ -77,6 +77,35 @@ th[htmlValue="issue"], td[htmlValue="issue"] {
     border: solid 1px #d7d7d7;
     padding: 5px !important;
 }
+
+.bg-f0f0f0 {
+    background: #f0f0f0 !important;
+}
+.border-top-bbb {
+    border-top:1px solid #bbbbbb !important;
+    border-top-color: #bbbbbb !important;
+}
+.border-top-fff {
+    border-top:1px solid !important;
+    border-top-color:#ffffff !important;
+}
+.border-bottom-bbb {
+    border-bottom:1px solid !important;
+    border-bottom-color:#bbbbbb !important;
+}
+.border-bottom-fff {
+    border-bottom:1px solid !important;
+    border-bottom-color:#ffffff !important;
+}
+.border-828790 {
+    border: 1px solid #828790 !important;
+}
+
+
+/*dialog::backdrop {
+    background: repeating-linear-gradient( 30deg, rgba(24, 194, 236, 0.2), rgba(24, 194, 236, 0.2) 1px, rgba(24, 194, 236, 0.3) 1px, rgba(24, 194, 236, 0.3) 20px );
+    backdrop-filter: blur(1px)
+}*/
 
 /*Issue*/
 th[htmlValue="issue"] {

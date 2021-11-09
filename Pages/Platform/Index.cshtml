@@ -2,6 +2,8 @@
 @model RubyMine.Pages.Platform.IndexModel
 @using RubyMine.Models
 @{
+    Layout = "~/Pages/Shared/_NavicatLayout.cshtml";
+
     ViewData["showFooter"] = "footer";
 }
 <style>
@@ -40,33 +42,70 @@
     .nested {
         display: none;
     }
+
     ul, li {
         margin-left: 0;
         padding-left: 0;
+        line-height: 160%;
     }
+
     ul {
         margin-left: 16px;
         padding-left: 0;
     }
+
     .activeTreeNode {
         display: block;
     }
+
     ul li:hover, ul li:focus {
-        background-color: #eff5f8;
-        color:#0026ff;
+        background-color: #cde8ff;
+        color: #0026ff;
     }
+
     .footer {
-        bottom:auto !important;
+        bottom: auto !important;
     }
+
+    .op-link {
+        color: #adb5c9 !important;
+    }
+
+    .jumpNav li.active, tr.active {
+        /*border-radius: 0.3rem;*/
+        border: 1px solid #cde8ff;
+    }
+
+    li.active {
+        background-color: #cde8ff;
+    }
+
+    tr.active {
+        background-color: #cde8ff;
+        border: 1px inset #cde8ff;
+    }
+
+    th, td {
+        padding: 0px !important;
+    }
+
+        th[htmlValue="issue"] {
+            padding: 3px !important;
+        }
+
+        td[htmlValue="issue"] {
+            border: solid 1px #d7d7d7;
+            padding: 2px !important;
+        }
 </style>
 
 @functions{
     string BuildTree(int? parent_id) {
         string htmlTree = "";
         if (parent_id == null) {
-            htmlTree = "<ul id=\"myUL\" class=\"activeTreeNode\">";
+            htmlTree = "<ul id=\"myUL\" class=\"jumpNav activeTreeNode\">";
         } else {
-            htmlTree = "<ul id=\"ul_" + parent_id + "\" htmlId=\""+ parent_id+"\" class=\"nested activeTreeNode\">";
+            htmlTree = "<ul id=\"ul_" + parent_id + "\" htmlId=\"" + parent_id + "\" class=\"jumpNav nested activeTreeNode\">";
         }
 
         var itemCount = Model.Module.Count(t => t.PId == parent_id);
@@ -74,19 +113,26 @@
             int nodeCursor = 1;
             foreach (Module item in Model.Module.Where(t => t.PId == parent_id).OrderBy(t => t.Index)) {
                 int subNode = Model.Module.Count(t => t.PId == item.Id);
+                var activeNode = "";
+
+                if (Model.Module_id == item.Id) {
+                    activeNode = " class=\"active\"";
+                }
 
                 string tempTitle = item.Name;
                 if (tempTitle.Length > 6) {
-                    tempTitle = tempTitle.Substring(0,6) + "...";
+                    tempTitle = tempTitle.Substring(0, 6) + "...";
                 }
                 var linkContent = "";
 
                 linkContent += "<div class=\"btn-group m-0 p-0 float-end dropend\">";
-                linkContent += "    <a href=\"#op\" class=\"text-666 m-0 p-0 fs-7 lh-0\" data-bs-toggle=\"dropdown\"><i class=\"bi bi-pencil-square\"></i></a>";
+                linkContent += "    <a href=\"#op\" class=\"text-666 m-0 p-0 fs-7 op-link\" data-bs-toggle=\"dropdown\">添加</a>";
                 linkContent += "    <ul class=\"dropdown-menu pt-0 pb-0 shadow fs-7\">";
-                linkContent += "	<li><a class=\"dropdown-item text-269 text-decoration-none ps-1 border-bottom border-ccc fw-bold bg-title\" href=\"#Temp\">" + item.Name + "</a></li>";
-                linkContent += "	<li><a class=\"dropdown-item text-269 text-decoration-none\" href=\"#\"><i class=\"bi bi-folder-plus\"></i>&nbsp;新增下级模块</a></li>";
-                linkContent += "	<li><a class=\"dropdown-item text-269 text-decoration-none\" href=\"#\"><i class=\"bi bi-file-earmark-medical\"></i>&nbsp;登记需求</a></li>";
+                linkContent += "	<li><a class=\"dropdown-item text-269 text-decoration-none text-center border-bottom border-ccc fw-bold bg-title\" href=\"#Temp\">&lt;" + item.Name + "&gt;</a></li>";
+                linkContent += "	<li><a class=\"dropdown-item text-269 text-decoration-none\" href=\"/Modules/Create?pid=" + item.Id + "\" title=\"新增下级节点\"><i class=\"bi bi-folder-plus\"></i>&nbsp;添加下级模块</a></li>";
+                linkContent += "	<li><a class=\"dropdown-item text-269 text-decoration-none\" href=\"#\"><i class=\"bi bi-file-earmark-medical\"></i>&nbsp;添加需求</a></li>";
+                linkContent += "	<li><hr class=\"m-0 dropdown-divider\"></li>";
+                linkContent += "	<li><a class=\"dropdown-item text-269 text-decoration-none\" href=\"?action=load&module_id=" + item.Id + "\"><i class=\"bi bi-caret-right-fill\"></i>&nbsp;详情</a></li>";
                 linkContent += "	<li><hr class=\"m-0 dropdown-divider\"></li>";
                 //linkContent += "<span class=\"float-end\">";
                 if (parent_id != null) {
@@ -106,9 +152,9 @@
                     linkContent += "	<li><hr class=\"m-0 dropdown-divider\"></li>";
                 }
 
-                linkContent += "	<li><a class=\"dropdown-item text-269 text-decoration-none\" href=\"#\"><i class=\"bi bi-pencil\"></i>&nbsp;编辑</a></li>";
-                linkContent += "	<li><hr class=\"m-0 dropdown-divider\"></li>";
                 linkContent += "	<li><a class=\"dropdown-item text-269 text-decoration-none\" href=\"#\"><i class=\"bi bi-toggle-off\"></i>&nbsp;禁用</a></li>";
+                linkContent += "	<li><hr class=\"m-0 dropdown-divider\"></li>";
+                linkContent += "	<li><a class=\"dropdown-item text-269 text-decoration-none\" href=\"/Modules/Edit?id=" + item.Id + "\" title=\"编辑\"><i class=\"bi bi-pencil\"></i>&nbsp;编辑</a></li>";
                 linkContent += "    </ul>";
                 linkContent += "</div>";
 
@@ -118,7 +164,7 @@
                 //linkContent += "</span>";
 
                 if (subNode > 0) {
-                    htmlTree += "<li id=\"li_" + item.Id + "\"><span class=\"caret fs-7\" htmlId=\"" + item.Id + "\"><i class=\"bi bi-folder-check\"></i>&nbsp;" + item.Name + "</span>" + linkContent;
+                    htmlTree += "<li id=\"li_" + item.Id + "\"><span class=\"caret fs-7\" htmlId=\"" + item.Id + "\"><img class=\"w-auto\" src=\"/images/xp/folder.png\">&nbsp;" + item.Name + "</span>" + linkContent;
 
                     htmlTree += "</li>";
                     string tempTree = BuildTree(item.Id);
@@ -126,7 +172,7 @@
                         htmlTree += tempTree;
                     }
                 } else {
-                    htmlTree += "<li><a class=\"text-269 text-decoration-none\" href=\"?action=load&module_id=\"><span class=\"fs-7\"><i class=\"bi bi-file-earmark-ppt\"></i>&nbsp;" + item.Name + "</span></a>" + linkContent + "</li>";
+                    htmlTree += "<li" + activeNode + "><a class=\"text-decoration-none text-269\" href=\"?action=load&module_id=" + item.Id + "\"><span class=\"fs-7\"><img src=\"/images/xp/page.png\">&nbsp;" + item.Name + "</span></a>" + linkContent + "</li>";
                 }
                 nodeCursor++;
             }
@@ -135,59 +181,53 @@
         return htmlTree;
     }
 }
-<div class="container-fluid border-1 border-ccc fs-7 h-100">
-    <div class="row p-1">
-        <div class="col-2 border-1 border-ccc p-0 mr-1 pb-2">
-            <div class="p-0 bg-title border-bottom border-ccc ps-2 lh-lg">
-                <span class="fw-bold">3.0产品开发管理平台</span>
-            </div>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-2 p-0 mr-1 pb-2 border-828790 bg-white">
             <div class="row m-1 p-1 pt-0 ps-0">
                 @Html.Raw(BuildTree(null))
             </div>
         </div>
-        <div class="col-6 p-0">
-            <table id="mainTable" class="table table-hover lh-1 fs-7">
+        <div class="col-6 p-1 border-828790 bg-white">
+            <table id="mainTable" class="table table-hover fs-7 jumpNav border-top-0">
                 <thead>
                     <tr style="background:#eee;">
-                        <th htmlValue="issue" width="40px" class="text-269 border-bottom-0">
+                        <th htmlValue="issue" width="40px" class="text-269 border-bottom-0 text-center">
                             #
                         </th>
-                        <th htmlValue="issue" width="60px" class="text-269 border-bottom-0">
+                        <th htmlValue="issue" width="60px" class="text-269 border-bottom-0 text-center">
                             @Html.DisplayNameFor(model => model.Issue[0].TrackerId)
                         </th>
-                        <th htmlValue="issue" width="80px" class="text-269 border-bottom-0">
+                        <th htmlValue="issue" width="60px" class="text-269 border-bottom-0">
                             @Html.DisplayNameFor(model => model.Issue[0].ProjectId)
                         </th>
-                        <th htmlValue="issue" width="40%" class="text-269 border-bottom-0">
+                        <th htmlValue="issue" class="text-269 border-bottom-0">
                             @Html.DisplayNameFor(model => model.Issue[0].Subject)
                         </th>
-                        <th htmlValue="issue" width="136px" class="text-269 border-bottom-0">
+                        <th htmlValue="issue" width="89px" class="text-269 border-bottom-0">
                             @Html.DisplayNameFor(model => model.Issue[0].StatusId)
                         </th>
                         @*<th htmlValue="issue" width="60px" class="text-269 border-bottom-0">
-                            @Html.DisplayNameFor(model => model.Issue[0].PriorityId)
-                        </th>*@
-                        <th htmlValue="issue" width="80px" class="text-269 border-bottom-0">
+                                @Html.DisplayNameFor(model => model.Issue[0].PriorityId)
+                            </th>*@
+                        <th htmlValue="issue" width="49px" class="text-269 border-bottom-0 text-center">
                             @Html.DisplayNameFor(model => model.Issue[0].AuthorId)
                         </th>
-                        <th htmlValue="issue" width="80px" class="text-269 border-bottom-0">
+                        <th htmlValue="issue" width="49px" class="text-269 border-bottom-0 text-center">
                             @Html.DisplayNameFor(model => model.Issue[0].AssignedToId)
                         </th>
-                        <th htmlValue="issue" width="123px" class="text-269 border-bottom-0">
+                        <th htmlValue="issue" width="99px" class="text-269 border-bottom-0 text-center">
                             @Html.DisplayNameFor(model => model.Issue[0].CreatedOn)
                         </th>
-                        @*<th htmlValue="issue" class="text-269 border-bottom-0">
-                            @Html.DisplayNameFor(model => model.Issue[0].IsPrivate)
-                        </th>*@
-                        <th width="40px" htmlValue="issue" class="text-269 text-center border-bottom-0">
-                           
+                        <th width="33px" htmlValue="issue" class="text-269 text-center border-bottom-0">
+                            添加
                         </th>
                     </tr>
                 </thead>
                 <tbody>
                     @foreach (var item in Model.Issue) {
                         <tr class="clickable-row">
-                            <td htmlValue="issue" class="fs-7">
+                            <td htmlValue="issue" class="fs-7 align-middle text-center">
                                 <a asp-page="./Details" asp-route-id="@item.Id" target="_blank" class="text-666">@Html.DisplayFor(modelItem => item.Id)</a>
                             </td>
                             <td htmlValue="issue">
@@ -197,7 +237,9 @@
                                 @Html.DisplayFor(modelItem => item.Project.Name)
                             </td>
                             <td htmlValue="issue">
-                                <a class="text-666 issue_subject_@item.StatusId" asp-page="./Details" asp-route-id="@item.Id" target="_blank">@Html.DisplayFor(modelItem => item.Subject)</a>
+                                <a href="#op" class="text-666 fs-7">@Html.DisplayFor(modelItem => item.Subject)</a>
+
+                                @*<a class="text-666 issue_subject_@item.StatusId" asp-page="./Details" asp-route-id="@item.Id" target="_blank"></a>*@
                             </td>
                             <td htmlValue="issue" class="text-start">
                                 <div class="btn-group m-0 p-0">
@@ -211,36 +253,53 @@
                                     </ul>
                                 </div>
                             </td>
-                            <td htmlValue="issue">
+                            <td htmlValue="issue" class="text-center">
                                 @Html.DisplayFor(modelItem => item.Author.Firstname)
                             </td>
-                            <td htmlValue="issue">
+                            <td htmlValue="issue" class="text-center">
                                 @Html.DisplayFor(modelItem => item.AssignedTo.Firstname)
                             </td>
-                            <td htmlValue="issue">
+                            <td htmlValue="issue" class="text-center">
                                 @Html.Raw(RMUtils.ParseDate(item.CreatedOn, true))
                             </td>
-                            <td htmlValue="issue">
-                                <div class="btn-group m-0 p-0">
-                                    <a href="#op" class="text-666 m-0 p-0 fs-7 lh-0" data-bs-toggle="dropdown">操作</a>
-                                    <ul class="dropdown-menu shadow fs-7">
-                                        <li><a class="dropdown-item text-decoration-none" href="#">登记需求</a></li>
-                                        <li><hr class="dropdown-divider"></li>
-                                        <li><a class="dropdown-item text-decoration-none" href="#">在之前插入</a></li>
-                                        <li><a class="dropdown-item text-decoration-none" href="#">编辑</a></li>
-                                        <li><hr class="dropdown-divider"></li>
-                                        <li><a class="dropdown-item text-decoration-none" href="#">禁用</a></li>
+                            <td htmlValue="issue" class="align-middle text-center">
+                                <div class="btn-group pt-1 align-middle">
+                                    <a class="dropdown-item text-decoration-none p-0 mr-1" href="#temp"><img src="/images/xp/add_note.png" /></a>
+                                    <a href="#Temp" class="text-666" data-bs-toggle="dropdown"><img src="~/images/xp/selection_copy.png" /></a>
+                                    <ul class="dropdown-menu shadow fs-7 p-0">
+                                        <li></li>
+                                        <li><hr class="dropdown-divider m-0"></li>
+                                        <li><a class="dropdown-item text-decoration-none p-1 text-269" asp-page="/Issues/Edit" asp-route-id=""><i class="bi bi-pencil"></i>&nbsp;编辑</a></li>
+                                        <li><hr class="dropdown-divider m-0"></li>
+                                        <li><a class="dropdown-item text-decoration-none p-1" asp-page="/Issues/Edit" asp-route-id=""><i class="bi bi-arrow-up"></i>&nbsp;上移</a></li>
+                                        <li><a class="dropdown-item text-decoration-none p-1" asp-page="/Issues/Edit" asp-route-id=""><i class="bi bi-chevron-bar-up"></i>&nbsp;置顶</a></li>
+                                        <li><a class="dropdown-item text-decoration-none p-1" asp-page="/Issues/Edit" asp-route-id=""><i class="bi bi-arrow-down"></i>&nbsp;下移</a></li>
+                                        <li><hr class="dropdown-divider m-0"></li>
+                                        <li><a class="dropdown-item text-decoration-none p-1 pt-2 pb-2 text-269" asp-page="/Issues/Delete"><i class="bi bi-toggle-off"></i>&nbsp;禁用</a></li>
                                     </ul>
                                 </div>
-                                @*
-                                <a asp-page="./Edit" asp-route-id="@item.Id">Edit</a>|
-        <a asp-page="./Details" asp-route-id="@item.Id">Details</a> |
-        <a asp-page="./Delete" asp-route-id="@item.Id">Delete</a>*@
                             </td>
                         </tr>
                     }
+                    <tr>
+                        <td class="align-middle text-center">-</td>
+                        <td class="align-middle text-center">
+                            <select class="border-0">
+                                <option>🆔需求</option>
+                                <option>🐛问题</option>
+                                <option>💬任务</option>
+                            </select>
+                        </td>
+                        <td class="align-middle text-center">Gorilla</td>
+                        <td colspan="4"><input class="w-100 border-828790 fs-9" /></td>
+                        <td class="ps-1 align-middle"><button>save</button></td>
+                        <td class="text-center align-middle"><img src="/images/xp/cancel.png" /></td>
+                    </tr>
                 </tbody>
             </table>
+        </div>&nbsp;
+        <div class="col p-1 border-828790 bg-white">
+            修订记录
         </div>
     </div>
 </div>
@@ -254,5 +313,26 @@
             //this.parentElement.querySelector(".nested").classList.toggle("active");
             this.classList.toggle("caret-down");
         });
+    }
+
+    $(document).ready(function () {
+        $("#myUL li").click(function () {
+            $("#myUL li").removeClass('active');
+            $(this).addClass('active');
+        });
+        $("#mainTable tr").click(function () {
+            $("#mainTable tr").removeClass('active');
+            $(this).addClass('active');
+        });
+    });
+
+    function openDialog() {
+        var dialogElem = document.getElementById("idDialog");
+        dialogElem.showModal();
+    }
+
+    function closeDialog() {
+        var dialogElem = document.getElementById("idDialog");
+        dialogElem.close();
     }
 </script>

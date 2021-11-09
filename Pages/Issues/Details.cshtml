@@ -1,0 +1,166 @@
+﻿@page
+@model RubyMine.Pages.Issues.DetailsModel
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Details</title>
+</head>
+<body>
+
+<div>
+    <h4>Issue</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Issue.Subject)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Issue.Subject)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Issue.Description)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Issue.Description)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Issue.DueDate)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Issue.DueDate)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Issue.CategoryId)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Issue.CategoryId)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Issue.FixedVersionId)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Issue.FixedVersionId)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Issue.LockVersion)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Issue.LockVersion)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Issue.CreatedOn)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Issue.CreatedOn)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Issue.UpdatedOn)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Issue.UpdatedOn)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Issue.StartDate)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Issue.StartDate)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Issue.DoneRatio)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Issue.DoneRatio)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Issue.EstimatedHours)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Issue.EstimatedHours)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Issue.ParentId)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Issue.ParentId)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Issue.RootId)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Issue.RootId)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Issue.Lft)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Issue.Lft)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Issue.Rgt)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Issue.Rgt)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Issue.IsPrivate)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Issue.IsPrivate)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Issue.ClosedOn)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Issue.ClosedOn)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Issue.Tracker)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Issue.Tracker.Name)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Issue.Project)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Issue.Project.Name)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Issue.Status)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Issue.Status.Name)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Issue.AssignedTo)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Issue.AssignedTo.Firstname)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Issue.Priority)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Issue.Priority.Name)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Issue.Author)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Issue.Author.Firstname)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-page="./Edit" asp-route-id="@Model.Issue.Id">Edit</a> |
+    <a asp-page="./Index">Back to List</a>
+</div>
+</body>
+</html>

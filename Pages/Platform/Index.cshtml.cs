@@ -14,11 +14,12 @@ namespace RubyMine.Pages.Platform {
         }
         public IList<RubyMine.Models.Issue> Issue { get; set; }
         public IList<RubyMine.Models.Module> Module { get; set; }
+        public int Module_id { get; set; }
         public async Task OnGet() {
             //Issue = await _context.Issues.Where(t => t.TrackerId == 8).Select(t => new Models.Issue { Id = t.Id, Subject = t.Subject, ParentId = t.ParentId, RootId = t.RootId, Lft = t.Lft, Rgt = t.Rgt }).ToListAsync();
             string action = Request.Query["action"];
             int id = RMUtils.QueryInt(Request, "id");
-            int module_id = RMUtils.QueryInt(Request, "module_id");
+            Module_id = RMUtils.QueryInt(Request, "module_id");
 
             switch (action) {
                 case "up":
@@ -48,7 +49,7 @@ namespace RubyMine.Pages.Platform {
             }
             Module = await _context.Modules.ToListAsync();
 
-            Issue = await _context.Issues.Take(30).ToListAsync();
+            Issue = await _context.Issues.Include(t=>t.Tracker).Include(t=>t.Project).Include(t=>t.Status).Include(t=>t.Author).Include(t=>t.AssignedTo).Take(30).ToListAsync();
         }
     }
 }
