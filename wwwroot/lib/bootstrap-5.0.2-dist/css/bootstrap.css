@@ -6642,6 +6642,9 @@ textarea.form-control-lg {
   height: 100vh !important;
 }
 
+.vh-93 {
+    height:93vh !important;
+}
 .min-vh-60 {
     min-height: 60vh !important;
 }

@@ -13,8 +13,8 @@ using RubyMine.Models.CustomModels;
 namespace RubyMine.Pages.Products {
     public class IndexModel : PageModel {
         private readonly RubyMine.DbContexts.RubyRemineDbContext _context;
-        private readonly RubyMine.DIP.IDIPSetting _config;
-        public IndexModel(RubyMine.DbContexts.RubyRemineDbContext context, IDIPSetting config) {
+        private readonly RubyMine.DIP.ISysSetting _config;
+        public IndexModel(RubyMine.DbContexts.RubyRemineDbContext context, ISysSetting config) {
             _context = context;
             _config = config;
         }

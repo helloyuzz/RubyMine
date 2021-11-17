@@ -81,15 +81,16 @@ namespace RubyMine.DbContexts {
         public virtual DbSet<WikiPage> WikiPages { get; set; }
         public virtual DbSet<WikiRedirect> WikiRedirects { get; set; }
         public virtual DbSet<Workflow> Workflows { get; set; }
+        public virtual DbSet<ShowIndex> ShowIndices { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) {
             if (!optionsBuilder.IsConfigured) {
                 optionsBuilder.UseLoggerFactory(loggerFactory).EnableSensitiveDataLogging();
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-                //optionsBuilder.UseMySql("server=localhost;port=3306;database=bitnami_redmineplusagile;uid=bitnami;pwd=e32a9b7bd9;sslmode=None;allowpublickeyretrieval=true", Microsoft.EntityFrameworkCore.ServerVersion.Parse("5.7.32-mysql"));
-                string db_connectionString = _configuration["ConnectionStrings:MySQL_product"];
-                string db_version = _configuration["ConnectionStrings:Version"];
-                optionsBuilder.UseMySql(db_connectionString, Microsoft.EntityFrameworkCore.ServerVersion.Parse(db_version));
+                optionsBuilder.UseMySql("server=localhost;port=3306;database=bitnami_redmineplusagile;uid=bitnami;pwd=e32a9b7bd9;sslmode=None;allowpublickeyretrieval=true", Microsoft.EntityFrameworkCore.ServerVersion.Parse("5.7.32-mysql"));
+                //string db_connectionString = _configuration["ConnectionStrings:MySQL_product"];
+                //string db_version = _configuration["ConnectionStrings:Version"];
+                //optionsBuilder.UseMySql(db_connectionString, Microsoft.EntityFrameworkCore.ServerVersion.Parse(db_version));
             }
         }
 
@@ -790,6 +791,10 @@ namespace RubyMine.DbContexts {
                 entity.Property(e => e.CustomizedId)
                     .HasColumnType("int(11)")
                     .HasColumnName("customized_id");
+
+                entity.Property(e => e.Position)
+                    .HasColumnType("int")
+                    .HasColumnName("position");
 
                 entity.Property(e => e.CustomizedType)
                     .IsRequired()
@@ -1864,6 +1869,30 @@ namespace RubyMine.DbContexts {
                 entity.Property(e => e.Value)
                     .HasColumnType("text")
                     .HasColumnName("value");
+            });
+
+            modelBuilder.Entity<ShowIndex>(entity => {
+                entity.ToTable("show_index");
+
+                entity.Property(e => e.Id)
+                    .HasColumnType("int(11)")
+                    .HasColumnName("id");
+
+                entity.Property(e => e.CustomId)
+                    .HasColumnType("int(11)")
+                    .HasColumnName("custom_id");
+
+                entity.Property(e => e.ModuleId)
+                    .HasColumnType("int(11)")
+                    .HasColumnName("module_id");
+
+                entity.Property(e => e.Position)
+                    .HasColumnType("int(11)")
+                    .HasColumnName("position");
+
+                entity.Property(e => e.Type)
+                    .HasMaxLength(60)
+                    .HasColumnName("type");
             });
 
             modelBuilder.Entity<TimeEntry>(entity => {

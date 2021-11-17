@@ -101,16 +101,56 @@ th[htmlValue="issue"], td[htmlValue="issue"] {
     border: 1px solid #828790 !important;
 }
 
+.border-bdbdbd {
+    border:2px dotted #dbdbdb !important;
+}
+.border-998888 {
+    border: 2px dotted #998888 !important;
+}
 
-/*dialog::backdrop {
+.btn-5693af {
+    color: #fff;
+    background-color: #5693af;
+    border-color: #5693af;
+    border-radius: 0 !important;
+}
+.btn-5693af:hover,.btn-5693af:focus{
+    color:#fff;
+    background-color:#386e87;
+    border-color:#0a58ca;
+    border-radius:0 !important;
+}
+
+
+.btn-normal {
+    color: #000;
+    background-color: #fff;
+    border-color: #ced4da;
+    border-radius: 0 !important;
+}
+
+.btn-normal:hover,.btn-normal:focus {
+    color: #000;
+    background-color: #fff;
+    border-color: #ced4da;
+    border-radius: 0 !important;
+}
+
+.display_none {
+    display:none !important;
+}
+
+.display_block {
+    display: inline !important;
+}
+    /*dialog::backdrop {
     background: repeating-linear-gradient( 30deg, rgba(24, 194, 236, 0.2), rgba(24, 194, 236, 0.2) 1px, rgba(24, 194, 236, 0.3) 1px, rgba(24, 194, 236, 0.3) 20px );
     backdrop-filter: blur(1px)
 }*/
-
-/*Issue*/
-th[htmlValue="issue"] {
-    padding: 8px !important;
-}
+    /*Issue*/
+    th[htmlValue="issue"] {
+        padding: 8px !important;
+    }
 /*待实施反馈*/
 .issue_subject_3 {
     color: blue !important;

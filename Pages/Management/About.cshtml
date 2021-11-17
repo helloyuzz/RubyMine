@@ -2,61 +2,52 @@
 @model RubyMine.Pages.Management.AboutModel
 @using RubyMine.Models;
 @{
-    Layout = "~/Pages/Shared/_ManagementLayout.cshtml";
+    Layout = "~/Pages/Shared/_NavicatLayout.cshtml";
     User cua = SessionUtils.Get<User>(HttpContext.Session, "cua");
     if(cua ==null) {
         return;
     }
 }
 
-<!DOCTYPE html>
-<html>
-<head>
-    <meta name="viewport" content="width=device-width" />
-    <title>Create</title>
-</head>
-<body>
-        <div class="row bg-title">
-            <div class="col">
-                <div class="row border-1 border-ccc bg-title pt-1 pb-1 ps-1 fw-bold">
-                    设置 -> 主页
-                </div>
+<div class="container-fluid pt-4">
+    @*<div class="row bg-title">
+        <div class="col">
+            <div class="row border-1 border-ccc bg-title pt-1 pb-1 ps-1 fw-bold">
+                设置 -> 主页
             </div>
         </div>
-        <div class="row">
-            <div class="col p-0 border-1 border-ccc">
-                <fieldset class="m-1">
-                    <legend>@cua.Firstname</legend>
-                    <form class="lh-lg">
-                        <span class="text-666">最近登录：</span><label>@cua.LastLoginOn.Value.ToString("yyyy-MM-dd HH:mm:ss")</label><br />
-                        <span class="text-666">登录帐号：</span><label>@cua.Login</label><br />
-                        <span class="text-666">创建于：</span><label>@cua.CreatedOn.Value.ToString("yyyy-MM-dd HH:mm:ss")</label><br />
-                    </form>
-                </fieldset>
-                <table class="table table-hover border-top-0">
-                    <thead>
-                        <tr>
-                            <th class="p-0 ps-1 pt-1 pb-1">
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td class="text-269"><i class="bi bi-exclamation-triangle"></i>&nbsp;是否退出RubyMine后台管理系统？</td>                  
-                        </tr>
-                        <tr>
-                            <td>
-                                <form method="post">
-                                    <button type="submit">退出登录</button>
-                                </form>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
+    </div>*@
+    <div class="row">
+        <div class="col">
+            <table class="table table-hover">
+                <tr>
+                    <td><h1>已登录 @cua.Login，是否退出？</h1></td>
+                </tr>
+                <tr>
+                    <td><label>上次登录：@cua.LastLoginOn.Value.ToString("yyyy-MM-dd HH:mm:ss")</label></td>
+                </tr>
+                <tr>
+                    <td><label>创建于：@cua.CreatedOn.Value.ToString("yyyy-MM-dd HH:mm:ss")</label></td>
+                </tr>          
+                <tr>
+                    <td class="border-0">
+                        <form method="post">
+                            <button type="submit">退出登录</button>
+                        </form>
+                    </td>
+                </tr>
+            </table>
         </div>
-    @section Scripts {
-        @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-    }
-</body>
-</html>
+    </div>
+</div>
+<div class="waveWrapper waveAnimation border-bottom border-ccc border-top-fff" style="margin-bottom:23px;margin-top:26px;">
+    <div class="waveWrapperInner bgTop">
+        <div class="wave waveTop" style="background-image: url('/images/wave-png/wave-top.png')"></div>
+    </div>
+    <div class="waveWrapperInner bgMiddle">
+        <div class="wave waveMiddle" style="background-image: url('/images/wave-png/wave-mid.png')"></div>
+    </div>
+    <div class="waveWrapperInner bgBottom">
+        <div class="wave waveBottom" style="background-image: url('/images/wave-png/wave-bot.png')"></div>
+    </div>
+</div>

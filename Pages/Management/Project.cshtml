@@ -58,16 +58,16 @@
                             <td>
                                 @Html.DisplayFor(modelItem => item.Description)
                             </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.CreatedOn)
+                            <td>@Html.Raw(RMUtils.ParseDate(item.CreatedOn,true))
+                                @*@Html.DisplayFor(modelItem => item.CreatedOn)*@
                             </td>
                             <td>
                                 @Html.DisplayFor(modelItem => item.Identifier)
                             </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.Status)
+                            <td>@Html.Raw(RMUtils.ParseUserStatus(item.Status))
+                                @*@Html.DisplayFor(modelItem => item.Status)*@
                             </td>
-                            <td>
+                            <td>-
                                 @*<a asp-page="./Edit" asp-route-id="@item.Id">Edit</a> |
                                 <a asp-page="./Details" asp-route-id="@item.Id">Details</a> |
                                 <a asp-page="./Delete" asp-route-id="@item.Id">Delete</a>*@

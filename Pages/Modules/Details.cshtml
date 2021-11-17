@@ -2,18 +2,8 @@
 @model RubyMine.Pages.Modules.DetailsModel
 
 @{
-    Layout = null;
+    Layout = "~/Pages/Shared/_NavicatLayout.cshtml";
 }
-
-<!DOCTYPE html>
-
-<html>
-<head>
-    <meta name="viewport" content="width=device-width" />
-    <title>Details</title>
-</head>
-<body>
-
 <div>
     <h4>Module</h4>
     <hr />
@@ -42,5 +32,3 @@
     <a asp-page="./Edit" asp-route-id="@Model.Module.Id">Edit</a> |
     <a asp-page="./Index">Back to List</a>
 </div>
-</body>
-</html>

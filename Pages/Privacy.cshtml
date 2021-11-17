@@ -1,9 +1,26 @@
 ﻿@page
 @model PrivacyModel
 @{
+    Layout = "~/Pages/Shared/_NavicatLayout.cshtml";
     ViewData["Title"] = "Privacy Policy";
     ViewData["showFooter"] = "footer";
 }
-<h1>@ViewData["Title"]</h1>
+<div class="container-fluid pt-4">
+    <h1>@ViewData["Title"]</h1>
 
-<p>Use this page to detail your site's privacy policy.</p>
+    <p>Use this page to detail your site's privacy policy.</p>
+    <p>
+        版权所有：@@四川劳吉克信息技术有限公司
+    </p>
+</div>
+<div class="waveWrapper waveAnimation border-bottom border-ccc border-top-fff" style="margin-bottom:23px;margin-top:26px;">
+    <div class="waveWrapperInner bgTop">
+        <div class="wave waveTop" style="background-image: url('/images/wave-png/wave-top.png')"></div>
+    </div>
+    <div class="waveWrapperInner bgMiddle">
+        <div class="wave waveMiddle" style="background-image: url('/images/wave-png/wave-mid.png')"></div>
+    </div>
+    <div class="waveWrapperInner bgBottom">
+        <div class="wave waveBottom" style="background-image: url('/images/wave-png/wave-bot.png')"></div>
+    </div>
+</div>

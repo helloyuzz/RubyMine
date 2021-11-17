@@ -28,7 +28,7 @@
                         <th class="p-0 ps-1 pt-1 pb-1">
                             @Html.DisplayNameFor(model => model.Setting[0].Id)
                         </th>
-                        <th class="p-0 ps-1 pt-1 pb-1">
+                        <th class="p-0 ps-1 pt-1 pb-1" width="30%">
                             @Html.DisplayNameFor(model => model.Setting[0].Name)
                         </th>
                         <th class="p-0 ps-1 pt-1 pb-1">
@@ -49,13 +49,13 @@
                         <td>
                             @Html.DisplayFor(modelItem => item.Name)
                         </td>
-                        <td>
+                        <td>-
                             @*@Html.DisplayFor(modelItem => item.Value)*@
                         </td>
                         <td>
                             @Html.DisplayFor(modelItem => item.UpdatedOn)
                         </td>
-                        <td>
+                        <td>-
                             @*<a asp-page="./Edit" asp-route-id="@item.Id">Edit</a> |
                             <a asp-page="./Details" asp-route-id="@item.Id">Details</a> |
                             <a asp-page="./Delete" asp-route-id="@item.Id">Delete</a>*@
