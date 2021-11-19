@@ -9,19 +9,12 @@
     }
 }
 
-<div class="container-fluid pt-4">
-    @*<div class="row bg-title">
-        <div class="col">
-            <div class="row border-1 border-ccc bg-title pt-1 pb-1 ps-1 fw-bold">
-                设置 -> 主页
-            </div>
-        </div>
-    </div>*@
+<div class="container-fluid pt-4 pb-4 bg-white border-inset vh-60">
     <div class="row">
         <div class="col">
             <table class="table table-hover">
                 <tr>
-                    <td><h1>已登录 @cua.Login，是否退出？</h1></td>
+                    <td><h3>已登录 @cua.Login，是否退出？</h3></td>
                 </tr>
                 <tr>
                     <td><label>上次登录：@cua.LastLoginOn.Value.ToString("yyyy-MM-dd HH:mm:ss")</label></td>
@@ -32,7 +25,7 @@
                 <tr>
                     <td class="border-0">
                         <form method="post">
-                            <button type="submit">退出登录</button>
+                            <button type="submit" class="btn-sm fs-9 text-dark border-828790 bg-white">退出登录</button>
                         </form>
                     </td>
                 </tr>

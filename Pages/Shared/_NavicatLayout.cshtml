@@ -14,7 +14,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - RubyMine for navicat</title>
+    <title>@ViewData["Title"] - RubyMine for Navicat</title>
     <link href="~/lib/bootstrap-5.0.2-dist/css/bootstrap.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
     <script src="https://kit.fontawesome.com/64adc7381d.js" crossorigin="anonymous"></script>
@@ -27,34 +27,40 @@
 
     <link rel="stylesheet" href="~/css/site.css" />
 </head>
-<body class="fs-9">
-    <div style="background-image:url('/images/line-dot.png');background-repeat:repeat-x;height:2px;">
-        <img src="/images/whitepoint.png" />
-    </div>
-    <div class="row m-0 p-0 fw-bold lh-lg bg-f0f0f0">
-        <div class="col-3 ps-1">
-            <img class="w-auto mb-1" src="/images/xp/shield.png" />
-            <a href="/Platform/" class="text-decoration-none fw-normal mr-4" title="返回开发平台主页"><span class="fw-bold mt-1">3.0产品开发管理平台</span></a>
-            @if (aleradyLogin) {
-                <span class="float-none fw-normal"><img src="/images/xp/vcard.png" class="mb-1" />&nbsp;<a href="/Management/About">@cua.Firstname</a>，<a href="/swagger/index.html" target="_blank"><img src="/images/xp/swagger.png" height="16" />&nbsp;Swagger</a></span>
-                @Html.Raw(" - ")<a class="fw-normal" href="/Privacy">Privacy</a>
-            }
+<body class="fs-9 bg-f0f0f0 overflow-scroll" style="overflow-x:hidden !important; @ViewData["scroll_hidden"]">
+    @if (aleradyLogin) {
+        <div style="background-image:url('/images/line-dot.png');background-repeat:repeat-x;height:2px;">
+            <img src="/images/whitepoint.png" />
         </div>
-        <div class="col">
-            <div class="float-end fw-normal">四川劳吉克信息技术有限公司&nbsp; - @@RubyMine Powered by Jack Sparrow</div>
+        <div class="row m-0 p-0 lh-lg bg-f0f0f0">
+            <div class="col-3 ps-1">
+                <span class="float-none fw-normal mr-1">
+                    <a class="btn-sm fs-9 text-dark border-828790 bg-white text-decoration-none fw-bold" style="padding:1px;" href="/Management/About"><img src="/images/xp/vcard.png" class="mb-1" />&nbsp;@cua.Firstname</a>
+                </span>
+                <a href="/Platform/" class="text-decoration-none fw-normal mr-4 text-dark fw-bold" title="返回开发平台主页"><img class="w-auto mb-1" src="/images/xp/shield.png" /><span class="fw-bold mt-1">3.0产品开发管理平台</span></a>
+            </div>
         </div>
-    </div>
-    <div style="background-image:url('/images/line-dot.png');background-repeat:repeat-x;height:2px;margin-bottom:2px;">
-        <img src="/images/whitepoint.png" />
-    </div>
+        <div style="background-image:url('/images/line-dot.png');background-repeat:repeat-x;height:2px;margin-bottom:2px;">
+            <img src="/images/whitepoint.png" />
+        </div>
+    }
     <div class="ps-1">
         @RenderBody()
     </div>
-    <div class="mt-1" style="background-image:url('/images/line-dot.png');background-repeat:repeat-x;height:2px;">
-        <img src="/images/whitepoint.png" />
-    </div>
-    @*<div style="background-image:url('/images/line-dot.png');background-repeat:repeat-x;height:2px;" class="mt-1">
+
+    @if (aleradyLogin) {
+        <div style="background-image:url('/images/line-dot.png');background-repeat:repeat-x;height:2px;margin-top:2px;">
             <img src="/images/whitepoint.png" />
-        </div>*@
+        </div>
+        <div class="row m-0 w-100">
+            <div class="col m-0 p-1">
+                <div class="fw-normal">
+                    RubyMine 版权所有 © 四川劳吉克信息技术有限公司&nbsp; -  Powered by Jack Sparrow
+                    <a href="/APIDocs/" class="fs-9 text-dark border-828790 bg-white text-decoration-none" style="padding:1px;padding-left:3px;padding-right:4px;">API Docs</a>
+                    <a class="fs-9 text-dark border-828790 bg-white text-decoration-none" style="padding:1px;padding-left:3px;padding-right:4px;" href="/Privacy">Privacy</a>
+                </div>
+            </div>
+        </div>
+    }
 </body>
 </html>

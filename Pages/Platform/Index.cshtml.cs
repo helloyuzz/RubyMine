@@ -67,6 +67,8 @@ namespace RubyMine.Pages.Platform {
             // CustomFieldId = 模块序号（54）
             DisplayIssues = new List<DisplayIssue>();
             if (Module_id > 0) {    // 组合查询条件
+                CurrentModule = _context.Modules.FirstOrDefault(t => t.Id == Module_id);
+
                 predicateBuilder = predicateBuilder.And(x => x.Value.Equals(Module_id.ToString()));
                 CustomValues = await _context.CustomValues.Where(predicateBuilder).OrderBy(t => t.Position).ToListAsync();
 

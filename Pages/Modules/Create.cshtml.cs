@@ -20,6 +20,7 @@ namespace RubyMine.Pages.Modules {
         public int Pid { get; set; }
         [BindProperty(SupportsGet = true)]
         public string UrlReferer { get; set; }
+        public Module ParentModule { get; set; }
         public IActionResult OnGet() {
             var pid = Request.Query["pid"];
             UrlReferer = Request.Headers["Referer"].ToString();
@@ -31,7 +32,7 @@ namespace RubyMine.Pages.Modules {
             }
 
             Module.PId = RMUtils.ParseInt(pid);
-
+            ParentModule = _context.Modules.FirstOrDefault(t => t.Id == Module.PId);
             var dbCount = _context.Modules.Count(t => t.PId == Module.PId);
             Module.Index = dbCount + 1;
             return Page();

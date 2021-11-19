@@ -33,17 +33,17 @@ namespace RubyMine {
                 c.SwaggerDoc("v1", new OpenApiInfo {
                     Title = "Rubymine for Navicat",
                     Version = "v1",
-                    Description = "四川劳吉克信息技术有限公司",
-                    TermsOfService = new Uri("http://localhost:36698/"),
-                    Contact = new OpenApiContact {
-                        Name = "Jacksparrow",
-                        Email = "",
-                        Url = new Uri("http://www.logichealth.cn"),
-                    },
-                    License = new OpenApiLicense {
-                        Name = "Jacksparrow Code for Development Platform",
-                        Url = new Uri("http://www.logichealth.cn"),
-                    }
+                    Description = "四川劳吉克信息技术有限公司"
+                    //TermsOfService = new Uri("http://localhost:36698/"),
+                    //Contact = new OpenApiContact {
+                    //    Name = "Jacksparrow",
+                    //    Email = "",
+                    //    Url = new Uri("http://www.logichealth.cn"),
+                    //},
+                    //License = new OpenApiLicense {
+                    //    Name = "Jacksparrow Code for Development Platform",
+                    //    Url = new Uri("http://www.logichealth.cn"),
+                    //}
                 });
             });
 

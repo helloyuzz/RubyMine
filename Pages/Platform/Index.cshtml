@@ -8,6 +8,7 @@
     User cua = SessionUtils.Get<User>(HttpContext.Session, "cua");
     if (cua == null) {
         Response.Redirect("/");
+        return;
     }
     bool showEdit = Model.Chanpins.Contains(cua.Id);
     }
@@ -29,14 +30,14 @@
         user-select: none;
     }
 
-        .caret::before {
-            content: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='9' height='9' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='rgba%280,0,0,.5%29' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M5 14l6-6-6-6'/%3e%3c/svg%3e");
-            color: black;
-            display: inline-block;
-            margin-right: 6px;
-            transition: transform 0.13s ease;
-            transform-origin: .5em 50%;
-        }
+    .caret::before {
+        content: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='9' height='9' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='rgba%280,0,0,.5%29' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M5 14l6-6-6-6'/%3e%3c/svg%3e");
+        color: black;
+        display: inline-block;
+        margin-right: 6px;
+        transition: transform 0.13s ease;
+        transform-origin: .5em 50%;
+    }
 
     .caret-down::before {
         -ms-transform: rotate(90deg); /* IE 9 */
@@ -100,14 +101,14 @@
         padding: 0px !important;
     }
 
-        th[htmlValue="issue"] {
-            padding: 3px !important;
-        }
+    th[htmlValue="issue"] {
+        padding: 3px !important;
+    }
 
-        td[htmlValue="issue"] {
-            border: solid 1px #d7d7d7;
-            padding: 2px !important;
-        }
+    td[htmlValue="issue"] {
+        border: solid 1px #d7d7d7;
+        padding: 2px !important;
+    }
 </style>
 
 @functions{
@@ -121,13 +122,12 @@
 
         var itemCount = Model.Modules.Count(t => t.PId == parent_id);
         if (itemCount > 0) {
-            int nodeCursor = 1;
             foreach (Module item in Model.Modules.Where(t => t.PId == parent_id).OrderBy(t => t.Index)) {
                 int subNode = Model.Modules.Count(t => t.PId == item.Id);
                 var activeNode = "";
 
                 if (Model.Module_id == item.Id) {
-                    activeNode = " class=\"active\"";
+                    activeNode = " active";
                 }
 
                 string tempTitle = item.Name;
@@ -140,43 +140,22 @@
                     linkContent += "<div class=\"btn-group m-0 p-0 float-end dropend\">";
                     linkContent += "    <a href=\"#op\" class=\"text-666 m-0 p-0 fs-7 op-link\" data-bs-toggle=\"dropdown\">添加</a>";
                     linkContent += "    <ul class=\"dropdown-menu pt-0 pb-0 shadow fs-7\">";
-                    linkContent += "	<li><a class=\"dropdown-item text-269 text-decoration-none text-center border-bottom border-ccc fw-bold bg-title\" href=\"#Temp\">&lt;" + item.Name + "&gt;</a></li>";
                     linkContent += "	<li><a class=\"dropdown-item text-269 text-decoration-none\" href=\"/Modules/Create?pid=" + item.Id + "\" title=\"新增下级节点\"><i class=\"bi bi-folder-plus\"></i>&nbsp;添加下级模块</a></li>";
-                    //linkContent += "	<li><a class=\"dropdown-item text-269 text-decoration-none\" href=\"#\"><i class=\"bi bi-file-earmark-medical\"></i>&nbsp;添加需求</a></li>";
-                    linkContent += "	<li><hr class=\"m-0 dropdown-divider\"></li>";
-                    linkContent += "	<li><hr class=\"m-0 dropdown-divider\"></li>";
                     linkContent += "	<li><a class=\"dropdown-item text-269 text-decoration-none\" href=\"/Modules/Edit?id=" + item.Id + "\" title=\"编辑\"><i class=\"bi bi-pencil\"></i>&nbsp;编辑</a></li>";
-                    linkContent += "	<li><a class=\"dropdown-item text-269 text-decoration-none\" href=\"?action=load&module_id=" + item.Id + "\"><i class=\"bi bi-caret-right-fill\"></i>&nbsp;详情</a></li>";
                     linkContent += "	<li><hr class=\"m-0 dropdown-divider\"></li>";
-                    //linkContent += "<span class=\"float-end\">";
                     if (parent_id != null) {
-                        if (nodeCursor == 1) {
-                            //linkContent += "&nbsp;<a href=\"?action=up&id=" + item.Id + "\" title=\"上移\"><i class=\"bi bi-arrow-up\"></i></a>";
-                            linkContent += "	<li><a class=\"dropdown-item text-decoration-none disabled\" href=\"#\"><i class=\"bi bi-arrow-up\"></i>&nbsp;上移</a></li>";
-                            linkContent += "	<li><a class=\"dropdown-item text-269 text-decoration-none\" href=\"#\"><i class=\"bi bi-arrow-down\"></i>&nbsp;下移</a></li>";
-                        } else if (nodeCursor == itemCount) {
-                            //linkContent += "&nbsp;<a href=\"?action=down&id=" + item.Id + "\" title=\"下移\"><i class=\"bi bi-arrow-down\"></i></a>";
-                            linkContent += "	<li><a class=\"dropdown-item text-269 text-decoration-none\" href=\"#\"><i class=\"bi bi-arrow-up\"></i>&nbsp;上移</a></li>";
-                            linkContent += "	<li><a class=\"dropdown-item text-decoration-none disabled\" href=\"#\"><i class=\"bi bi-arrow-down\"></i>&nbsp;下移</a></li>";
-                        } else {
-                            linkContent += "	<li><a class=\"dropdown-item text-269 text-decoration-none\" href=\"#\"><i class=\"bi bi-arrow-up\"></i>&nbsp;上移</a></li>";
-                            linkContent += "	<li><a class=\"dropdown-item text-269 text-decoration-none\" href=\"#\"><i class=\"bi bi-arrow-down\"></i>&nbsp;下移</a></li>";
-                        }
-                        //linkContent += "&nbsp;<a href=\"/Modules/Delete?id=" + item.Id + "\" title=\"禁用\"><i class=\"bi bi-trash\"></i></a>";
+                        linkContent += "	<li onclick=\"move(" + item.Id + "," + item.PId + ",'up');\"><a class=\"dropdown-item text-269 text-decoration-none\" href=\"#\"><i class=\"bi bi-arrow-up\"></i>&nbsp;上移</a></li>";
+                        linkContent += "	<li onclick=\"move(" + item.Id + "," + item.PId + ",'down');\"><a class=\"dropdown-item text-269 text-decoration-none\" href=\"#\"><i class=\"bi bi-arrow-down\"></i>&nbsp;下移</a></li>";
                         linkContent += "	<li><hr class=\"m-0 dropdown-divider\"></li>";
                     }
 
-                    linkContent += "	<li><a class=\"dropdown-item text-269 text-decoration-none\" href=\"#\"><i class=\"bi bi-toggle-off\"></i>&nbsp;禁用</a></li>";
+                    linkContent += "	<li><a class=\"dropdown-item text-269 text-decoration-none\" href=\"#\"><i class=\"bi bi-x\"></i>&nbsp;禁用</a></li>";
                     linkContent += "    </ul>";
                     linkContent += "</div>";
                 }
-                //linkContent += "&nbsp;<a href=\"/Modules/Create?pid=" + item.Id + "\" title=\"新增下级节点\"><i class=\"bi bi-plus-circle\"></i></a>";
-                //linkContent += "&nbsp;<a href=\"\" title=\"登记需求\"><i class=\"bi bi-file-earmark\"></i></a>";
-                //linkContent += "&nbsp;<a href=\"/Modules/Edit?id=" + item.Id + "\" title=\"编辑\"><i class=\"bi bi-pencil float-right\"></i></a>";
-                //linkContent += "</span>";
 
                 if (subNode > 0) {
-                    htmlTree += "<li id=\"li_" + item.Id + "\"><span class=\"caret fs-7\" htmlId=\"" + item.Id + "\"><img class=\"w-auto\" src=\"/images/xp/book.png\">&nbsp;" + item.Name + "</span>" + linkContent;
+                    htmlTree += "<li id=\"li_" + item.Id + "\" class=\"li-node " + activeNode + "\" attr-id=\"" + item.Id + "\"><span class=\"caret fs-7\" htmlId=\"" + item.Id + "\"><a class=\"text-decoration-none text-dark fw-bold d-inline-block w-75\" href=\"?action=load&module_id=" + item.Id + "\"><img class=\"w-auto\" src=\"/images/xp/briefcase.png\">&nbsp;" + item.Name + "</span></a>" + linkContent;
 
                     htmlTree += "</li>";
                     string tempTree = BuildTree(item.Id,showEdit);
@@ -184,9 +163,8 @@
                         htmlTree += tempTree;
                     }
                 } else {
-                    htmlTree += "<li" + activeNode + "><a class=\"text-decoration-none text-269 d-inline-block w-75\" href=\"?action=load&module_id=" + item.Id + "\"><span class=\"fs-7\"><img src=\"/images/xp/blueprint.png\">&nbsp;" + item.Name + "</span></a>" + linkContent + "</li>";
+                    htmlTree += "<li id=\"html_node_" + item.Id + "\" class=\"li-node " + activeNode + "\" attr-id=\"" + item.Id + "\"><a class=\"text-decoration-none text-dark d-inline-block w-75 ps-3\" href=\"?action=load&module_id=" + item.Id + "\"><span class=\"fs-7\"><img src=\"/images/xp/page_white_text.png\">&nbsp;" + item.Name + "</span></a>" + linkContent + "</li>";
                 }
-                nodeCursor++;
             }
         }
         htmlTree += "</ul>";
@@ -195,44 +173,44 @@
 }
 <div class="container-fluid mb-0">
     <div class="row">
-        <div class="col-2 p-0 mr-1 pb-2 border-828790 bg-white">
+        <div class="col-2 p-0 mr-1 pb-2 border-inset bg-white mh-100">
             <div class="row m-1 p-1 pt-0 ps-0">
-                @Html.Raw(BuildTree(null,showEdit))
+                @Html.Raw(BuildTree(null, showEdit))
             </div>
         </div>
-        <div class="col-6 p-1 border-828790 bg-white">
-        @if (Model.Module_id > 0) {
+        <div class="col-6 p-1 border-inset bg-white">
             <table id="mainTable" class="table table-hover fs-7 jumpNav border-top-0">
                 <thead>
                     <tr style="background:#eee;">
-                        <th htmlValue="issue" width="40px" class="text-269 border-bottom-0 text-center">
+                        <th htmlValue="issue" width="40px" class="border-bottom-0 text-center">
                             #
                         </th>
-                        <th htmlValue="issue" width="49px" class="text-269 border-bottom-0 text-center">
+                        <th htmlValue="issue" width="49px" class="border-bottom-0 text-center">
                             @Html.DisplayNameFor(model => model.DisplayIssues[0].Issue.TrackerId)
                         </th>
-                        <th htmlValue="issue" width="60px" class="text-269 border-bottom-0">
-                            @Html.DisplayNameFor(model => model.DisplayIssues[0].Issue.ProjectId)
-                        </th>
-                        <th htmlValue="issue" class="text-269 border-bottom-0">
+                        <th htmlValue="issue" class="border-bottom-0">
                             @Html.DisplayNameFor(model => model.DisplayIssues[0].Issue.Subject) (@Model.DisplayIssues.Count)
                         </th>
-                        <th htmlValue="issue" width="69px" class="text-269 border-bottom-0 text-center">
-                            @Html.DisplayNameFor(model => model.DisplayIssues[0].Issue.StatusId)
-                        </th>
-                        <th htmlValue="issue" width="49px" class="text-269 border-bottom-0 text-center">
+                        <th htmlValue="issue" width="49px" class="border-bottom-0 text-center">
                             @Html.DisplayNameFor(model => model.DisplayIssues[0].Issue.AuthorId)
                         </th>
-                        <th htmlValue="issue" width="129px" class="text-269 border-bottom-0 text-center">
+                        <th htmlValue="issue" width="69px" class="border-bottom-0 text-center">
+                            @Html.DisplayNameFor(model => model.DisplayIssues[0].Issue.StatusId)
+                        </th>
+                        <th htmlValue="issue" width="60px" class="border-bottom-0">
+                            @Html.DisplayNameFor(model => model.DisplayIssues[0].Issue.ProjectId)
+                        </th>
+                        <th htmlValue="issue" width="129px" class="border-bottom-0 text-center">
                             @Html.DisplayNameFor(model => model.DisplayIssues[0].Issue.UpdatedOn)
                         </th>
-                        <th width="33px" htmlValue="issue" class="text-269 text-center border-bottom-0">
+                        <th width="33px" htmlValue="issue" class="text-center border-bottom-0">
                             新增
                         </th>
                     </tr>
                 </thead>
-                <tbody>
-                    @foreach (var item in Model.DisplayIssues.OrderBy(t => t.Position)) {
+                @if (Model.Module_id > 0) {
+                    <tbody>
+                        @foreach (var item in Model.DisplayIssues.OrderBy(t => t.Position)) {
                         <tr id="tr_@item.Issue.Id" class="clickable-row">
                             <td htmlValue="issue" class="fs-7 align-top text-center" style="padding-top:1px;">
                                 <a asp-page="./Details" asp-route-id="@item.Issue.Id" target="_blank" class="text-666">@Html.DisplayFor(modelItem => item.Issue.Id)</a>
@@ -240,12 +218,9 @@
                             <td htmlValue="issue" class="text-center">
                                 @Html.DisplayFor(modelItem => item.Issue.Tracker.Name)
                             </td>
-                            <td htmlValue="issue" class="text-center">
-                                @Html.DisplayFor(modelItem => item.Issue.Project.Name)
-                            </td>
                             <td id="td_@item.Issue.Id" class="link-td" htmlValue="issue" attr-id="@item.Issue.Id">
                                 <a id="linkLabel_@item.Issue.Id" href="#op" class="link-title text-666 fs-7">
-                                    <span id="showLabel_@item.Issue.Id">@Html.DisplayFor(modelItem => item.Issue.Subject)</span> - @Model.CustomValues.FirstOrDefault(t => t.CustomizedId == item.Issue.Id).Position
+                                    <span id="showLabel_@item.Issue.Id">@Html.DisplayFor(modelItem => item.Issue.Subject)</span>
                                     @if (showEdit) {
                                         <img src="~/images/xp/edit.png" id="linkEdit_@item.Issue.Id" attr-id="@item.Issue.Id" class="link-edit bi bi-pencil float-end" style="cursor:pointer" />
                                     }
@@ -257,6 +232,9 @@
                                         <button id="linkCancel_@item.Issue.Id" class="form-control link-cancel btn-normal btn-sm ms-0 fs-9 save-subject w-auto d-inline" attr-id="@item.Issue.Id">Cancel</button>
                                     </div>
                                 </div>
+                            </td>
+                            <td htmlValue="issue">
+                                @Html.DisplayFor(modelItem => item.Issue.Author.Firstname)
                             </td>
                             <td htmlValue="issue" class="text-center">
                                 <div class="btn-group m-0 p-0">
@@ -271,50 +249,50 @@
                                 </div>
                             </td>
                             <td htmlValue="issue" class="text-center">
-                                @Html.DisplayFor(modelItem => item.Issue.Author.Firstname)
+                                @Html.DisplayFor(modelItem => item.Issue.Project.Name)
                             </td>
                             <td htmlValue="issue" class="text-center" title="该 @item.Issue.Tracker.Name 创建于&nbsp;@RMUtils.PraseDateTime(item.Issue.CreatedOn)">
                                 <a href="#UpdateOn" class="text-dark">@Html.Raw(RMUtils.PraseDateTime(item.Issue.UpdatedOn))</a>
                             </td>
                             <td htmlValue="issue" class="align-middle text-center">
                                 @if (showEdit) {
-                                    <img class="add-button" attr-id="@item.Issue.Id" src="/images/xp/add_note.png" style="cursor:pointer" />
+                                    <img class="add-button" attr-id="@item.Issue.Id" src="/images/xp/file_add.png" style="cursor:pointer" />
                                     <span class="d-none">-</span>
                                 } else {
                                     <span>-</span>
                                 }
                             </td>
                         </tr>
-                    }
-                    @if (showEdit && Model.DisplayIssues.Count <= 0) {
-                        <tr id="tr_9999" class="clickable-row">
-                            <td htmlValue="issue" class="fs-7 align-top text-center" style="padding-top:1px;">-</td>
-                            <td htmlValue="issue" class="text-center">-</td>
-                            <td htmlValue="issue" class="text-center">-</td>
-                            <td id="td_9999" class="link-td" htmlValue="issue" attr-id="9999">                               
-                                <div id="linkDiv_9999" class="d-block">
-                                    <textarea id="subject_9999" class="link-subject form-control w-100 fs-9 p-0 rounded-0 border-998888"></textarea>
-                                    <div class="btn-group pt-1 float-end">
-                                        <button id="linkSave_9999" class="form-control link-save btn-5693af btn-sm ms-0 fs-9 save-subject w-auto mr-1" attr-id="9999" onclick="new_issue();">Create</button>
+                        }
+                        @if (showEdit && Model.DisplayIssues.Count <= 0) {
+                            <tr id="tr_9999" class="clickable-row">
+                                <td htmlValue="issue" class="fs-7 align-top text-center" style="padding-top:1px;">-</td>
+                                <td htmlValue="issue" class="text-center">-</td>
+                                <td colspan="3" id="td_9999" class="link-td" htmlValue="issue" attr-id="9999">
+                                    <div id="linkDiv_9999" class="d-block">
+                                        <textarea id="subject_9999" class="link-subject form-control w-100 fs-9 p-0 rounded-0 border-998888"></textarea>
+                                        <div class="btn-group pt-1 float-end">
+                                            <button id="linkSave_9999" class="form-control link-save btn-5693af btn-sm ms-0 fs-9 save-subject w-auto mr-1" attr-id="9999" onclick="new_issue();">Create</button>
+                                        </div>
                                     </div>
-                                </div>
-                            </td>
-                            <td htmlValue="issue" class="text-center">-</td>
-                            <td htmlValue="issue" class="text-center">-</td>
-                            <td htmlValue="issue" class="text-center">-</td>
-                            <td htmlValue="issue" class="align-middle text-center">-</td>
+                                </td>
+                                <td htmlValue="issue" class="text-center">-</td>
+                                <td htmlValue="issue" class="text-center">-</td>
+                                <td htmlValue="issue" class="align-middle text-center">-</td>
+                            </tr>
+                        }
+                        <tr>
+                            <td htmlValue="issue" class="lh-lg" colspan="9"><img src="/images/xp/doc_convert.png"/>&nbsp;<label id="showRecordCount">@Model.DisplayIssues.Count</label> rows.</td>
                         </tr>
-                    }
-                    <tr>
-                        <td htmlValue="issue" class="lh-lg fw-bold" colspan="9">&nbsp;<label id="showRecordCount">@Model.DisplayIssues.Count</label> record</td>
+                    </tbody>
+                } else {
+                    <tr class="clickable-row">
+                        <td colspan="8" htmlValue="issue">请选择模块</td>
                     </tr>
-                </tbody>
+                }
             </table>
-        } else { 
-        <span>请选择模块</span>
-        }
         </div>&nbsp;
-        <div class="col p-1 border-828790 bg-white mr-1">
+        <div class="col p-1 border-inset bg-white mr-1">
             修订记录
         </div>
     </div>
@@ -342,33 +320,7 @@
             $(this).addClass('active');
         });
         $("img.add-button").click(function () {
-            $('img.add-button').each(function () {
-                $(this).toggleClass("d-none");
-            });
-
-            var html_id = $(this).attr("attr-id");
-            var row_index = $('#tr_' + html_id).index(); //$(this).parent().parent().parent().index();
-            //alert(row_index);
-            var textarea_row_index = row_index + 2;
-            var new_row = document.getElementById("mainTable").insertRow(textarea_row_index);
-            var html = "";
-            html += "<td class=\"align-middle text-center\">-</td>";
-            html += "<td class=\"align-middle text-center\">🆔需求</td>";
-            html += "<td class=\"align-middle text-center\">Gorilla</td>";
-            html += "<td colspan=\"3\" class=\"pt-1 pb-1\">";
-            html += "   <textarea id=\"subject_" + textarea_row_index + "\" class=\"form-control w-100 border-bdbdbd fs-9 rounded-0\"></textarea>";
-            html += "</td > ";
-            html += "<td colspan=\"2\" class=\"ps-1 align-middle\">";
-            html += "   <div class=\"btn-group w-100\">";
-            html += "       <button class=\"form-control btn-5693af btn-sm m-0 fs-9\" onclick=\"create_issue(" + textarea_row_index + "," + html_id +");\"><i class=\"bi bi-clipboard-check\"></i>Create</button>&nbsp;";
-            html += "       <button id=\"cancel_btn_" + textarea_row_index + "\" class=\"form-control btn-normal btn-sm m-0 ps-1 fs-9\" onclick=\"cancel(" + textarea_row_index + ")\"><i class=\"bi bi-trash\"></i>Cancel</button>";
-            html += "   </div>";
-            html += "</td>";
-            new_row.innerHTML = html;
-
-            $('#subject_' + textarea_row_index).focus();
-
-            //$('#mainTable').
+            add_button_event($(this));
         });
 
         $('img.link-edit').click(function () {
@@ -376,8 +328,68 @@
         });
         $('button.link-cancel').click(function () {
             cancel_edit($(this));
+
         });
     });
+    // 绑定add button click
+    function add_button_event(obj) {
+        $('img.add-button').each(function () {
+            $(this).toggleClass("d-none");
+        });
+
+        var html_id = obj.attr("attr-id");
+        var row_index = $('#tr_' + html_id).index();
+
+        var textarea_row_index = row_index + 2;
+        var new_row = document.getElementById("mainTable").insertRow(textarea_row_index);
+        var html = "";
+        html += "<td class=\"align-middle text-center\">-</td>";
+        html += "<td class=\"align-middle text-center\">🆔需求</td>";
+        html += "<td colspan=\"3\" class=\"pt-1 pb-1\">";
+        html += "   <textarea id=\"subject_" + textarea_row_index + "\" class=\"form-control w-100 border-bdbdbd fs-9 rounded-0\"></textarea>";
+        html += "</td > ";
+        html += "<td colspan=\"2\" class=\"ps-1 align-middle\">";
+        html += "   <div class=\"btn-group w-75\">";
+        html += "       <button class=\"form-control btn-5693af btn-sm m-0 fs-9\" onclick=\"create_issue(" + textarea_row_index + "," + html_id + ");\"><i class=\"bi bi-clipboard-check\"></i>Create</button>&nbsp;";
+        html += "       <button id=\"cancel_btn_" + textarea_row_index + "\" class=\"form-control btn-normal btn-sm m-0 ps-1 fs-9\" onclick=\"cancel(" + textarea_row_index + ")\"><i class=\"bi bi-trash\"></i>Cancel</button>";
+        html += "   </div>";
+        html += "</td>";
+        html += "<td class=\"align-middle text-center\"></td>";
+        new_row.innerHTML = html;
+
+        $('#subject_' + textarea_row_index).focus();
+    }
+    // 移动节点
+    function move(obj_id, parent_id, action) {        
+        if (action == "up") {
+            var obj = $('#html_node_' + obj_id);
+            if (obj.index() > 0) {
+                move_ajax(obj_id, parent_id, action);
+                obj.insertBefore(obj.prev('.li-node'));
+            }
+        } else if (action == "down") {
+            var obj = $('#html_node_' + obj_id);
+            if (obj.index() < obj.siblings().length) {
+                move_ajax(obj_id, parent_id, action);
+                obj.insertAfter(obj.next('.li-node'));
+            }
+        }
+    }
+    function move_ajax(obj_id, parent_id, action) {
+        $.ajax({
+            url: '/api/Module',
+            method: 'POST',
+            dataType: 'json',
+            contentType: 'application/json; charset=utf-8',
+            data: '{\"id\": ' + obj_id + ',\"parent_id\":' + parent_id + ',\"action\": \"' + action + '\"}',
+            success: function (result, status, xhr) {
+
+            },
+            fail: function (jqXHR, textStatus) {
+                alert("Request failed: " + textStatus);
+            }
+        });
+    }
     function cancel(textarea_row_index) {
         var cancel_btn = $('#cancel_btn_' + textarea_row_index);
         cancel_btn.parent().parent().parent().remove();
@@ -453,7 +465,6 @@
                 html += "    <a asp-page=\"./Details\" asp-route-id=\"" + obj.Id + "\" target=\"_blank\" class=\"text-666\">" + obj.Id + "</a>";
                 html += "</td>";
                 html += "<td htmlValue=\"issue\" class=\"text-center\">" + obj.Tracker.Name + "</td>";
-                html += "<td htmlValue=\"issue\" class=\"text-center\">" + obj.Project.Name + "</td>";
                 html += "<td id=\"td_" + obj.Id + "\" class=\"link-td\" htmlValue=\"issue\" attr-id=\"" + obj.Id + "\">";
                 html += "   <a id=\"linkLabel_" + obj.Id + "\" href=\"#op\" class=\"link-title text-666 fs-7\">";
                 html += "	    <span id=\"showLabel_" + obj.Id + "\">" + obj.Subject + "</span>";
@@ -467,6 +478,7 @@
                 html += "	</div>";
                 html += "    </div>";
                 html += "</td>";
+                html += "<td htmlValue=\"issue\" class=\"text-center\">" + obj.Author.Firstname + "</td>";
                 html += "<td htmlValue=\"issue\" class=\"text-center\">";
                 html += "    <div class=\"btn-group m-0 p-0\">";
                 html += "	<a class=\"btn btn-sm text-666 m-0 p-0 fs-7 lh-0 issue_subject_" + obj.StatusId + "\" data-bs-toggle=\"dropdown\">" + obj.Status.Name + "</a>";
@@ -479,16 +491,14 @@
                 html += "	</ul>";
                 html += "    </div>";
                 html += "</td>";
-                html += "<td htmlValue=\"issue\" class=\"text-center\">";
-                html += obj.Author.Firstname;
-                html += "</td>";
+                html += "<td htmlValue=\"issue\" class=\"text-center\">" + obj.Project.Name + "</td>";
                 html += "<td htmlValue=\"issue\" class=\"text-center\" title=\"该" + obj.Tracker.Name + " 创建于&nbsp;" + obj.CreatedOn + "\">";
                 html += "    <a href=\"#UpdateOn\" class=\"text-dark\">" + obj.Description + "</a>";
                 /*html += "    <a href=\"#UpdateOn\" class=\"text-dark\">" + obj.UpdatedOn + "</a>";*/
                 html += "</td>";
                 html += "<td htmlValue=\"issue\" class=\"align-middle text-center\">";
 
-                html += "	<img class=\"add-button\" attr-id=\"" + obj.Id + "\" src=\"/images/xp/add_note.png\" style=\"cursor:pointer\"/>";
+                html += "	<img class=\"add-button\" attr-id=\"" + obj.Id + "\" src=\"/images/xp/file_add.png\" style=\"cursor:pointer\" onclick=\"add_button_event($(this));\"/>";
                 html += "	<span class=\"d-none\">-</span>";
                 html += "</td>";
                 new_row.innerHTML = html;

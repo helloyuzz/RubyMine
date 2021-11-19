@@ -18,7 +18,6 @@ namespace RubyMine.Controllers {
     public class IssueController : ControllerBase {
         private readonly ILogger<IssueController> _logger;
         private readonly RubyMine.DbContexts.RubyRemineDbContext _context;
-        private readonly IJwtAuth jwtAuth;
         public IssueController(ILogger<IssueController> logger, RubyMine.DbContexts.RubyRemineDbContext context) {
             _context = context;
             _logger = logger;

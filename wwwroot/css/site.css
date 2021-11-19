@@ -60,7 +60,7 @@ html {
 
 body {
   /* Margin bottom by footer height */
-  margin-bottom: 40px;
+  /*margin-bottom: 40px;*/
 }
 .footer {
   position: absolute;
@@ -100,7 +100,9 @@ th[htmlValue="issue"], td[htmlValue="issue"] {
 .border-828790 {
     border: 1px solid #828790 !important;
 }
-
+.border-inset {
+    border: 2px inset !important;
+}
 .border-bdbdbd {
     border:2px dotted #dbdbdb !important;
 }
