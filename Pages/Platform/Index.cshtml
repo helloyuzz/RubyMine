@@ -1,6 +1,7 @@
 ﻿@page
 @model RubyMine.Pages.Platform.IndexModel
 @using RubyMine.Models
+@using RubyMine.Customs.Models;
 @{
     Layout = "~/Pages/Shared/_NavicatLayout.cshtml";
 
@@ -11,13 +12,13 @@
         return;
     }
     bool showEdit = Model.Chanpins.Contains(cua.Id);
-    }
+}
 <style>
-    ul, #myUL {
+    ul, #module_tree {
         list-style-type: none;
     }
 
-    #myUL {
+    #module_tree {
         margin: 0;
         padding: 0;
     }
@@ -30,14 +31,14 @@
         user-select: none;
     }
 
-    .caret::before {
-        content: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='9' height='9' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='rgba%280,0,0,.5%29' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M5 14l6-6-6-6'/%3e%3c/svg%3e");
-        color: black;
-        display: inline-block;
-        margin-right: 6px;
-        transition: transform 0.13s ease;
-        transform-origin: .5em 50%;
-    }
+        .caret::before {
+            content: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='9' height='9' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='rgba%280,0,0,.5%29' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M5 14l6-6-6-6'/%3e%3c/svg%3e");
+            color: black;
+            display: inline-block;
+            margin-right: 6px;
+            transition: transform 0.13s ease;
+            transform-origin: .5em 50%;
+        }
 
     .caret-down::before {
         -ms-transform: rotate(90deg); /* IE 9 */
@@ -52,11 +53,16 @@
     ul, li {
         margin-left: 0;
         padding-left: 0;
-        line-height: 160%;
+        /*line-height: 160%;*/
+        border: 1px solid #fff;
     }
+
     li {
-        margin:1px !important;
+        margin: 0px !important;
+        padding-left: 3px;
+        padding-right: 5px;
     }
+
     ul {
         margin-left: 16px;
         padding-left: 0;
@@ -70,6 +76,7 @@
         background-color: #cde8ff;
         color: #0026ff;
     }
+
     ul li:focus {
         background-color: #cde8ff;
         color: #0026ff;
@@ -101,23 +108,27 @@
         padding: 0px !important;
     }
 
-    th[htmlValue="issue"] {
-        padding: 3px !important;
-    }
+        th[htmlValue="issue"] {
+            padding: 3px !important;
+        }
 
-    td[htmlValue="issue"] {
-        border: solid 1px #d7d7d7;
-        padding: 2px !important;
-    }
+        td[htmlValue="issue"] {
+            border: solid 1px #d7d7d7;
+            padding: 2px !important;
+        }
 </style>
 
 @functions{
-    string BuildTree(int? parent_id,bool showEdit) {
+    string BuildTree(int? parent_id, bool showEdit) {
         string htmlTree = "";
         if (parent_id == null) {
-            htmlTree = "<ul id=\"myUL\" class=\"jumpNav activeTreeNode\">";
+            htmlTree = "<ul id=\"module_tree\" class=\"jumpNav activeTreeNode\">";
         } else {
-            htmlTree = "<ul id=\"ul_" + parent_id + "\" htmlId=\"" + parent_id + "\" class=\"jumpNav nested activeTreeNode\">";
+            htmlTree = "<ul id=\"ul_" + parent_id + "\" htmlId=\"" + parent_id + "\" class=\"jumpNav nested ";
+            if (SessionUtils.Get<ActiveNodes>(HttpContext.Session, "ActiveNodes").Contains(parent_id.Value) || parent_id == 1) {
+                htmlTree += " activeTreeNode";
+            }
+            htmlTree += "\">";
         }
 
         var itemCount = Model.Modules.Count(t => t.PId == parent_id);
@@ -134,36 +145,22 @@
                 if (tempTitle.Length > 6) {
                     tempTitle = tempTitle.Substring(0, 6) + "...";
                 }
-                var linkContent = "";
-
-                if (showEdit) {
-                    linkContent += "<div class=\"btn-group m-0 p-0 float-end dropend\">";
-                    linkContent += "    <a href=\"#op\" class=\"text-666 m-0 p-0 fs-7 op-link\" data-bs-toggle=\"dropdown\">添加</a>";
-                    linkContent += "    <ul class=\"dropdown-menu pt-0 pb-0 shadow fs-7\">";
-                    linkContent += "	<li><a class=\"dropdown-item text-269 text-decoration-none\" href=\"/Modules/Create?pid=" + item.Id + "\" title=\"新增下级节点\"><i class=\"bi bi-folder-plus\"></i>&nbsp;添加下级模块</a></li>";
-                    linkContent += "	<li><a class=\"dropdown-item text-269 text-decoration-none\" href=\"/Modules/Edit?id=" + item.Id + "\" title=\"编辑\"><i class=\"bi bi-pencil\"></i>&nbsp;编辑</a></li>";
-                    linkContent += "	<li><hr class=\"m-0 dropdown-divider\"></li>";
-                    if (parent_id != null) {
-                        linkContent += "	<li onclick=\"move(" + item.Id + "," + item.PId + ",'up');\"><a class=\"dropdown-item text-269 text-decoration-none\" href=\"#\"><i class=\"bi bi-arrow-up\"></i>&nbsp;上移</a></li>";
-                        linkContent += "	<li onclick=\"move(" + item.Id + "," + item.PId + ",'down');\"><a class=\"dropdown-item text-269 text-decoration-none\" href=\"#\"><i class=\"bi bi-arrow-down\"></i>&nbsp;下移</a></li>";
-                        linkContent += "	<li><hr class=\"m-0 dropdown-divider\"></li>";
-                    }
-
-                    linkContent += "	<li><a class=\"dropdown-item text-269 text-decoration-none\" href=\"#\"><i class=\"bi bi-x\"></i>&nbsp;禁用</a></li>";
-                    linkContent += "    </ul>";
-                    linkContent += "</div>";
-                }
 
                 if (subNode > 0) {
-                    htmlTree += "<li id=\"li_" + item.Id + "\" class=\"li-node " + activeNode + "\" attr-id=\"" + item.Id + "\"><span class=\"caret fs-7\" htmlId=\"" + item.Id + "\"><a class=\"text-decoration-none text-dark fw-bold d-inline-block w-75\" href=\"?action=load&module_id=" + item.Id + "\"><img class=\"w-auto\" src=\"/images/xp/briefcase.png\">&nbsp;" + item.Name + "</span></a>" + linkContent;
+                    htmlTree += "<li id=\"html_node_" + item.Id + "\" class=\"li-node " + activeNode + "\" attr-id=\"" + item.Id + "\" attr-pid=\"" + item.PId + "\" attr-title=\"" + tempTitle + "\"><span class=\"caret fs-7\" htmlId=\"" + item.Id + "\">";
+                    if (item.Id > 1) {
+                        htmlTree += "<a class=\"dbclick text-decoration-none text-269 d-inline-block w-75\" href=\"?action=load&module_id=" + item.Id + "\" style=\"cursor:default;\"><img class=\"w-auto\" src=\"/images/xp/briefcase.png\">&nbsp;" + item.Name + "</a>";
+                    } else {
+                        htmlTree += "<img class=\"w-auto\" src=\"/images/xp/briefcase.png\">&nbsp;<span class=\"fw-bold d-inline-block w-75\">" + item.Name + "</span>";
+                    }
 
                     htmlTree += "</li>";
-                    string tempTree = BuildTree(item.Id,showEdit);
+                    string tempTree = BuildTree(item.Id, showEdit);
                     if (string.IsNullOrEmpty(tempTree) == false) {
                         htmlTree += tempTree;
                     }
                 } else {
-                    htmlTree += "<li id=\"html_node_" + item.Id + "\" class=\"li-node " + activeNode + "\" attr-id=\"" + item.Id + "\"><a class=\"text-decoration-none text-dark d-inline-block w-75 ps-3\" href=\"?action=load&module_id=" + item.Id + "\"><span class=\"fs-7\"><img src=\"/images/xp/page_white_text.png\">&nbsp;" + item.Name + "</span></a>" + linkContent + "</li>";
+                    htmlTree += "<li id=\"html_node_" + item.Id + "\" class=\"li-node " + activeNode + "\" attr-id=\"" + item.Id + "\" attr-pid=\"" + item.PId + "\" attr-title=\"" + tempTitle + "\"><a class=\"dbclick text-decoration-none text-dark d-inline-block w-75 ps-3\" href=\"?action=load&module_id=" + item.Id + "\" style=\"cursor:default;\"><span class=\"fs-7\"><img src=\"/images/xp/page_white_text.png\">&nbsp;" + item.Name + "</span></a></li>";
                 }
             }
         }
@@ -211,58 +208,58 @@
                 @if (Model.Module_id > 0) {
                     <tbody>
                         @foreach (var item in Model.DisplayIssues.OrderBy(t => t.Position)) {
-                        <tr id="tr_@item.Issue.Id" class="clickable-row">
-                            <td htmlValue="issue" class="fs-7 align-top text-center" style="padding-top:1px;">
-                                <a asp-page="./Details" asp-route-id="@item.Issue.Id" target="_blank" class="text-666">@Html.DisplayFor(modelItem => item.Issue.Id)</a>
-                            </td>
-                            <td htmlValue="issue" class="text-center">
-                                @Html.DisplayFor(modelItem => item.Issue.Tracker.Name)
-                            </td>
-                            <td id="td_@item.Issue.Id" class="link-td" htmlValue="issue" attr-id="@item.Issue.Id">
-                                <a id="linkLabel_@item.Issue.Id" href="#op" class="link-title text-666 fs-7">
-                                    <span id="showLabel_@item.Issue.Id">@Html.DisplayFor(modelItem => item.Issue.Subject)</span>
-                                    @if (showEdit) {
-                                        <img src="~/images/xp/edit.png" id="linkEdit_@item.Issue.Id" attr-id="@item.Issue.Id" class="link-edit bi bi-pencil float-end" style="cursor:pointer" />
-                                    }
-                                </a>
-                                <div id="linkDiv_@item.Issue.Id" class="d-none">
-                                    <textarea id="linkSubject_@item.Issue.Id" class="link-subject form-control w-100 fs-9 p-0 rounded-0 border-998888">@Html.DisplayFor(modelItem => item.Issue.Subject)</textarea>
-                                    <div class="btn-group pt-1 float-end">
-                                        <button id="linkSave_@item.Issue.Id" class="form-control link-save btn-5693af btn-sm ms-0 fs-9 save-subject w-auto mr-1" attr-id="@item.Issue.Id" onclick="save(@item.Issue.Id);">Save</button>
-                                        <button id="linkCancel_@item.Issue.Id" class="form-control link-cancel btn-normal btn-sm ms-0 fs-9 save-subject w-auto d-inline" attr-id="@item.Issue.Id">Cancel</button>
+                            <tr id="tr_@item.Issue.Id" class="clickable-row">
+                                <td htmlValue="issue" class="fs-7 align-top text-center" style="padding-top:1px;">
+                                    <a asp-page="./Details" asp-route-id="@item.Issue.Id" target="_blank" class="text-666">@Html.DisplayFor(modelItem => item.Issue.Id)</a>
+                                </td>
+                                <td htmlValue="issue" class="text-center">
+                                    @Html.DisplayFor(modelItem => item.Issue.Tracker.Name)
+                                </td>
+                                <td id="td_@item.Issue.Id" class="link-td" htmlValue="issue" attr-id="@item.Issue.Id">
+                                    <a id="linkLabel_@item.Issue.Id" href="#op" class="link-title text-666 fs-7">
+                                        <span id="showLabel_@item.Issue.Id">@Html.DisplayFor(modelItem => item.Issue.Subject)</span>
+                                        @if (showEdit) {
+                                            <img src="~/images/xp/edit.png" id="linkEdit_@item.Issue.Id" attr-id="@item.Issue.Id" class="link-edit bi bi-pencil float-end" style="cursor:pointer" />
+                                        }
+                                    </a>
+                                    <div id="linkDiv_@item.Issue.Id" class="d-none">
+                                        <textarea id="linkSubject_@item.Issue.Id" class="link-subject form-control w-100 fs-9 p-0 rounded-0 border-998888">@Html.DisplayFor(modelItem => item.Issue.Subject)</textarea>
+                                        <div class="btn-group pt-1 float-end">
+                                            <button id="linkSave_@item.Issue.Id" class="form-control link-save btn-5693af btn-sm ms-0 fs-9 save-subject w-auto mr-1" attr-id="@item.Issue.Id" onclick="save(@item.Issue.Id);">Save</button>
+                                            <button id="linkCancel_@item.Issue.Id" class="form-control link-cancel btn-normal btn-sm ms-0 fs-9 save-subject w-auto d-inline" attr-id="@item.Issue.Id">Cancel</button>
+                                        </div>
                                     </div>
-                                </div>
-                            </td>
-                            <td htmlValue="issue">
-                                @Html.DisplayFor(modelItem => item.Issue.Author.Firstname)
-                            </td>
-                            <td htmlValue="issue" class="text-center">
-                                <div class="btn-group m-0 p-0">
-                                    <a class="btn btn-sm text-666 m-0 p-0 fs-7 lh-0 issue_subject_@item.Issue.StatusId" data-bs-toggle="dropdown">@Html.DisplayFor(modelItem => item.Issue.Status.Name)</a>
-                                    <ul class="dropdown-menu shadow fs-7">
-                                        <li><a class="dropdown-item disabled lh-0 text-dark" href="#">更改[@Html.DisplayFor(modelItem => item.Issue.Id)]为:</a></li>
-                                        <li><hr class="dropdown-divider"></li>
-                                        <li><a class="dropdown-item" href="#">新建</a></li>
-                                        <li><hr class="dropdown-divider"></li>
-                                        <li><a class="dropdown-item" href="#">Copy Text</a></li>
-                                    </ul>
-                                </div>
-                            </td>
-                            <td htmlValue="issue" class="text-center">
-                                @Html.DisplayFor(modelItem => item.Issue.Project.Name)
-                            </td>
-                            <td htmlValue="issue" class="text-center" title="该 @item.Issue.Tracker.Name 创建于&nbsp;@RMUtils.PraseDateTime(item.Issue.CreatedOn)">
-                                <a href="#UpdateOn" class="text-dark">@Html.Raw(RMUtils.PraseDateTime(item.Issue.UpdatedOn))</a>
-                            </td>
-                            <td htmlValue="issue" class="align-middle text-center">
-                                @if (showEdit) {
-                                    <img class="add-button" attr-id="@item.Issue.Id" src="/images/xp/file_add.png" style="cursor:pointer" />
-                                    <span class="d-none">-</span>
-                                } else {
-                                    <span>-</span>
-                                }
-                            </td>
-                        </tr>
+                                </td>
+                                <td htmlValue="issue">
+                                    @Html.DisplayFor(modelItem => item.Issue.Author.Firstname)
+                                </td>
+                                <td htmlValue="issue" class="text-center">
+                                    <div class="btn-group m-0 p-0">
+                                        <a class="btn btn-sm text-666 m-0 p-0 fs-7 lh-0 issue_subject_@item.Issue.StatusId" data-bs-toggle="dropdown">@Html.DisplayFor(modelItem => item.Issue.Status.Name)</a>
+                                        <ul class="dropdown-menu shadow fs-7">
+                                            <li><a class="dropdown-item disabled lh-0 text-dark" href="#">更改[@Html.DisplayFor(modelItem => item.Issue.Id)]为:</a></li>
+                                            <li><hr class="dropdown-divider"></li>
+                                            <li><a class="dropdown-item" href="#">新建</a></li>
+                                            <li><hr class="dropdown-divider"></li>
+                                            <li><a class="dropdown-item" href="#">Copy Text</a></li>
+                                        </ul>
+                                    </div>
+                                </td>
+                                <td htmlValue="issue" class="text-center">
+                                    @Html.DisplayFor(modelItem => item.Issue.Project.Name)
+                                </td>
+                                <td htmlValue="issue" class="text-center" title="该 @item.Issue.Tracker.Name 创建于&nbsp;@RMUtils.PraseDateTime(item.Issue.CreatedOn)">
+                                    <a href="#UpdateOn" class="text-dark">@Html.Raw(RMUtils.PraseDateTime(item.Issue.UpdatedOn))</a>
+                                </td>
+                                <td htmlValue="issue" class="align-middle text-center">
+                                    @if (showEdit) {
+                                        <img class="add-button" attr-id="@item.Issue.Id" src="/images/xp/file_add.png" style="cursor:pointer" />
+                                        <span class="d-none">-</span>
+                                    } else {
+                                        <span>-</span>
+                                    }
+                                </td>
+                            </tr>
                         }
                         @if (showEdit && Model.DisplayIssues.Count <= 0) {
                             <tr id="tr_9999" class="clickable-row">
@@ -282,7 +279,7 @@
                             </tr>
                         }
                         <tr>
-                            <td htmlValue="issue" class="lh-lg" colspan="9"><img src="/images/xp/doc_convert.png"/>&nbsp;<label id="showRecordCount">@Model.DisplayIssues.Count</label> rows.</td>
+                            <td htmlValue="issue" class="lh-lg" colspan="9"><img src="/images/xp/doc_convert.png" />&nbsp;<label id="showRecordCount">@Model.DisplayIssues.Count</label> rows.</td>
                         </tr>
                     </tbody>
                 } else {
@@ -297,7 +294,126 @@
         </div>
     </div>
 </div>
+<div class="container p-0"> 
+    <!-- Context-menu -->
+    <div id="html_ContextMenu" class="context-menu shadow">
+        <ul class="p-0 m-0">
+            <li class="context-item dropdown-item" html-action="add_subnode">新增下级模块</li>
+            <li class="context-item dropdown-item" html-action="edit">编辑</li>
+            <li class="context-item dropdown-item" html-action="move_up">上移</li>
+            <li class="context-item dropdown-item" html-action="move_down">下移</li>
+            <li class="context-item dropdown-item disabled" html-action="disable">禁用</li>
+            <li><hr class="m-0 dropdown-divider"></li>
+            <li class="context-item dropdown-item" html-action="up_level">上提一级</li>
+            <li><hr class="m-0 dropdown-divider"></li>
+            <li class="context-item dropdown-item" html-action="default_index">重新排序</li>
+            <li class="context-item dropdown-item">移动到</li>
+        </ul>
+    </div>
+    <input type="hidden" value="@Model.Module_id" id="txt_module_id" />
+    <input type="hidden" value="" id="txt_module_name" />
+    <input type="hidden" value="" id="txt_pid" />
+</div>
+<style>
+    /* Context menu */
+    .context-menu {
+        display: none;
+        position: absolute;
+        border: 1px solid #9f9d9d;
+        border-radius: 1px;
+        width: 130px;
+        background: white;
+    }
+    .context-menu ul {
+        list-style: none;        
+    }
+    .context-menu ul li {
+        
+    }
+</style>
 
+<script>
+    // disable right click and show custom context menu
+    $("li.li-node").bind('contextmenu', function (e) {
+        hide_context_menu();
+
+        var html_id = $(this).attr("id");
+        var id = $(this).attr("attr-id");   //id;
+        var pid = $(this).attr("attr-pid"); // pid
+        var module_name = $(this).attr("attr-title");   // module name
+
+        $("#txt_module_id").val(id);
+        $('#txt_pid').val(pid);
+        $('#txt_module_name').val(module_name);
+
+        $("li.li-node").each(function () {
+            $(this).removeClass("active");
+        });
+        $("#" + html_id).toggleClass("active");
+        var top = e.pageY + 5;
+        var left = e.pageX;
+        // Show contextmenu
+        $(".context-menu").toggle(100).css({
+            top: top + "px",
+            left: left + "px"
+        });
+        // disable default context menu
+        return false;
+    });
+    $("li.context-item").click(function () {
+        var module_id = $('#txt_module_id').val().trim();
+        var pid = $('#txt_pid').val().trim();
+        if (module_id == "") {
+            return;
+        }
+        var action = $(this).attr("html-action");
+        switch (action) {
+            case "add_subnode":
+                window.location = "/Modules/Create?pid=" + module_id;
+                break
+            case "edit":
+                window.location = "/Modules/Edit?id=" + module_id;
+                break;
+            case "move_up":
+                move(module_id, pid, "up");
+                break;
+            case "move_down":
+                move(module_id, pid, "down");
+                break;
+            case "disable":
+                break;
+            case "default_index":
+                var module_name = $('#txt_module_name').val();
+                if (confirm("是否重置为默认顺序？[" + module_name + "]")) {
+                    call_module_ajax(module_id, 9999, "default_index");
+                }
+                break;
+            case "up_level":
+                move(module_id, pid, "up_level");
+                break;
+        }
+    });
+    $(document).bind('contextmenu click', function () {
+        hide_context_menu();
+    });
+    // disable context-menu from custom menu
+    $('.context-menu').bind('contextmenu', function () {
+        return false;
+    });
+    // Clicked context-menu item
+    $('.context-menu li').click(function () {
+        var className = $(this).find("span:nth-child(1)").attr("class");
+        var titleid = $('#txt_module_id').val();
+        $("#" + titleid).css("background-color", className);
+        $(".context-menu").hide();
+    });
+    function hide_context_menu() {
+        //$(".context-menu").hide();
+        $('#html_ContextMenu').hide();
+        $("#txt_module_id").val("");
+        $('#txt_pid').val('');
+    }
+</script>
 <script>
     var recordCount = @Model.DisplayIssues.Count;
     var toggler = document.getElementsByClassName("caret");
@@ -306,7 +422,7 @@
         toggler[i].addEventListener("click", function () {
             $('#ul_' + $(this).attr('htmlId')).toggleClass("activeTreeNode");
             //this.parentElement.querySelector(".nested").classList.toggle("active");
-            this.classList.toggle("caret-down");
+            //this.classList.toggle("caret-down");
         });
     }
 
@@ -328,9 +444,10 @@
         });
         $('button.link-cancel').click(function () {
             cancel_edit($(this));
-
         });
     });
+
+
     // 绑定add button click
     function add_button_event(obj) {
         $('img.add-button').each(function () {
@@ -360,33 +477,46 @@
         $('#subject_' + textarea_row_index).focus();
     }
     // 移动节点
-    function move(obj_id, parent_id, action) {        
+    function move(obj_id, parent_id, action) {
         if (action == "up") {
             var obj = $('#html_node_' + obj_id);
             if (obj.index() > 0) {
-                move_ajax(obj_id, parent_id, action);
+                call_module_ajax(obj_id, parent_id, action);
                 obj.insertBefore(obj.prev('.li-node'));
             }
         } else if (action == "down") {
             var obj = $('#html_node_' + obj_id);
             if (obj.index() < obj.siblings().length) {
-                move_ajax(obj_id, parent_id, action);
+                call_module_ajax(obj_id, parent_id, action);
                 obj.insertAfter(obj.next('.li-node'));
+            }
+        } else if (active == "up_level") {
+            var obj = $('#html_node_' + obj_id);
+            if (obj.index() < obj.siblings().length) {
+                call_module_ajax(obj_id, parent_id, action);
+                //obj.insertAfter(obj.next('.li-node'));
             }
         }
     }
-    function move_ajax(obj_id, parent_id, action) {
-        $.ajax({
+    function call_module_ajax(obj_id, parent_id, action) {
+        var request = $.ajax({
             url: '/api/Module',
             method: 'POST',
             dataType: 'json',
             contentType: 'application/json; charset=utf-8',
-            data: '{\"id\": ' + obj_id + ',\"parent_id\":' + parent_id + ',\"action\": \"' + action + '\"}',
-            success: function (result, status, xhr) {
+            data: '{\"id\": ' + obj_id + ',\"parent_id\":' + parent_id + ',\"action\": \"' + action + '\"}'
+        });
+        //request.done(function (msg) {
+        //    alert(msg);
+        //});
+        request.fail(function (jqXHR, textStatus) {
+            switch (jqXHR.responseText) {
+                case "OK":
 
-            },
-            fail: function (jqXHR, textStatus) {
-                alert("Request failed: " + textStatus);
+                    break;
+                default:
+                    alert("Request failed: " + jqXHR.responseText);
+                    break;
             }
         });
     }

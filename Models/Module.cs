@@ -12,11 +12,11 @@ namespace RubyMine.Models {
         public string Name { get; set; }
         [Display(Name = "显示次序")]
         public int? Index { get; set; }
-        [Display(Name = "拼音检索")]
+        [Display(Name = "拼音")]
         public string Pinyin { get; set; }
         [Display(Name = "是否禁用")]
         public bool? Disabled { get; set; }
-        [Display(Name = "上级Id")]
+        [Display(Name = "pid")]
         public int? PId { get; set; }
     }
 }

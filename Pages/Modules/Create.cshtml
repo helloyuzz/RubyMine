@@ -6,41 +6,53 @@
 }
 
 <div class="container-fluid p-3 fs-9 bg-white border-inset">
-    <h3>新增&lt;<span class="fw-bold">@Model.ParentModule.Name</span>&gt;下级模块</h3>
+    <div class="row">
+        <div class="col-1"><h3>新增</h3></div>
+        <div class="col pt-2"><a class="btn-sm fs-9 border-828790 text-decoration-none" href="@Model.UrlReferer" style="width:133px"><i class="bi bi-arrow-return-left"></i>&nbsp;Back to Index</a></div>
+    </div>
     <hr />
     <div class="row fs-7">
         <div class="col-md-4">
             <form method="post" autocomplete="off">
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                <div class="form-group">
-                     请输入下级模块名称：
-                    <input asp-for="Module.Name" class="form-control fs-9" />
-                    <span asp-validation-for="Module.Name" class="text-danger"></span>
+                <div class="row mb-1">
+                    <div class="col-3">模块名称：</div>
+                    <div class="col"><input asp-for="Module.Name" class="form-control fs-9" /></div>
+                    <div class="col"><span asp-validation-for="Module.Name" class="text-danger"></span></div>
                 </div>
-                <div class="form-group">
-                    @Html.DisplayNameFor(model => model.Module.Pinyin)
-                    <input asp-for="Module.Pinyin" class="form-control fs-9" />
-                    <span asp-validation-for="Module.Pinyin" class="text-danger"></span>
+                <div class="row mb-1">
+                    <div class="col-3">@Html.DisplayNameFor(model => model.Module.Pinyin)</div>
+                    <div class="col"><input asp-for="Module.Pinyin" class="form-control fs-9 bg-title" /></div>
+                    <div class="col"><span asp-validation-for="Module.Pinyin" class="text-danger"></span></div>
                 </div>
-                <div class="form-group">
-                    @Html.DisplayNameFor(model => model.Module.Disabled)
-                    <input asp-for="Module.Disabled" class="form-control fs-9" readonly />
-                    <span asp-validation-for="Module.Disabled" class="text-danger"></span>
+                <div class="row mb-1">
+                    <div class="col-3">@Html.DisplayNameFor(model => model.Module.Disabled)</div>
+                    <div class="col"><input asp-for="Module.Disabled" class="form-control fs-9 bg-title" /></div>
+                    <div class="col"><span asp-validation-for="Module.Disabled" class="text-danger"></span></div>
                 </div>
-                <div class="form-group">
-                    @Html.DisplayNameFor(model => model.Module.PId)
-                    <input asp-for="Module.PId" class="form-control fs-9" readonly />
-                    <span asp-validation-for="Module.PId" class="text-danger"></span>
+                <div class="row mb-1">
+                    <div class="col-3">@Html.DisplayNameFor(model => model.Module.PId)</div>
+                    <div class="col"><input type="text" asp-for="Module.PId" class="form-control fs-9 bg-title" readonly/></div>
+                    <div class="col"><span asp-validation-for="Module.PId" class="text-danger"></span></div>
                 </div>
-                <div class="form-group">
-                    @Html.DisplayNameFor(model => model.Module.Index)
-                    <input asp-for="Module.Index" class="form-control fs-9" readonly />
-                    <span asp-validation-for="Module.Index" class="text-danger"></span>
+                <div class="row mb-2">
+                    <div class="col-3">@Html.DisplayNameFor(model => model.Module.Index)</div>
+                    <div class="col"><input asp-for="Module.Index" class="form-control fs-9" readonly/></div>
+                    <div class="col"><span asp-validation-for="Module.Index" class="text-danger"></span></div>
+                </div>
+                <div class="row mb-1">
+                    <div class="col-3"></div>
+                    <div class="col"><input type="submit" value="Create" class="btn btn-primary fs-9 p-2 mr-2" /><input type="submit" asp-page-handler="CreateAndNew" value="创建并继续添加" class="btn btn-primary fs-9 p-2" /></div>
+                    <div class="col"></div>
+                </div>
+                <div class="row mb-1">
+                    <div class="col"></div>
+                    <div class="col"></div>
+                    <div class="col"></div>
                 </div>
                 <div class="form-group mt-2">
-                    <input type="submit" value="Create" class="btn btn-primary fs-9 p-1" />
-                    <input type="submit" asp-page-handler="CreateAndNew" value="创建并继续添加" class="btn btn-primary fs-9 p-1" />
-        <a class="btn-sm fs-9 border-828790 text-decoration-none float-end" href="@Model.UrlReferer"><i class="bi bi-arrow-return-left"></i>&nbsp;Back to List</a>
+                                        
+                    
                 </div>
                 <input asp-for="UrlReferer" class="w-100" type="hidden" />
             </form>
@@ -50,3 +62,8 @@
     <div class="mt-3">
     </div>
 </div>
+<script>
+    $(document).ready(function () {
+        $('#Module_Name').focus();
+    });
+</script>

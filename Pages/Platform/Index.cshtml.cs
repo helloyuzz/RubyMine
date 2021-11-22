@@ -26,14 +26,27 @@ namespace RubyMine.Pages.Platform {
             Chanpins.Add(135);
             //Issue = await _context.Issues.Where(t => t.TrackerId == 8).Select(t => new Models.Issue { Id = t.Id, Subject = t.Subject, ParentId = t.ParentId, RootId = t.RootId, Lft = t.Lft, Rgt = t.Rgt }).ToListAsync();
             string action = Request.Query["action"];
-            int id = RMUtils.QueryInt(Request, "id");
+            int current_module_id = RMUtils.QueryInt(Request, "id");
             Module_id = RMUtils.QueryInt(Request, "module_id");
+
+            ActiveNodes nodes = SessionUtils.Get<ActiveNodes>(HttpContext.Session, "ActiveNodes");
+            if (nodes == null) {
+                nodes = new ActiveNodes();
+            }
+            if (Module_id > 0) {
+                if (nodes.Contains(Module_id)) {
+                    nodes.Remove(Module_id);
+                } else {
+                    nodes.Add(Module_id);
+                }
+            }
+            SessionUtils.Set(HttpContext.Session, "ActiveNodes", nodes);
 
             switch (action) {
                 case "up":
                 case "down":
-                    if (id > 0) {
-                        Module tempModule = _context.Modules.FirstOrDefault(t => t.Id == id);
+                    if (current_module_id > 0) {
+                        Module tempModule = _context.Modules.FirstOrDefault(t => t.Id == current_module_id);
                         int cacheIndex = tempModule.Index.Value;
                         int pid = tempModule.PId.Value;
                         int targetIndex = -1;
