@@ -145,14 +145,17 @@ th[htmlValue="issue"], td[htmlValue="issue"] {
 .display_block {
     display: inline !important;
 }
-    /*dialog::backdrop {
+.d-cursor {
+    cursor:default;
+}
+/*dialog::backdrop {
     background: repeating-linear-gradient( 30deg, rgba(24, 194, 236, 0.2), rgba(24, 194, 236, 0.2) 1px, rgba(24, 194, 236, 0.3) 1px, rgba(24, 194, 236, 0.3) 20px );
     backdrop-filter: blur(1px)
 }*/
-    /*Issue*/
-    th[htmlValue="issue"] {
-        padding: 8px !important;
-    }
+/*Issue*/
+th[htmlValue="issue"] {
+    padding: 8px !important;
+}
 /*待实施反馈*/
 .issue_subject_3 {
     color: blue !important;

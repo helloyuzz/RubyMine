@@ -39,7 +39,7 @@ namespace RubyMine.Controllers {
         public ActionResult<SoapResult> Post([FromBody] Issue value) {
             // 注意，此方法中：
             // value.PriorityId当作前一记录的Issue.Id使用
-            SoapResult result = new SoapResult();
+            SoapResult result = new SoapResult("Invalid Request.");
             if (value == null) {
                 result.Result = "value is null!";
             } else {

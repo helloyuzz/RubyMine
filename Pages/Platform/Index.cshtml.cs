@@ -21,19 +21,28 @@ namespace RubyMine.Pages.Platform {
         public int Module_id { get; set; }
         public IList<int> Chanpins { get; set; }
         public async Task OnGet() {
+            // 可编辑
             Chanpins = new List<int>();
             Chanpins.Add(8);
             Chanpins.Add(135);
-            //Issue = await _context.Issues.Where(t => t.TrackerId == 8).Select(t => new Models.Issue { Id = t.Id, Subject = t.Subject, ParentId = t.ParentId, RootId = t.RootId, Lft = t.Lft, Rgt = t.Rgt }).ToListAsync();
-            string action = Request.Query["action"];
+            
             int current_module_id = RMUtils.QueryInt(Request, "id");
+            string action = Request.Query["action"];
+            string queryUrl = Request.QueryString.Value;
+            bool isRefresh = false; // 判断是否刷新操作
             Module_id = RMUtils.QueryInt(Request, "module_id");
 
+            string url = SessionUtils.Get<string>(HttpContext.Session, "QueryUrl");
+            if (queryUrl.Equals(url)) {
+                isRefresh = true;
+            } else {
+                SessionUtils.Set<string>(HttpContext.Session, "QueryUrl", queryUrl);
+            }
             ActiveNodes nodes = SessionUtils.Get<ActiveNodes>(HttpContext.Session, "ActiveNodes");
             if (nodes == null) {
                 nodes = new ActiveNodes();
             }
-            if (Module_id > 0) {
+            if (Module_id > 0 && isRefresh == false) {
                 if (nodes.Contains(Module_id)) {
                     nodes.Remove(Module_id);
                 } else {

@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using RubyMine.Customs.Models;
 using RubyMine.Jwt;
 using RubyMine.Models;
@@ -37,7 +38,7 @@ namespace RubyMine.Controllers {
         // POST api/<ModuleController>
         [HttpPost]
         public IActionResult Post([FromBody] SwapModule module) {
-            string soapResult = "Invalid request.";
+            SoapResult soapResult = new SoapResult("Invalid request.");
             Module current_module = null;
             if (module.Id > 0 && module.Parent_id > 0) {
                 switch (module.Action) {
@@ -45,7 +46,7 @@ namespace RubyMine.Controllers {
                     case "down":
                         current_module = _context.Modules.FirstOrDefault(t => t.Id == module.Id);
                         if (current_module == null) {
-                            soapResult = "Invalid module.";
+                            soapResult.Result = "Invalid module.";
                         } else {
                             int currentIndex = current_module.Index.Value;
                             Module toModule = null;
@@ -57,7 +58,7 @@ namespace RubyMine.Controllers {
 
                                         current_module.Index--;
                                     } else {
-                                        soapResult = "Current node is on top.";
+                                        soapResult.Result = "Current node is on top.";
                                     }
                                     break;
                                 case "down":
@@ -68,12 +69,12 @@ namespace RubyMine.Controllers {
 
                                         current_module.Index++;
                                     } else {
-                                        soapResult = "Current node is on bottom.";
+                                        soapResult.Result = "Current node is on bottom.";
                                     }
                                     break;
                             }
                             _context.SaveChanges();
-                            soapResult = "OK";
+                            soapResult.Result = "OK";
                         }
                         break;
                     case "default_index":   // 重置模块下的节点次序
@@ -83,6 +84,7 @@ namespace RubyMine.Controllers {
                             temp_module.Index = module_index++;
                         }
                         _context.SaveChanges();
+                        soapResult.Result = "OK";
                         break;
                     case "up_level":    // 上提一级
                         var up_level_module = _context.Modules.FirstOrDefault(t => t.Id == module.Parent_id);
@@ -97,7 +99,47 @@ namespace RubyMine.Controllers {
                             current_module.PId = up_level_module.PId;
                             current_module.Index = up_level_module.Index + 1;
                             _context.SaveChanges();
+                            soapResult.Result = "OK";
                         }
+                        break;
+                    case "down_level":  // 下降一级
+                        current_module = _context.Modules.FirstOrDefault(t => t.Id == module.Id);
+                        // 当前节点是第一位，无需调整
+                        // 当前节点.parent_id = 前一节点.id
+                        // 当前节点.index = 前一节点.nodeCount() + 1 // 最为最后节点添加
+                        // 当前节点后续节点.index - 1
+                        if (current_module.Index > 1) {
+                            var cache_pid = current_module.PId;
+                            var cache_index = current_module.Index;
+
+                            var prev_module = _context.Modules.FirstOrDefault(t => t.PId == module.Parent_id && t.Index == current_module.Index - 1);
+                            var db_count = _context.Modules.Count(t => t.PId == prev_module.Id);
+                            current_module.PId = prev_module.Id;
+                            current_module.Index = db_count + 1;
+
+                            _context.Modules.Where(t => t.PId == cache_pid && t.Index > cache_index).Update(t => new Module { Index = t.Index - 1 });
+                            _context.SaveChanges();
+                            soapResult.Result = "OK";
+                        } else {
+                            soapResult.Result = "Ingore";
+                        }
+                        break;
+                    case "update_module_name":
+                        _context.Modules.FirstOrDefault(t => t.Id == module.Id).Name = module.Name;
+                        _context.SaveChanges();
+                        soapResult.Result = "OK";
+                        break;
+                    case "create_module":
+                        var dbCount = _context.Modules.Count(t => t.PId == module.Id) + 1;
+                        Module newModule = new Module();
+                        newModule.PId = module.Id;
+                        newModule.Index = dbCount;
+                        newModule.Name = "node-" + dbCount;
+                        _context.Modules.Add(newModule);
+                        _context.SaveChanges();
+
+                        soapResult.Result = "OK";
+                        soapResult.Value = JsonConvert.SerializeObject(newModule);
                         break;
                 }
             }

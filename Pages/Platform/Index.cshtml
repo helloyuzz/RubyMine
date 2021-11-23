@@ -119,13 +119,13 @@
 </style>
 
 @functions{
-    string BuildTree(int? parent_id, bool showEdit) {
+    string BuildTree(int? parent_id) {
         string htmlTree = "";
         if (parent_id == null) {
-            htmlTree = "<ul id=\"module_tree\" class=\"jumpNav activeTreeNode\">";
+            htmlTree = "<ul id=\"module_tree\" class=\"jumpNav\">";
         } else {
             htmlTree = "<ul id=\"ul_" + parent_id + "\" htmlId=\"" + parent_id + "\" class=\"jumpNav nested ";
-            if (SessionUtils.Get<ActiveNodes>(HttpContext.Session, "ActiveNodes").Contains(parent_id.Value) || parent_id == 1) {
+            if (SessionUtils.Get<ActiveNodes>(HttpContext.Session, "ActiveNodes").Contains(parent_id.Value)) {
                 htmlTree += " activeTreeNode";
             }
             htmlTree += "\">";
@@ -141,26 +141,38 @@
                     activeNode = " active";
                 }
 
-                string tempTitle = item.Name;
-                if (tempTitle.Length > 6) {
-                    tempTitle = tempTitle.Substring(0, 6) + "...";
-                }
+                string html_attr_id = " attr-id=\"" + item.Id + "\" attr-pid=\"" + item.PId + "\" attr-index=\"" + item.Index + "\"";
+                string html_attr_title = " attr-title=\"" + item.Name + "\"";
 
+                string edit_icon = "<span class=\"float-end p-0\"><i id=\"edit_icon_" + item.Id + "\" class=\"edit-icon bi bi-pencil d-none mr-2\"" + html_attr_id + html_attr_title + " title=\"编辑\" style=\"cursor:pointer;\"></i><i id=\"add_icon_" + item.Id + "\"" + html_attr_id + " class=\"add-icon bi bi-plus-lg d-none\" title=\"新增下级\" style=\"cursor:pointer;\"></i></span>";
                 if (subNode > 0) {
-                    htmlTree += "<li id=\"html_node_" + item.Id + "\" class=\"li-node " + activeNode + "\" attr-id=\"" + item.Id + "\" attr-pid=\"" + item.PId + "\" attr-title=\"" + tempTitle + "\"><span class=\"caret fs-7\" htmlId=\"" + item.Id + "\">";
-                    if (item.Id > 1) {
-                        htmlTree += "<a class=\"dbclick text-decoration-none text-269 d-inline-block w-75\" href=\"?action=load&module_id=" + item.Id + "\" style=\"cursor:default;\"><img class=\"w-auto\" src=\"/images/xp/briefcase.png\">&nbsp;" + item.Name + "</a>";
-                    } else {
-                        htmlTree += "<img class=\"w-auto\" src=\"/images/xp/briefcase.png\">&nbsp;<span class=\"fw-bold d-inline-block w-75\">" + item.Name + "</span>";
+                    htmlTree += "<li id=\"html_node_" + item.Id + "\" class=\"li-node " + activeNode + "\"" + html_attr_id + html_attr_title + ">";
+                    htmlTree += "   <span class=\"caret fs-9 w-auto d-inline-block w-75\" htmlId=\"" + item.Id + "\">";
+                    // 当前节点不允许点击，避免重新刷新
+                    if (Model.Module_id != item.Id) {
+                        htmlTree += "       <a id=\"lnk_\"" + item.Id + " class=\"text-decoration-none text-269 d-inline-block\" href=\"?action=load&module_id=" + item.Id + "\" title='查看'>";
                     }
-
+                    htmlTree += "               <img class=\"w-auto\" src=\"/images/xp/briefcase.png\">&nbsp;<span id='lbl_" + item.Id + "'>" + item.Name + "</span>";
+                    if (Model.Module_id != item.Id) {
+                        htmlTree += "       </a>";
+                    }
+                    htmlTree += "   </span>";
+                    htmlTree += edit_icon;
                     htmlTree += "</li>";
-                    string tempTree = BuildTree(item.Id, showEdit);
+
+                    string tempTree = BuildTree(item.Id);
                     if (string.IsNullOrEmpty(tempTree) == false) {
                         htmlTree += tempTree;
                     }
                 } else {
-                    htmlTree += "<li id=\"html_node_" + item.Id + "\" class=\"li-node " + activeNode + "\" attr-id=\"" + item.Id + "\" attr-pid=\"" + item.PId + "\" attr-title=\"" + tempTitle + "\"><a class=\"dbclick text-decoration-none text-dark d-inline-block w-75 ps-3\" href=\"?action=load&module_id=" + item.Id + "\" style=\"cursor:default;\"><span class=\"fs-7\"><img src=\"/images/xp/page_white_text.png\">&nbsp;" + item.Name + "</span></a></li>";
+                    htmlTree += "<li id=\"html_node_" + item.Id + "\" class=\"li-node " + activeNode + "\"" + html_attr_id + html_attr_title + ">";
+                    htmlTree += "   <span class=\"fs-9\" style=\"padding-left:19px;\">";
+                    htmlTree += "       <a class=\"text-decoration-none text-dark d-inline-block\" href=\"?action=load&module_id=" + item.Id + "\" title='查看'>";
+                    htmlTree += "           <img src=\"/images/xp/page_white_text.png\">&nbsp;<span id='lbl_" + item.Id + "'>" + item.Name + "</span>";
+                    htmlTree += "       </a>";
+                    htmlTree += "   </span>";
+                    htmlTree += edit_icon;
+                    htmlTree += "</li>";
                 }
             }
         }
@@ -172,7 +184,7 @@
     <div class="row">
         <div class="col-2 p-0 mr-1 pb-2 border-inset bg-white mh-100">
             <div class="row m-1 p-1 pt-0 ps-0">
-                @Html.Raw(BuildTree(null, showEdit))
+                @Html.Raw(BuildTree(null))
             </div>
         </div>
         <div class="col-6 p-1 border-inset bg-white">
@@ -234,16 +246,7 @@
                                     @Html.DisplayFor(modelItem => item.Issue.Author.Firstname)
                                 </td>
                                 <td htmlValue="issue" class="text-center">
-                                    <div class="btn-group m-0 p-0">
-                                        <a class="btn btn-sm text-666 m-0 p-0 fs-7 lh-0 issue_subject_@item.Issue.StatusId" data-bs-toggle="dropdown">@Html.DisplayFor(modelItem => item.Issue.Status.Name)</a>
-                                        <ul class="dropdown-menu shadow fs-7">
-                                            <li><a class="dropdown-item disabled lh-0 text-dark" href="#">更改[@Html.DisplayFor(modelItem => item.Issue.Id)]为:</a></li>
-                                            <li><hr class="dropdown-divider"></li>
-                                            <li><a class="dropdown-item" href="#">新建</a></li>
-                                            <li><hr class="dropdown-divider"></li>
-                                            <li><a class="dropdown-item" href="#">Copy Text</a></li>
-                                        </ul>
-                                    </div>
+                                    @Html.DisplayFor(modelItem => item.Issue.Status.Name)
                                 </td>
                                 <td htmlValue="issue" class="text-center">
                                     @Html.DisplayFor(modelItem => item.Issue.Project.Name)
@@ -294,20 +297,22 @@
         </div>
     </div>
 </div>
-<div class="container p-0"> 
+<div class="container p-0">
     <!-- Context-menu -->
     <div id="html_ContextMenu" class="context-menu shadow">
         <ul class="p-0 m-0">
-            <li class="context-item dropdown-item" html-action="add_subnode">新增下级模块</li>
-            <li class="context-item dropdown-item" html-action="edit">编辑</li>
-            <li class="context-item dropdown-item" html-action="move_up">上移</li>
-            <li class="context-item dropdown-item" html-action="move_down">下移</li>
-            <li class="context-item dropdown-item disabled" html-action="disable">禁用</li>
+            @*<li class="context-item dropdown-item" html-action="add_subnode">新增下级模块</li>
+        <li class="context-item dropdown-item" html-action="edit">编辑</li>*@
+            <li class="context-item dropdown-item d-cursor" html-action="move_up">上移</li>
+            <li class="context-item dropdown-item d-cursor" html-action="move_down">下移</li>
             <li><hr class="m-0 dropdown-divider"></li>
-            <li class="context-item dropdown-item" html-action="up_level">上提一级</li>
+            <li class="context-item dropdown-item d-cursor" html-action="up_level">上提一级<span class="float-end w-auto"><i class="bi bi bi-exclamation-octagon" title="操作提示：移动到上级，并作为'原上级'节点的'下一'节点"></i></span></li>
+            <li class="context-item dropdown-item d-cursor" html-action="down_level">下降一级<span class="float-end"><i class="bi bi bi-exclamation-octagon" title="操作提示：移动到下级，并作为'原前一'节点的'最后'节点"></i></span></li>
             <li><hr class="m-0 dropdown-divider"></li>
-            <li class="context-item dropdown-item" html-action="default_index">重新排序</li>
-            <li class="context-item dropdown-item">移动到</li>
+            <li class="context-item dropdown-item d-cursor text-danger" html-action="disable">禁用<span class="float-end"><i class="bi bi bi-exclamation-octagon" title="操作提示：禁用'当前'及其'所有下级'节点"></i></span></li>
+            <li><hr class="m-0 dropdown-divider"></li>
+            <li class="context-item dropdown-item d-cursor" html-action="default_index">重新排序</li>
+            <li class="context-item dropdown-item d-cursor">移动到</li>
         </ul>
     </div>
     <input type="hidden" value="@Model.Module_id" id="txt_module_id" />
@@ -324,14 +329,25 @@
         width: 130px;
         background: white;
     }
+
     .context-menu ul {
-        list-style: none;        
+        list-style: none;
     }
+
     .context-menu ul li {
-        
     }
 </style>
-
+<dialog id="edit_module_dialog" class="shadow" style="width:400px">
+    <div class="row fs-9">
+        <div class="col"><input id="edit_module_name" type="text" attr-id="" value="" class="form-control border-inset rounded-0 fs-9 w-100 p-1" autocomplete="off" /></div>
+        <div class="col-4" style="padding-top:6px;">
+            <a href="#Dialog" class="btn-sm border-1 bg-title text-decoration-none fs-9 rounded-0" onclick="update_module_name($('#edit_module_name'))">save</a>
+            <a href="#Dialog" class="btn-sm border-1 bg-title text-decoration-none fs-9 rounded-0" onclick="close_edit_module_dialog()">cancel</a>
+        </div>
+    </div>
+    
+    
+</dialog>
 <script>
     // disable right click and show custom context menu
     $("li.li-node").bind('contextmenu', function (e) {
@@ -385,11 +401,14 @@
             case "default_index":
                 var module_name = $('#txt_module_name').val();
                 if (confirm("是否重置为默认顺序？[" + module_name + "]")) {
-                    call_module_ajax(module_id, 9999, "default_index");
+                    call_module_ajax(module_id,'', 9999, "default_index");
                 }
                 break;
             case "up_level":
                 move(module_id, pid, "up_level");
+                break;
+            case "down_level":
+                move(module_id, pid, "down_level");
                 break;
         }
     });
@@ -413,6 +432,21 @@
         $("#txt_module_id").val("");
         $('#txt_pid').val('');
     }
+    function update_module_name(obj) {
+        var module_id = obj.attr("attr-id");
+        var module_name = obj.val();
+        if (module_name == "") {    // 标题不能为空
+            obj.focus();
+            return;
+        }
+        call_module_ajax(module_id, module_name, 9999, "update_module_name");
+        $('#lbl_' + module_id).text(module_name);
+        close_edit_module_dialog();
+    }
+
+    function close_edit_module_dialog() {
+        document.getElementById("edit_module_dialog").close();
+    }
 </script>
 <script>
     var recordCount = @Model.DisplayIssues.Count;
@@ -427,8 +461,8 @@
     }
 
     $(document).ready(function () {
-        $("#myUL li").click(function () {
-            $("#myUL li").removeClass('active');
+        $("#module_tree li").click(function () {
+            $("#module_tree li").removeClass('active');
             $(this).addClass('active');
         });
         $("#mainTable tr").click(function () {
@@ -445,9 +479,27 @@
         $('button.link-cancel').click(function () {
             cancel_edit($(this));
         });
+        $('li.li-node').hover(function () {
+            var html_id = $(this).attr("attr-id");
+            $('#view_icon_' + html_id).toggleClass("d-none");
+            $('#add_icon_' + html_id).toggleClass("d-none");
+            $('#edit_icon_' + html_id).toggleClass("d-none");
+        });
+        $('i.edit-icon').click(function () {
+            var module_id = $(this).attr("attr-id");
+            var module_name = $('#lbl_' + module_id).text();
+            $('#edit_module_name').val(module_name);
+            $('#edit_module_name').attr("attr-id", module_id);
+            var dlg = document.getElementById("edit_module_dialog");
+            dlg.showModal();
+        });
+        $('i.add-icon').click(function () {
+            var module_id = $(this).attr("attr-id");
+            var parent_id = $(this).attr("attr-pid");
+
+            call_module_ajax(module_id, '', parent_id, "create_module");
+        });
     });
-
-
     // 绑定add button click
     function add_button_event(obj) {
         $('img.add-button').each(function () {
@@ -478,45 +530,63 @@
     }
     // 移动节点
     function move(obj_id, parent_id, action) {
-        if (action == "up") {
-            var obj = $('#html_node_' + obj_id);
-            if (obj.index() > 0) {
-                call_module_ajax(obj_id, parent_id, action);
-                obj.insertBefore(obj.prev('.li-node'));
-            }
-        } else if (action == "down") {
-            var obj = $('#html_node_' + obj_id);
-            if (obj.index() < obj.siblings().length) {
-                call_module_ajax(obj_id, parent_id, action);
-                obj.insertAfter(obj.next('.li-node'));
-            }
-        } else if (active == "up_level") {
-            var obj = $('#html_node_' + obj_id);
-            if (obj.index() < obj.siblings().length) {
-                call_module_ajax(obj_id, parent_id, action);
-                //obj.insertAfter(obj.next('.li-node'));
-            }
+        switch (action) {
+            case "up":
+                var obj = $('#html_node_' + obj_id);
+                if (obj.index() > 0) {
+                    call_module_ajax(obj_id, '', parent_id, action);
+                    obj.insertBefore(obj.prev('.li-node'));
+                }
+                break;
+            case "down":
+                var obj = $('#html_node_' + obj_id);
+                if (obj.index() < obj.siblings().length) {
+                    call_module_ajax(obj_id, '', parent_id, action);
+                    obj.insertAfter(obj.next('.li-node'));
+                }
+                break;
+            case "up_level":
+                var obj = $('#html_node_' + obj_id);
+                if (parent_id > 0) {
+                    call_module_ajax(obj_id, '', parent_id, action);
+                }
+                break;
+            case "down_level":
+                var obj = $('#html_node_' + obj_id);
+                if (obj.index() > 0) {  // 第一个元素不支持调整等级
+                    call_module_ajax(obj_id, '', parent_id, action);
+                }
+                break;
         }
     }
-    function call_module_ajax(obj_id, parent_id, action) {
-        var request = $.ajax({
+    function call_module_ajax(module_id, module_name, parent_id, action) {
+        $.ajax({
             url: '/api/Module',
             method: 'POST',
             dataType: 'json',
             contentType: 'application/json; charset=utf-8',
-            data: '{\"id\": ' + obj_id + ',\"parent_id\":' + parent_id + ',\"action\": \"' + action + '\"}'
-        });
-        //request.done(function (msg) {
-        //    alert(msg);
-        //});
-        request.fail(function (jqXHR, textStatus) {
-            switch (jqXHR.responseText) {
-                case "OK":
-
-                    break;
-                default:
-                    alert("Request failed: " + jqXHR.responseText);
-                    break;
+            data: '{\"id\": ' + module_id + ',\"name\":\"' + module_name + '\",\"parent_id\":' + parent_id + ',\"action\": \"' + action + '\"}',
+            complete: function (jqXHR, status) {
+                var result = jQuery.parseJSON(jqXHR.responseText);
+                switch (result.result) {
+                    case "OK":
+                        switch (action) {
+                            case "create_module":
+                            case "up_level":
+                            case "down_level":
+                                window.location.reload();
+                                break;
+                        }
+                        break;
+                    case "Ingore":
+                        break;
+                    default:
+                        alert("Request failed: " + jqXHR.Result);
+                        break;
+                }
+            },
+            error: function (jqXHR, textStatus, errorThrown ) {
+                ;
             }
         });
     }
