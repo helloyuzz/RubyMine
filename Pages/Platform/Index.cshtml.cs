@@ -25,7 +25,7 @@ namespace RubyMine.Pages.Platform {
             Chanpins = new List<int>();
             Chanpins.Add(8);
             Chanpins.Add(135);
-            
+
             int current_module_id = RMUtils.QueryInt(Request, "id");
             string action = Request.Query["action"];
             string queryUrl = Request.QueryString.Value;
@@ -33,14 +33,21 @@ namespace RubyMine.Pages.Platform {
             Module_id = RMUtils.QueryInt(Request, "module_id");
 
             string url = SessionUtils.Get<string>(HttpContext.Session, "QueryUrl");
+            User cua = SessionUtils.Get<User>(HttpContext.Session, "cua");
+            if (cua == null) {
+                RedirectToPage("/");                
+                return;
+            }
             if (queryUrl.Equals(url)) {
                 isRefresh = true;
             } else {
                 SessionUtils.Set<string>(HttpContext.Session, "QueryUrl", queryUrl);
             }
-            ActiveNodes nodes = SessionUtils.Get<ActiveNodes>(HttpContext.Session, "ActiveNodes");
+            //ActiveNodes nodes = SessionUtils.Get<ActiveNodes>(HttpContext.Session, "ActiveNodes");
+            ActiveNodes nodes = GlobalCache.ActiveNodes.FirstOrDefault(t => t.Key == cua.Id).Value;
             if (nodes == null) {
                 nodes = new ActiveNodes();
+                GlobalCache.ActiveNodes.Add(cua.Id, nodes);
             }
             if (Module_id > 0 && isRefresh == false) {
                 if (nodes.Contains(Module_id)) {
@@ -49,7 +56,7 @@ namespace RubyMine.Pages.Platform {
                     nodes.Add(Module_id);
                 }
             }
-            SessionUtils.Set(HttpContext.Session, "ActiveNodes", nodes);
+            //SessionUtils.Set(HttpContext.Session, "ActiveNodes", nodes);
 
             switch (action) {
                 case "up":

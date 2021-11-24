@@ -79,12 +79,16 @@ namespace RubyMine.Controllers {
                         break;
                     case "default_index":   // 重置模块下的节点次序
                         var modules = _context.Modules.Where(t => t.PId == module.Id);
-                        int module_index = 1;
-                        foreach (Module temp_module in modules) {
-                            temp_module.Index = module_index++;
+                        if (modules.Count() > 0) {
+                            int module_index = 1;
+                            foreach (Module temp_module in modules) {
+                                temp_module.Index = module_index++;
+                            }
+                            _context.SaveChanges();
+                            soapResult.Result = "OK";
+                        } else {
+                            soapResult.Result = "Ingore";
                         }
-                        _context.SaveChanges();
-                        soapResult.Result = "OK";
                         break;
                     case "up_level":    // 上提一级
                         var up_level_module = _context.Modules.FirstOrDefault(t => t.Id == module.Parent_id);

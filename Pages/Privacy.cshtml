@@ -5,15 +5,71 @@
     ViewData["Title"] = "Privacy Policy";
     ViewData["showFooter"] = "footer";
 }
+<style>
+    .table > :not(caption) > * > * {
+        padding:4px !important;
+    }
+    th {
+        font-weight:normal !important;
+    }
+</style>
 <div class="container-fluid pt-4 pb-4 border-inset bg-white vh-60">
     <h3>@ViewData["Title"]</h3>
 
     <p>Use this page to detail your site's privacy policy.</p>
+
+    <p class="fw-bold text-269 mb-2">操作说明：</p>
+    <table class="table table-hover w-50">
+        <thead>
+            <tr>
+                <th scope="col" width="60px">序号</th>
+                <th scope="col" width="100px">功能/操作</th>
+                <th>操作说明</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <th scope="row">1</th>
+                <td class="text-269">上移</td>
+                <td><a class="text-666" href="#Privacy">移动至前一节点</a></td>
+            </tr>
+            <tr>
+                <th scope="row">2</th>
+                <td class="text-269">下移</td>
+                <td><a class="text-666" href="#Privacy">移动至下一节点</a></td>
+            </tr>
+            <tr>
+                <th scope="row">3</th>
+                <td class="text-269">上提一级</td>
+                <td><a class="text-666" href="#Privacy">上提一级，并移至原上级节点之后</a></td>
+            </tr>
+            <tr>
+                <th scope="row">4</th>
+                <td class="text-269">下降一级</td>
+                <td><a class="text-666" href="#Privacy">下降一级，并移至之前节点的最后节点</a></td>
+            </tr>
+            <tr>
+                <th scope="row">5</th>
+                <td class="text-269">标记删除</td>
+                <td><a class="text-666" href="#Privacy">标记删除</a></td>
+            </tr>
+            <tr>
+                <th scope="row">6</th>
+                <td class="text-269">重新排序</td>
+                <td><a class="text-666" href="#Privacy">重新排序当前节点的所有下级节点；</a></td>
+            </tr>
+            <tr>
+                <th scope="row">edit</th>
+                <td class="text-269">edit</td>
+                <td><a class="text-666" href="#Privacy">edit</a></td>
+            </tr>
+        </tbody>
+    </table>    
     <p>
         版权所有 © 四川劳吉克信息技术有限公司
     </p>
     <p>
-        Ruby、.NET Core，数据库 Mysql
+        <span class="fw-bold text-269">Roadmap</span>：Ruby、.NET Core，数据库 Mysql
     </p>
     <p class="mb-4"></p>
 </div>
