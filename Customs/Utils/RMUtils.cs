@@ -104,6 +104,29 @@ namespace RubyMine {
             return to_Issue;
         }
 
+        public static string ParseJournalType(string property,string key) {
+            var result = "未知";
+            switch (property) {
+                case "attachment":
+                    result = "附件";
+                    break;
+                case "cf":
+                    result = "属性";
+                    break;
+                case "attr":
+                    switch (key) {
+                        case "description":
+                            result = "描述";
+                            break;
+                        case "subject":
+                            result = "主题";
+                            break;
+                    }
+                    break;
+            }
+            return result;
+        }
+
         internal static RMUser ParseToRMUser(User db_User, List<CustomField> db_CustomFields, List<CustomValue> db_CustomValues,RMUser to_User=null) {
             if (to_User == null) {
                 to_User = new RMUser();

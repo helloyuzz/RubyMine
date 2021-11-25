@@ -35,7 +35,7 @@ namespace RubyMine.Pages.Platform {
             string url = SessionUtils.Get<string>(HttpContext.Session, "QueryUrl");
             User cua = SessionUtils.Get<User>(HttpContext.Session, "cua");
             if (cua == null) {
-                RedirectToPage("/");                
+                RedirectToPage("/");
                 return;
             }
             if (queryUrl.Equals(url)) {
@@ -104,7 +104,37 @@ namespace RubyMine.Pages.Platform {
                 var quireFieldIds = CustomValues.Select(t => t.CustomizedId).ToList();
 
                 // 查询该模块下的所有Issue
-                var db_issues = await _context.Issues.Where(t => quireFieldIds.Contains(t.Id)).Include(t => t.Tracker).Include(t => t.Project).Include(t => t.Status).Include(t => t.Author).ToListAsync();
+                var db_issues = await _context.Issues.Where(t => quireFieldIds.Contains(t.Id))
+                    .Include(t => t.Tracker)
+                    .Include(t => t.Project)
+                    .Include(t => t.Status)
+                    .Include(t => t.Author)
+                    .Select(t => new Issue {
+                        Id = t.Id,
+                        TrackerId = t.TrackerId,
+                        Tracker = t.Tracker,
+                        ProjectId = t.ProjectId,
+                        Project = t.Project,
+                        Subject = t.Subject,
+                        StatusId = t.StatusId,
+                        Status = t.Status,
+                        AssignedToId = t.AssignedToId,                        
+                        PriorityId = t.PriorityId,
+                        Priority = t.Priority,
+                        FixedVersionId = t.FixedVersionId,
+                        AuthorId = t.AuthorId,
+                        Author=t.Author,
+                        LockVersion = t.LockVersion,
+                        CreatedOn = t.CreatedOn,
+                        UpdatedOn = t.UpdatedOn,
+                        StartDate = t.StartDate,
+                        DoneRatio = t.DoneRatio,
+                        EstimatedHours = t.EstimatedHours,
+                        ParentId = t.ParentId,
+                        RootId = t.RootId,
+                        IsPrivate = t.IsPrivate
+                    })
+                    .ToListAsync();
 
                 foreach (Issue issue in db_issues) {
                     DisplayIssue displayIssue = new DisplayIssue(issue);

@@ -100,7 +100,8 @@ th[htmlValue="issue"], td[htmlValue="issue"] {
 .border-828790 {
     border: 1px solid #828790 !important;
 }
-.border-inset {
+.border-inset, .border-inset:focus {
+    outline: none;
     border: 2px inset !important;
 }
 .border-bdbdbd {
@@ -182,6 +183,19 @@ th[htmlValue="issue"] {
 .issue_subject_21 {
     color: #b46b6b !important;
     text-decoration: line-through !important;
+}
+.td {
+    padding-top: 6px !important;
+    padding-bottom: 6px !important;
+}
+.td-row-index {
+    width:26px;
+}
+.td-author {
+    width:68px;
+}
+.td-create-on {
+    width:131px;
 }
 
 

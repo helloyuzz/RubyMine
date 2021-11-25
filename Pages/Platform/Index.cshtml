@@ -100,8 +100,8 @@
     }
 
     tr.active {
-        background-color: #cde8ff;
-        border: 2px inset #cde8ff;
+        background-color: #ebebeb;
+        border: 2px dotted #9a9a9a;
     }
 
     th, td {
@@ -116,6 +116,22 @@
             border: solid 1px #d7d7d7;
             padding: 2px !important;
         }
+    .nav-link {
+        border-color: #ccc #ccc #f0f0f0 #ccc !important;
+        font-weight: normal !important;
+        padding:1px !important;
+        padding-left:6px !important;
+        padding-right:6px !important;
+    }
+    .nav-tabs .nav-link.active, .nav-tabs .nav-item.show .nav-link {
+        background-color: #f0f0f0 !important;
+    }
+    .nav-link.active {
+        font-weight:bold !important;        
+    }
+    textarea {
+        border: 2px inset !important;
+    }
 </style>
 
 @functions{
@@ -185,7 +201,7 @@
     <div class="row">
         <div class="col-2 p-0 mr-1 pb-2 border-inset bg-white mh-100">
             <div class="row m-1 p-1 pt-0 ps-0">
-                @Html.Raw(BuildTree(null,cua.Id))
+                @Html.Raw(BuildTree(null, cua.Id))
             </div>
         </div>
         <div class="col-6 p-1 border-inset bg-white">
@@ -223,7 +239,7 @@
                         @foreach (var item in Model.DisplayIssues.OrderBy(t => t.Position)) {
                             var html_attr = " attr-id=\"" + item.Issue.Id + "\" attr-module-id=\"" + Model.Module_id + "\" attr-prev-issue-id=\"" + item.Issue.Id + "\"";
 
-                            <tr id="tr_@item.Issue.Id" class="clickable-row tr-node">
+                            <tr id="tr_@item.Issue.Id" @Html.Raw(html_attr) class="clickable-row tr-node" onclick="load_issue_description(@item.Issue.Id);">
                                 <td htmlValue="issue" class="fs-7 align-top text-center" style="padding-top:1px;">
                                     <a asp-page="./Details" asp-route-id="@item.Issue.Id" target="_blank" class="text-666">@Html.DisplayFor(modelItem => item.Issue.Id)</a>
                                 </td>
@@ -296,7 +312,73 @@
             </table>
         </div>&nbsp;
         <div class="col p-1 border-inset bg-white mr-1">
-            修订记录
+            <ul class="nav nav-tabs m-0 p-0">
+                <li class="nav-item m-0 p-0">
+                    <a href="#issue_history" class="nav-link text-decoration-none fw-bold text-666 rounded-0 active" data-toggle="tab">历史记录</a>
+                </li>
+                <li class="nav-item m-0 p-0">
+                    <a href="#issue_notes" class="nav-link text-decoration-none fw-bold text-666 rounded-0" data-toggle="tab">说明</a>
+                </li>
+                <li class="nav-item m-0 p-0">
+                    <a href="#issue_properties" class="nav-link text-decoration-none fw-bold text-666 rounded-0" data-toggle="tab">更改属性</a>
+                </li>
+                <li class="nav-item m-0 p-0">
+                    <a href="#issue_attachment" class="nav-link text-decoration-none fw-bold text-666 rounded-0" data-toggle="tab">附件</a>
+                </li>
+            </ul>
+            <div class="tab-content">
+                <div class="tab-pane fade show p-1 active" id="issue_history">
+                 <p id="html_issue_history" class="m-0 p-0"></p>
+                </div>
+                <div class="tab-pane fade show p-1" id="issue_notes">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>作者</th>
+                                <th>操作日期</th>
+                                <th>内容</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="tab-pane fade show p-1" id="issue_properties">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>作者</th>
+                                <th>操作日期</th>
+                                <th>内容</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="tab-pane fade show p-1" id="issue_attachment">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>作者</th>
+                                <th>操作日期</th>
+                                <th>内容</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+                <div class="row pb-1 m-0 mb-1">
+                    <textarea id="html_issue_description" class="border-inset p-1" rows="6"></textarea>
+                </div>
+                <div class="row m-0">
+                    <button href="#description" class="btn btn-sm mt-1 btn-light border-828790 rounded-0 w-auto fs-9 float-end"><i class="bi bi-exclamation-diamond"></i>&nbsp;Save update</button>
+                </div>
         </div>
     </div>
 </div>
@@ -310,10 +392,10 @@
             <li class="module-context-item dropdown-item d-cursor" html-action="up_level">上提一级</li>
             <li class="module-context-item dropdown-item d-cursor" html-action="down_level">下降一级</li>
             <li><hr class="m-0 dropdown-divider"></li>
-            <li class="module-context-item dropdown-item d-cursor" html-action="default_index">重新排序</li>
+            <li class="module-context-item dropdown-item d-cursor" html-action="default_index">重排模块</li>
+            <li class="module-context-item dropdown-item d-cursor" html-action="default_index">重排问题</li>
             <li><hr class="m-0 dropdown-divider"></li>
-            <li class="module-context-item dropdown-item disabled d-cursor" html-action="disable" title="标记删除">删除<span class="float-end"><i class="bi bi bi-exclamation-octagon"></i></span></li>
-            @*<li class="context-item dropdown-item d-cursor">移动到</li>*@
+            <li class="module-context-item dropdown-item disabled d-cursor" html-action="disable" title="标记删除">标记删除<span class="float-end"><i class="bi bi bi-exclamation-octagon"></i></span></li>
         </ul>
     </div>
     </div>
@@ -321,16 +403,22 @@
     <!-- Issue-Context-menu -->
     <div id="html_IssueContextMenu" class="issue-context-menu shadow">
         <ul class="p-0 m-0">
+            <li class="issue-context-item dropdown-item d-cursor" html-action="move_up">状态</li>
+            <li><hr class="m-0 dropdown-divider"></li>
             <li class="issue-context-item dropdown-item d-cursor" html-action="move_up">上移</li>
             <li class="issue-context-item dropdown-item d-cursor" html-action="move_down">下移</li>
             <li><hr class="m-0 dropdown-divider"></li>
-            <li class="issue-context-item dropdown-item disabled d-cursor" html-action="disable" title="标记删除">删除<span class="float-end"><i class="bi bi bi-exclamation-octagon"></i></span></li>
-            @*<li class="context-item dropdown-item d-cursor">移动到</li>*@
+            <li class="issue-context-item dropdown-item disabled d-cursor" html-action="disable" title="标记删除">标记删除<span class="float-end"><i class="bi bi bi-exclamation-octagon"></i></span></li>
+            <li><hr class="m-0 dropdown-divider"></li>
+            <li class="module-context-item dropdown-item d-cursor" html-action="default_index">重新排序</li>
+            <li class="module-context-item dropdown-item d-cursor" html-action="move_to">移动到</li>
         </ul>
     </div>
     <input type="hidden" value="@Model.Module_id" id="txt_module_id" />
     <input type="hidden" value="" id="txt_module_name" />
     <input type="hidden" value="" id="txt_pid" />
+    <input type="hidden" value="" id="txt_issue_id"/>
+    <input type="hidden" value="" id="txt_issue_module_id"/>
 </div>
 <style>
     /* Context menu */
@@ -398,6 +486,11 @@
         hide_issue_context_menu();
         hide_module_context_menu();
 
+        var issue_id = $(this).attr("attr-id");
+        var issue_module_id = $(this).attr("attr-module-id");
+        $('#txt_issue_id').val(issue_id);
+        $('#txt_issue_module_id').val(issue_module_id);
+
         $("tr.tr-node").each(function () {              // 取消active效果
             $(this).removeClass("active");
         });
@@ -453,6 +546,32 @@
                 break;
             case "down_level":                          // 下降一级显示排序
                 move(module_id, pid, "down_level");
+                break;
+        }
+    });
+    $('li.issue-context-item').click(function () {
+        var issue_id = $('#txt_issue_id').val();
+        var issue_module_id = $('#txt_issue_module_id').val();
+        if (issue_id <= 0 || issue_module_id <= 0) {
+            return;
+        }
+
+        var action = $(this).attr("html-action");
+        var current_rowIndex = $('#tr_' + issue_id).index();
+        var row_count = $('#tr_' + issue_id).siblings().length;
+        
+        switch (action) {
+            case "move_up":
+                if (current_rowIndex < 1) {
+                    return;
+                }
+                call_issue_ajax(issue_id, '', issue_module_id, 0, 'move_up');
+                break;
+            case "move_down":
+                if (current_rowIndex == row_count - 1) {
+                    return;
+                }
+                call_issue_ajax(issue_id, '', issue_module_id, 0, 'move_down');
                 break;
         }
     });
@@ -577,6 +696,49 @@
         new_row.innerHTML = html;
 
         $('#newSubject_' + html_id).focus();
+    }
+    function load_issue_description(issue_id) {
+        if (issue_id <= 0) {
+            return;
+        }
+        $.ajax({
+            url: '/api/Issue/' + issue_id,
+            method: 'GET',
+            dataType: 'json',
+            contentType: 'application/json; charset=utf-8',
+            data: '',
+            complete: function (jqXHR, status) {
+                var result = jQuery.parseJSON(jqXHR.responseText);
+                switch (result.result) {
+                    case "OK":
+                        $('#html_issue_description').text(result.description);
+
+                        // history
+                        $('#html_issue_history').empty().append(result.history_tr);
+
+                        // notes
+                        $('#issue_notes tbody').find("tr").remove()
+                        $('#issue_notes tbody').append(result.notes_tr);
+
+                        // issue_properties
+                        $('#issue_properties tbody').find("tr").remove()
+                        $('#issue_properties tbody').append(result.properties_tr);
+
+                        // issue_attachment
+                        $('#issue_attachment tbody').find("tr").remove()
+                        $('#issue_attachment tbody').append(result.attachment_tr);
+                        break;
+                    case "Ingore":
+                        break;
+                    default:
+                        alert("Request failed: " + jqXHR.Result);
+                        break;
+                }
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                ;
+            }
+        });
     }
     // 移动节点
     function move(obj_id, parent_id, action) {
@@ -719,6 +881,8 @@
                 switch (result.result) {
                     case "OK":
                         switch (action) {
+                            case "move_up":
+                            case "move_down":
                             case "create_issue":
                                 window.location.reload();
                                 break;

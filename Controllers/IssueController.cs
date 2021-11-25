@@ -31,8 +31,96 @@ namespace RubyMine.Controllers {
 
         // GET api/<IssueController>/5
         [HttpGet("{id}")]
-        public string Get(int id) {
-            return "value";
+        public ActionResult<SoapDescription> Get(int id) {
+            SoapDescription desc = new SoapDescription("Invalid request.");
+            if (id > 0) {
+                desc.Issue_id = id;
+                desc.Description = _context.Issues.FirstOrDefault(t => t.Id == id).Description;     // 获取Issue的Description
+                desc.Journals = _context.Journals.Where(t => t.JournalizedId == id).ToList();       // 获取Issue的变更记录
+
+                List<int> user_ids = desc.Journals.Select(t=>t.UserId).Distinct().ToList();         // 获取Issue变更记录中的User.id
+                List<int> issue_ids = desc.Journals.Where(t => string.IsNullOrEmpty(t.Notes)).Select(t => t.Id).ToList();   // 获取Issue变更记录的Issue.id
+                List<int> attachment_ids = null;                                                    // 获取Issue的附件id,Accachment.id
+                List<Attachment> attachment = null;                                                 // 所有附件
+                if (issue_ids.Count > 0) {
+                    desc.JournalDetails = _context.JournalDetails.Where(t => issue_ids.Contains(t.JournalId)).ToList();     // 获取变更详情 && t.Property.Equals("attr")
+                    attachment_ids = desc.JournalDetails.Where(t => t.Property.Equals("attachment")).Select(t => int.Parse(t.PropKey)).ToList();
+                }
+                var edit_user = _context.Users.Where(t => user_ids.Contains(t.Id)).Select(t => new User { Id = t.Id, Firstname = t.Firstname }).ToList();   // 用户名称
+                if (attachment_ids != null) {                                                                                                               // 获取附件
+                    attachment = _context.Attachments.Where(t => t.ContainerType.Equals("Issue") && attachment_ids.Contains(t.Id)).ToList();                // 获取Issue的Attachment
+                }
+
+                // 历史记录
+                int rowCount = desc.Journals.Count();
+                foreach (var item in desc.Journals.OrderByDescending(t => t.CreatedOn)) {
+                    desc.history_tr += "<p class=\"m-0 p-0\">";
+                    desc.history_tr += "<span class=\"badge bg-primary fs-9 m-0 p-1 mr-2 fw-normal\">" + rowCount + "</span>";
+                    desc.history_tr += "由&nbsp<span class=\"text-269\">" + edit_user.FirstOrDefault(t => t.Id == item.UserId).Firstname + "</span>&nbsp;更新于&nbsp;<span class=\"text-269\">" + item.CreatedOn.ToString("yyyy-MM-dd HH:mm:ss") + "</span>";
+                    if (string.IsNullOrEmpty(item.Notes) == false) {
+                        desc.history_tr += "<span class=\"fw-bold\">&nbsp;说明</span> 已更新。";
+                        desc.history_tr += "</p>";
+                        desc.history_tr += "<span class=\"text-666 ps-4 fw-bold\">" + item.Notes + "</span>";
+                    } else {
+                        var temp_content = desc.JournalDetails.FirstOrDefault(t => t.JournalId == item.Id);
+                        if (temp_content != null) {
+                            desc.history_tr += "<span class=\"fw-bold\">&nbsp" + RMUtils.ParseJournalType(temp_content.Property, temp_content.PropKey) + "</span> 已更新。<p class=\"m-0 p-0 ps-4\"><span class=\"text-666 text-decoration-line-through\">" + temp_content.OldValue + "</span> 更改为：<br>" + temp_content.Value + "</p>";
+                        }
+                    }
+                    desc.history_tr += "<hr class=\"m-1 p-0\">";
+                    rowCount--;
+                }
+
+                // 备注更改，notes == null
+                var notes_Journals = desc.Journals.Where(t => string.IsNullOrEmpty(t.Notes) == false).OrderByDescending(t => t.Id);
+                rowCount = notes_Journals.Count();
+                foreach (var item in notes_Journals) {
+                    desc.notes_tr += "<tr>";
+                    desc.notes_tr += "  <td class=\"td td-row-index\">" + rowCount + "</td>";
+                    desc.notes_tr += "  <td class=\"td td-author text-269\">" + edit_user.FirstOrDefault(t => t.Id == item.UserId).Firstname + "</td>";
+                    desc.notes_tr += "  <td class=\"td td-create-on\">" + item.CreatedOn.ToString("yyyy-MM-dd HH:mm:ss") + "</td>";
+                    desc.notes_tr += "  <td class=\"td\">" + item.Notes + "</td>";
+                    desc.notes_tr += "</tr>";
+                    rowCount--;
+                }
+
+                // 属性更改
+                if (desc.JournalDetails != null) {
+                    var properties_Journals = desc.JournalDetails.OrderByDescending(t => t.Id);
+                    rowCount = properties_Journals.Count();
+                    foreach (var item in properties_Journals) {
+                        var journal = desc.Journals.FirstOrDefault(t => t.Id == item.JournalId);
+
+                        desc.properties_tr += "<tr>";
+                        desc.properties_tr += " <td class=\"td td-row-index\">" + rowCount + "</td>";
+                        desc.properties_tr += " <td class=\"td td-author text-269\">" + edit_user.FirstOrDefault(t => t.Id == journal.UserId).Firstname + "</td>";
+                        desc.properties_tr += " <td class=\"td td-create-on\">" + journal.CreatedOn.ToString("yyyy-MM-dd HH:mm:ss") + "</td>";
+                        desc.properties_tr += " <td class=\"td\"><span class=\"fw-bold\">" + RMUtils.ParseJournalType(item.Property, item.PropKey) + "</span> 已更新。<p class=\"m-0 p-0\"><span class=\"text-666 text-decoration-line-through\">" + item.OldValue + "</span> 更改为：<br>" + item.Value + "</p></td>";                        
+                        desc.properties_tr += "</tr>";
+
+                        rowCount--;
+                    }
+                }
+
+                // 附件
+                if (attachment != null) {
+                    rowCount = attachment.Count();
+                    foreach (var item in attachment.OrderByDescending(t=>t.Id)) {
+                        var journal_id = desc.JournalDetails.FirstOrDefault(t => t.Property.Equals("attachment") && t.PropKey.Equals(item.Id.ToString())).JournalId;
+                        var journal = desc.Journals.FirstOrDefault(t => t.Id == journal_id);
+
+                        desc.attachment_tr += "<tr>";
+                        desc.attachment_tr += " <td class=\"td td-row-index\">" + rowCount + "</td>";
+                        desc.attachment_tr += " <td class=\"td td-author text-269\">" + edit_user.FirstOrDefault(t => t.Id == journal.UserId).Firstname + "</td>";
+                        desc.attachment_tr += " <td class=\"td td-create-on\">" + journal.CreatedOn.ToString("yyyy-MM-dd HH:mm:ss") + "</td>";
+                        desc.attachment_tr += " <td class=\"td\">" + item.Filename + "</td>";
+                        desc.attachment_tr += "</tr>";
+                        rowCount--;
+                    }
+                }
+                desc.Result = "OK";
+            }
+            return Ok(desc);
         }
 
         // POST api/<IssueController>
@@ -102,9 +190,31 @@ namespace RubyMine.Controllers {
                         result.Result = "OK";
                         result.Value = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
                         break;
-                    case "MoveUp":
+                    case "move_up":
+                        // 当前位置
+                        CustomValue upValue = _context.CustomValues.FirstOrDefault(t => t.CustomFieldId == 54 && t.Value.Equals(value.module_id.ToString()) && t.CustomizedId == value.Issue.Id);
+                        if (upValue.Position > 1) {
+                            // 交换次序
+                            _context.CustomValues.FirstOrDefault(t => t.CustomFieldId == 54 && t.Value.Equals(value.module_id.ToString()) && t.Position == upValue.Position - 1).Position = upValue.Position;
+                            upValue.Position = upValue.Position - 1;
+                            _context.SaveChanges();
+                            result.Result = "OK";
+                        } else {
+                            result.Result = "Ingore";
+                        }
                         break;
-                    case "MoveDown":
+                    case "move_down":
+                        CustomValue downValue = _context.CustomValues.FirstOrDefault(t => t.CustomFieldId == 54 && t.Value.Equals(value.module_id.ToString()) && t.CustomizedId == value.Issue.Id);
+                        int module_count = _context.CustomValues.Count(t => t.CustomFieldId == 54 && t.Value.Equals(value.module_id.ToString()));
+                        if (downValue.Position < module_count) {
+                            // 交换次序
+                            _context.CustomValues.FirstOrDefault(t => t.CustomFieldId == 54 && t.Value.Equals(value.module_id.ToString()) && t.Position == downValue.Position + 1).Position = downValue.Position;
+                            downValue.Position = downValue.Position + 1;
+                            _context.SaveChanges();
+                            result.Result = "OK";
+                        } else {
+                            result.Result = "Ingore";
+                        }
                         break;
                 }
             } else {
