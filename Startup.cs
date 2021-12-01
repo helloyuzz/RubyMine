@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -34,18 +35,17 @@ namespace RubyMine {
                     Title = "Rubymine for Navicat",
                     Version = "v1",
                     Description = "四川劳吉克信息技术有限公司"
-                    //TermsOfService = new Uri("http://localhost:36698/"),
-                    //Contact = new OpenApiContact {
-                    //    Name = "Jacksparrow",
-                    //    Email = "",
-                    //    Url = new Uri("http://www.logichealth.cn"),
-                    //},
-                    //License = new OpenApiLicense {
-                    //    Name = "Jacksparrow Code for Development Platform",
-                    //    Url = new Uri("http://www.logichealth.cn"),
-                    //}
                 });
             });
+
+            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+                .AddJwtBearer()
+                .AddCookie(x => {
+                    x.LoginPath = "/";
+                    x.LogoutPath = "/Logout";
+                    x.AccessDeniedPath = "/AccessDenied";
+                    x.ReturnUrlParameter = "ReturnUrl";
+                });
 
             var serverVersion = new MySqlServerVersion(new System.Version(5, 7, 32));
             services.AddDbContext<RubyRemineDbContext>(
@@ -53,8 +53,7 @@ namespace RubyMine {
                 .EnableSensitiveDataLogging()
                 .EnableDetailedErrors()
                 );
-            services.AddScoped<ISysSetting, SysSetting>();
-
+            services.AddScoped<IGlobalSetting, GlobalSetting>();
         }
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env) {
@@ -73,6 +72,9 @@ namespace RubyMine {
 
             app.UseRouting();
             app.UseSession();
+
+            app.UseAuthentication();
+            app.UseAuthorization();
 
             app.UseEndpoints(endpoints => {
                 endpoints.MapRazorPages();

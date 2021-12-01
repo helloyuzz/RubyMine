@@ -40,7 +40,7 @@ namespace RubyMine.Controllers {
         public IActionResult Post([FromBody] SwapModule module) {
             SoapResult soapResult = new SoapResult("Invalid request.");
             Module current_module = null;
-            if (module.Id > 0 && module.Parent_id > 0) {
+            if (module.Parent_id == -1 || (module.Id > 0 && module.Parent_id > 0)) {
                 switch (module.Action) {
                     case "up":  // 移动节点
                     case "down":
@@ -77,7 +77,7 @@ namespace RubyMine.Controllers {
                             soapResult.Result = "OK";
                         }
                         break;
-                    case "default_index":   // 重置模块下的节点次序
+                    case "default_module_index":   // 重置模块下的节点次序
                         var modules = _context.Modules.Where(t => t.PId == module.Id);
                         if (modules.Count() > 0) {
                             int module_index = 1;
@@ -89,6 +89,15 @@ namespace RubyMine.Controllers {
                         } else {
                             soapResult.Result = "Ingore";
                         }
+                        break;
+                    case "default_issue_index": // 重置下级issue排序
+                        int issue_index = 1;
+                        var module_issues = _context.CustomValues.Where(t => t.CustomFieldId == 54 && t.Value.Equals(module.Id.ToString()));
+                        foreach (CustomValue customValue in module_issues) {
+                            customValue.Position = issue_index++;
+                        }
+                        _context.SaveChanges();
+                        soapResult.Result = "OK";
                         break;
                     case "up_level":    // 上提一级
                         var up_level_module = _context.Modules.FirstOrDefault(t => t.Id == module.Parent_id);
@@ -134,7 +143,8 @@ namespace RubyMine.Controllers {
                         soapResult.Result = "OK";
                         break;
                     case "create_module":
-                        var dbCount = _context.Modules.Count(t => t.PId == module.Id) + 1;
+                        int dbCount = _context.Modules.Count(t => t.PId == module.Id) + 1;
+                       
                         Module newModule = new Module();
                         newModule.PId = module.Id;
                         newModule.Index = dbCount;
@@ -144,6 +154,21 @@ namespace RubyMine.Controllers {
 
                         soapResult.Result = "OK";
                         soapResult.Value = JsonConvert.SerializeObject(newModule);
+                        break;
+                    case "show_module_true":
+                    case "show_module_false":
+                        ActiveNodes activeNodes = GlobalCache.ActiveNodes.FirstOrDefault(t => t.Key == module.User_id).Value;
+                        if (activeNodes == null) {
+                            activeNodes = new ActiveNodes();
+                            GlobalCache.ActiveNodes.Add(module.User_id, activeNodes);
+                        }
+                        if (activeNodes.Contains(module.Id) == false) {
+                            activeNodes.Add(module.Id);
+                        }
+                        if (module.Action.Equals("show_module_false") && activeNodes.Contains(module.Id)) {
+                            activeNodes.Remove(module.Id);
+                        }
+                        soapResult.Result = "OK";
                         break;
                 }
             }

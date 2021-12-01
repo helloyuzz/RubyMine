@@ -1,13 +1,7 @@
 ﻿@using RubyMine.Models;
 @{
-    User cua = SessionUtils.Get<User>(Context.Session, "cua");
-
-    bool aleradyLogin = cua != null;
+    //User cua = SessionUtils.Get<User>(Context.Session, "cua");
     string requestPath = Context.Request.Path.ToString();
-    if (string.IsNullOrEmpty(requestPath.Trim('/')) == false && aleradyLogin == false) {
-        Context.Response.Redirect("/");
-    }
-
 }
 <!DOCTYPE html>
 <html lang="en">
@@ -27,15 +21,15 @@
 
     <link rel="stylesheet" href="~/css/site.css" />
 </head>
-<body class="fs-9 bg-f0f0f0 overflow-scroll" style="overflow-x:hidden !important; @ViewData["scroll_hidden"]">
-    @if (aleradyLogin) {
+<body class="fs-9 bg-f0f0f0 overflow-scroll" style="overflow-x:hidden !important;">
+    @if(User.Identity.IsAuthenticated){
         <div style="background-image:url('/images/line-dot.png');background-repeat:repeat-x;height:2px;">
             <img src="/images/whitepoint.png" />
         </div>
         <div class="row m-0 p-0 lh-lg bg-f0f0f0">
             <div class="col-3 ps-1">
                 <span class="float-none fw-normal mr-1">
-                    <a class="btn-sm fs-9 text-dark border-828790 bg-white text-decoration-none fw-bold" style="padding:1px;" href="/Management/About"><img src="/images/xp/vcard.png" class="mb-1" />&nbsp;@cua.Firstname</a>
+                    <a class="btn-sm fs-9 text-dark border-828790 bg-white text-decoration-none fw-bold" style="padding:1px;" href="/Logout"><img src="/images/xp/vcard.png" class="mb-1" />&nbsp;@User.Identity.Name</a>
                 </span>
                 <a href="/Platform/" class="text-decoration-none fw-normal mr-4 text-dark fw-bold" title="返回开发平台主页"><img class="w-auto mb-1" src="/images/xp/shield.png" /><span class="fw-bold mt-1">3.0产品开发管理平台</span></a>
             </div>
@@ -48,7 +42,7 @@
         @RenderBody()
     </div>
 
-    @if (aleradyLogin) {
+    @if (User.Identity.IsAuthenticated) {
         <div style="background-image:url('/images/line-dot.png');background-repeat:repeat-x;height:2px;margin-top:2px;">
             <img src="/images/whitepoint.png" />
         </div>

@@ -1,12 +1,11 @@
 ﻿@page
-@model RubyMine.Pages.Management.AboutModel
+@model RubyMine.Pages.LogoutModel
+@using RubyMine;
 @using RubyMine.Models;
+
 @{
     Layout = "~/Pages/Shared/_NavicatLayout.cshtml";
-    User cua = SessionUtils.Get<User>(HttpContext.Session, "cua");
-    if(cua ==null) {
-        return;
-    }
+    User cua =  CookieUtils.Get(HttpContext.User.Claims.ToList());
 }
 
 <div class="container-fluid pt-4 pb-4 bg-white border-inset vh-60">
@@ -21,7 +20,7 @@
                 </tr>
                 <tr>
                     <td><label>创建于：@cua.CreatedOn.Value.ToString("yyyy-MM-dd HH:mm:ss")</label></td>
-                </tr>          
+                </tr>
                 <tr>
                     <td class="border-0">
                         <form method="post">
@@ -31,6 +30,9 @@
                 </tr>
             </table>
         </div>
+        @*@foreach (var claim in User.Claims) {
+            <tr><td>@claim.Type - @claim - @claim.Issuer</td><td>@claim.Value</td></tr>
+        }*@
     </div>
 </div>
 <div class="waveWrapper waveAnimation border-bottom border-ccc border-top-fff" style="margin-bottom:23px;margin-top:26px;">

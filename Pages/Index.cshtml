@@ -1,57 +1,72 @@
 ﻿@page
-@model IndexModel
+@model RubyMine.Pages.IndexModel
 @using RubyMine.Models;
 @{
     Layout = "~/Pages/Shared/_NavicatLayout.cshtml";
     ViewData["Title"] = "Home page";
-    User cua = SessionUtils.Get<User>(HttpContext.Session, "cua");
-    bool aleradyLogin = cua != null;
 }
-    <form method="post" style="padding-left:39%;padding-top:13%;">
-        <div class="fw-bold shadow-sm bg-light p-4 fs-9 align-middle" style="max-width: 25%; min-width: 500px;">
-            <div class="row pb-3">
-                <div class="col ps-3">
-                    <h4 class="text-269">请先登录</h4>
-                </div>
+<form method="post" style="padding-left:39%;padding-top:13%;">
+    <div class="fw-bold shadow-sm bg-light p-4 fs-9 align-middle" style="max-width: 25%; min-width: 500px;">
+        <div class="row pb-3">
+            <div class="col ps-3">
+                <h4 class="text-269">请先登录a</h4>
             </div>
-            <div class="row">
-                <div class="col ps-4 pr-4">
-                    <label for="basic-url" class="form-label">输入帐号</label>
-                    <div class="input-group mb-3">
-                        <span class="input-group-text border-end-0 m-0 p-1 rounded-0" id="basic-addon3">
+        </div>
+        <div class="row">
+            <div class="col ps-4 pr-4">
+                <label for="basic-url" class="form-label">输入帐号</label>
+                <div class="input-group mb-3">
+                    <span class="input-group-text border-end-0 m-0 p-2 rounded-0" id="basic-addon3">
                         @*<i class="bi bi-person-circle"></i>*@
-                            <img src="~/images/xp/user_black_female.png" />
-                        </span>
-                        <input type="text" class="form-control m-0 p-0 ps-1 text-666 fs-9 rounded-0" asp-for="Login" autocomplete="off" placeholder="请输入登录帐号">
-                    </div>
-                </div>
-            </div>
-            <div class="row mt-2">
-                <div class="col ps-4 pr-4">
-                    <label for="basic-url" class="form-label">密码</label>
-                    <div class="input-group mb-3">
-                        <span class="input-group-text border-end-0 m-0 p-1 rounded-0" id="basic-addon3">
-                        @*<i class="bi bi-gender-ambiguous"></i>*@
-                            <img src="~/images/xp/wait.png" />
-                        </span>
-                        <input type="password" class="form-control m-0 p-0 ps-1 text-666 fs-9 rounded-0" asp-for="Password" autocomplete="off" placeholder="请输入密码" value="aa123456">
-                    </div>
-                </div>
-            </div>
-            <div class="row mt-0 fs-9" style="display:none @TempData.Peek("ShowLogin");">
-                <div class="col ps-4 pr-4">
-                    <div class="alert mt-0 pt-2 pb-2 mb-2 alert-danger" role="alert">
-                        @TempData.Peek("ShowMessage")
-                    </div>
-                </div>
-            </div>
-            <div class="row mt-3 mb-3">
-                <div class="col ps-4 pr-4">
-                    <button type="submit" class="btn pt-2 pb-2 w-100 btn-light border-1 border-ccc bg-success shadow text-light fs-9 rounded-0">登录</button>
+                        <img src="~/images/xp/user_black_female.png" />
+                    </span>
+                    <input type="text" class="form-control m-0 p-0 ps-2 text-666 fs-9 rounded-0" asp-for="Login" autocomplete="off" placeholder="请输入登录帐号">
                 </div>
             </div>
         </div>
-    </form>
+        <div class="row mt-2">
+            <div class="col ps-4 pr-4">
+                <label for="basic-url" class="form-label">密码</label>
+                <div class="input-group mb-3">
+                    <span class="input-group-text border-end-0 m-0 p-2 rounded-0" id="basic-addon3">
+                        @*<i class="bi bi-gender-ambiguous"></i>*@
+                        <img src="~/images/xp/wait.png" />
+                    </span>
+                    <input type="password" class="form-control m-0 p-0 ps-2 text-666 fs-9 rounded-0" asp-for="Password" autocomplete="off" placeholder="请输入密码" value="">
+                </div>
+            </div>
+        </div>
+        @{
+            var loginMessage = TempData["LoginMessage"];
+            if (loginMessage != null) { 
+                <div class="row mt-0 fs-9" style="display:;">
+                    <div class="col ps-4 pr-4">
+                        <div class="alert mt-0 pt-2 pb-2 mb-2 alert-danger" role="alert">
+                            @loginMessage
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+        <div class="row mt-3 mb-3">
+            <div class="col ps-4 pr-4">
+                <button type="submit" class="btn pt-2 pb-2 w-100 btn-light border-1 border-ccc bg-success shadow text-light fs-9 rounded-0">登录</button>
+            </div>
+        </div>
+        <div class="row mb-2">
+            <div class="col ps-4 pr-4">
+                <div class="input-group mb-3">
+                    <select class="form-select fs-9" id="AutoLogin" name="AutoLogin">
+                        <option value="3" selected>3天内免登录</option>
+                        <option value="15">两周</option>
+                        <option value="30">一月</option>
+                        <option value="365">一年</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
 }
 <div class="waveWrapper waveAnimation">
     <div class="waveWrapperInner bgTop">
@@ -64,13 +79,3 @@
         <div class="wave waveBottom" style="background-image: url('/images/wave-png/wave-bot.png')"></div>
     </div>
 </div>
-<script>
-    $(document).ready(function () {
-        if ($('#Login').val() == "") {
-            $('#Login').focus();
-        } else {
-            $('#Password').focus();
-        }
-        @Html.Raw(TempData.Peek("jsScript"))
-    });
-</script>

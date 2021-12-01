@@ -30,7 +30,7 @@
     height: 100%;
     bottom: -1px;
     z-index: -999;
-    background-image: linear-gradient(to top, #af91a0 4%,#e3efe9 96%);
+    background-image: linear-gradient(to top, #91af96 4%,#e3efe9 96%);
 }
 
 .bgTop {

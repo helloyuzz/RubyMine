@@ -9,5 +9,6 @@ namespace RubyMine.Customs.Models {
         public string Name { get; set; }
         public int Parent_id { get; set; }
         public string Action { get; set; }
+        public int User_id { get; set; }
     }
 }

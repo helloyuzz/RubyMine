@@ -5,7 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 
 namespace RubyMine.DIP {
-    public interface ISysSetting {
+    public interface IGlobalSetting {
         Setting GetPerPageOptions();
         List<TrackerMapping> TrackerMapping();
         List<CustomFieldsMapping> CustomFieldsMappings();

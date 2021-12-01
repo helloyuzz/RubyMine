@@ -13,9 +13,9 @@ using RubyMine.Models;
 namespace RubyMine.Pages.Requirements {
     public class IndexModel : PageModel {
         private readonly RubyMine.DbContexts.RubyRemineDbContext _context;
-        private readonly RubyMine.DIP.ISysSetting _config;
+        private readonly RubyMine.DIP.IGlobalSetting _config;
 
-        public IndexModel(RubyMine.DbContexts.RubyRemineDbContext context, ISysSetting config) {
+        public IndexModel(RubyMine.DbContexts.RubyRemineDbContext context, IGlobalSetting config) {
             _context = context;
             _config = config;
         }

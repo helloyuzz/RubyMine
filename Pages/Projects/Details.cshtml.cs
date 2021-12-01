@@ -11,9 +11,9 @@ using System.Threading.Tasks;
 namespace RubyMine.Pages.Projects {
     public class DetailsModel : PageModel {
         private readonly RubyMine.DbContexts.RubyRemineDbContext _context;
-        private readonly RubyMine.DIP.ISysSetting _config;
+        private readonly RubyMine.DIP.IGlobalSetting _config;
 
-        public DetailsModel(RubyMine.DbContexts.RubyRemineDbContext context, ISysSetting config) {
+        public DetailsModel(RubyMine.DbContexts.RubyRemineDbContext context, IGlobalSetting config) {
             _context = context;
             _config = config;
         }

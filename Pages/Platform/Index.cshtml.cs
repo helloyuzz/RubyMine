@@ -1,62 +1,55 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Abp.Linq.Expressions;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using RubyMine.Customs.Models;
+using RubyMine.DbContexts;
 using RubyMine.Models;
 
 namespace RubyMine.Pages.Platform {
+    [Authorize]
     public class IndexModel : PageModel {
-        private readonly RubyMine.DbContexts.RubyRemineDbContext _context;
+        private readonly RubyRemineDbContext _context;
+        private readonly IConfiguration _config;
 
-        public IndexModel(RubyMine.DbContexts.RubyRemineDbContext context) {
+        public IndexModel(RubyMine.DbContexts.RubyRemineDbContext context,IConfiguration _configuration) {
             _context = context;
+            _config = _configuration;
         }
         public IList<DisplayIssue> DisplayIssues { get; set; }
         public IList<RubyMine.Models.Module> Modules { get; set; }
         public Module CurrentModule { get; set; }
         public IList<CustomValue> CustomValues { get; set; }
         public int Module_id { get; set; }
-        public IList<int> Chanpins { get; set; }
+        public string Admin_Role_id { get; set; }
+        public string Prev_Url { get; set; }
+        public string Download_Url { get; set; }
+
         public async Task OnGet() {
-            // 可编辑
-            Chanpins = new List<int>();
-            Chanpins.Add(8);
-            Chanpins.Add(135);
+            // 可编辑权限
+            Admin_Role_id = _config["AppSettings:Admin_Role_id"];        
+
+            Prev_Url = _config["AppSettings:Attachment_PreviewUrl"];
+            Download_Url = _config["AppSettings:Attachment_DownloadUrl"];
 
             int current_module_id = RMUtils.QueryInt(Request, "id");
             string action = Request.Query["action"];
             string queryUrl = Request.QueryString.Value;
-            bool isRefresh = false; // 判断是否刷新操作
             Module_id = RMUtils.QueryInt(Request, "module_id");
+            
+            User cua = CookieUtils.Get(HttpContext.User.Claims.ToList());
 
-            string url = SessionUtils.Get<string>(HttpContext.Session, "QueryUrl");
-            User cua = SessionUtils.Get<User>(HttpContext.Session, "cua");
-            if (cua == null) {
-                RedirectToPage("/");
-                return;
-            }
-            if (queryUrl.Equals(url)) {
-                isRefresh = true;
-            } else {
-                SessionUtils.Set<string>(HttpContext.Session, "QueryUrl", queryUrl);
-            }
-            //ActiveNodes nodes = SessionUtils.Get<ActiveNodes>(HttpContext.Session, "ActiveNodes");
             ActiveNodes nodes = GlobalCache.ActiveNodes.FirstOrDefault(t => t.Key == cua.Id).Value;
             if (nodes == null) {
                 nodes = new ActiveNodes();
                 GlobalCache.ActiveNodes.Add(cua.Id, nodes);
             }
-            if (Module_id > 0 && isRefresh == false) {
-                if (nodes.Contains(Module_id)) {
-                    nodes.Remove(Module_id);
-                } else {
-                    nodes.Add(Module_id);
-                }
-            }
-            //SessionUtils.Set(HttpContext.Session, "ActiveNodes", nodes);
 
             switch (action) {
                 case "up":
@@ -99,6 +92,7 @@ namespace RubyMine.Pages.Platform {
                 CurrentModule = _context.Modules.FirstOrDefault(t => t.Id == Module_id);
 
                 predicateBuilder = predicateBuilder.And(x => x.Value.Equals(Module_id.ToString()));
+                predicateBuilder = predicateBuilder.And(x => x.CustomFieldId == 54);
                 CustomValues = await _context.CustomValues.Where(predicateBuilder).OrderBy(t => t.Position).ToListAsync();
 
                 var quireFieldIds = CustomValues.Select(t => t.CustomizedId).ToList();
@@ -138,7 +132,7 @@ namespace RubyMine.Pages.Platform {
 
                 foreach (Issue issue in db_issues) {
                     DisplayIssue displayIssue = new DisplayIssue(issue);
-                    displayIssue.Position = CustomValues.FirstOrDefault(t => t.CustomizedId == issue.Id).Position;
+                    displayIssue.Position = CustomValues.FirstOrDefault(t => t.CustomizedId == issue.Id).Position.Value;
                     DisplayIssues.Add(displayIssue);
                 }
             }

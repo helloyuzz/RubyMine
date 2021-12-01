@@ -2,9 +2,11 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using RubyMine.Customs.Models;
+using RubyMine.DbContexts;
 using RubyMine.Jwt;
 using RubyMine.Models;
 using System;
@@ -18,22 +20,27 @@ namespace RubyMine.Controllers {
     [ApiController]
     public class IssueController : ControllerBase {
         private readonly ILogger<IssueController> _logger;
-        private readonly RubyMine.DbContexts.RubyRemineDbContext _context;
-        public IssueController(ILogger<IssueController> logger, RubyMine.DbContexts.RubyRemineDbContext context) {
+        private readonly RubyRemineDbContext _context;
+        private readonly IConfiguration _config;
+        public IssueController(ILogger<IssueController> logger, RubyMine.DbContexts.RubyRemineDbContext context, IConfiguration _configuration) {
             _context = context;
             _logger = logger;
+            _config = _configuration;
         }
         // GET: api/<JwtController>
-        [HttpGet]
-        public IEnumerable<string> Get() {
-            return new string[] { "value1", "value2" };
-        }
+        //[HttpGet]
+        //public IEnumerable<string> Get() {
+        //    return new string[] { "value1", "value2" };
+        //}
 
         // GET api/<IssueController>/5
         [HttpGet("{id}")]
         public ActionResult<SoapDescription> Get(int id) {
             SoapDescription desc = new SoapDescription("Invalid request.");
             if (id > 0) {
+                string prev_url = _config["AppSettings:Attachment_PreviewUrl"];
+                string download_url = _config["AppSettings:Attachment_DownloadUrl"];
+
                 desc.Issue_id = id;
                 desc.Description = _context.Issues.FirstOrDefault(t => t.Id == id).Description;     // 获取Issue的Description
                 desc.Journals = _context.Journals.Where(t => t.JournalizedId == id).ToList();       // 获取Issue的变更记录
@@ -64,7 +71,14 @@ namespace RubyMine.Controllers {
                     } else {
                         var temp_content = desc.JournalDetails.FirstOrDefault(t => t.JournalId == item.Id);
                         if (temp_content != null) {
-                            desc.history_tr += "<span class=\"fw-bold\">&nbsp" + RMUtils.ParseJournalType(temp_content.Property, temp_content.PropKey) + "</span> 已更新。<p class=\"m-0 p-0 ps-4\"><span class=\"text-666 text-decoration-line-through\">" + temp_content.OldValue + "</span> 更改为：<br>" + temp_content.Value + "</p>";
+                            desc.history_tr += "<span class=\"fw-bold\">&nbsp" + RMUtils.ParseJournalType(temp_content.Property, temp_content.PropKey) + "</span> 已更新。";
+                            desc.history_tr += "<p class=\"m-0 p-0 ps-4\"><span class=\"text-666 text-decoration-line-through\">" + temp_content.OldValue + "</span> 更改为：<br>";
+                            if (temp_content.Property.Equals("attachment")) {
+                                desc.history_tr += "<a href=\"" + prev_url + temp_content.PropKey + "\" target=\"_blank\">" + temp_content.Value + "</a>&nbsp;<a href=\"" + download_url + temp_content.PropKey + "/" + temp_content.Value + "\" title=\"下载\" target=\"_blank\"><img src=\"/images/file_download.png\"/></a>";
+                            } else {
+                                desc.history_tr += temp_content.Value;
+                            }
+                            desc.history_tr += "</p>";
                         }
                     }
                     desc.history_tr += "<hr class=\"m-1 p-0\">";
@@ -95,7 +109,13 @@ namespace RubyMine.Controllers {
                         desc.properties_tr += " <td class=\"td td-row-index\">" + rowCount + "</td>";
                         desc.properties_tr += " <td class=\"td td-author text-269\">" + edit_user.FirstOrDefault(t => t.Id == journal.UserId).Firstname + "</td>";
                         desc.properties_tr += " <td class=\"td td-create-on\">" + journal.CreatedOn.ToString("yyyy-MM-dd HH:mm:ss") + "</td>";
-                        desc.properties_tr += " <td class=\"td\"><span class=\"fw-bold\">" + RMUtils.ParseJournalType(item.Property, item.PropKey) + "</span> 已更新。<p class=\"m-0 p-0\"><span class=\"text-666 text-decoration-line-through\">" + item.OldValue + "</span> 更改为：<br>" + item.Value + "</p></td>";                        
+                        desc.properties_tr += " <td class=\"td\"><span class=\"fw-bold\">" + RMUtils.ParseJournalType(item.Property, item.PropKey) + "</span> 已更新。<p class=\"m-0 p-0\"><span class=\"text-666 text-decoration-line-through\">" + item.OldValue + "</span> 更改为：<br>";
+                        if (item.Property.Equals("attachment")) {
+                            desc.properties_tr += "<a href=\"" + prev_url + item.PropKey + "\" target=\"_blank\">" + item.Value + "</a>&nbsp;<a href=\"" + download_url + item.PropKey + "/" + item.Value + "\" title=\"下载\" target=\"_blank\"><img src=\"/images/file_download.png\"/></a>";
+                        } else {
+                            desc.properties_tr += item.Value;
+                        }
+                        desc.properties_tr += "</p></td>";                        
                         desc.properties_tr += "</tr>";
 
                         rowCount--;
@@ -113,7 +133,7 @@ namespace RubyMine.Controllers {
                         desc.attachment_tr += " <td class=\"td td-row-index\">" + rowCount + "</td>";
                         desc.attachment_tr += " <td class=\"td td-author text-269\">" + edit_user.FirstOrDefault(t => t.Id == journal.UserId).Firstname + "</td>";
                         desc.attachment_tr += " <td class=\"td td-create-on\">" + journal.CreatedOn.ToString("yyyy-MM-dd HH:mm:ss") + "</td>";
-                        desc.attachment_tr += " <td class=\"td\">" + item.Filename + "</td>";
+                        desc.attachment_tr += " <td class=\"td\"><a href=\"" + prev_url + item.Id + "\" target=\"_blank\">" + item.Filename + "</a>&nbsp;<a href=\"" + download_url + item.Id + "/" + item.Filename + "\" title=\"下载\" target=\"_blank\"><img src=\"/images/file_download.png\"/></a></td>";
                         desc.attachment_tr += "</tr>";
                         rowCount--;
                     }
@@ -144,7 +164,7 @@ namespace RubyMine.Controllers {
                             // 调整排序
                             if (value.prev_issue_id > 0) {
                                 prevIssue = _context.Issues.FirstOrDefault(t => t.Id == value.prev_issue_id);
-                                before_position = _context.CustomValues.FirstOrDefault(t => t.CustomFieldId == 54 && t.Value.Equals(value.module_id.ToString()) && t.CustomizedId == prevIssue.Id).Position;
+                                before_position = _context.CustomValues.FirstOrDefault(t => t.CustomFieldId == 54 && t.Value.Equals(value.module_id.ToString()) && t.CustomizedId == prevIssue.Id).Position.Value;
 
                                 // 更新排序position+1
                                 _context.CustomValues.Where(t => t.CustomFieldId == 54 && t.Value.Equals(value.module_id.ToString()) && t.Position > before_position).Update(t => new CustomValue { Position = t.Position + 1 });
@@ -171,12 +191,7 @@ namespace RubyMine.Controllers {
                             new_custom_value.Position = before_position + 1;
                             _context.CustomValues.Add(new_custom_value);
                             _context.SaveChanges();
-
-                            //if (value.prev_issue_id >0) { // 第一次新增，无需获取，客户端直接window.location.refresh();
-                            //    prevIssue = _context.Issues.Where(t => t.Id == value.Issue.Id).Include(t => t.Tracker).Include(t => t.Project).Include(t => t.Status).Include(t => t.Author).FirstOrDefault();
-                            //    prevIssue.Description = prevIssue.UpdatedOn.Value.ToString("yyyy-MM-dd HH:mm:ss");
-                            //    result.Value = JsonConvert.SerializeObject(value);
-                            //}
+                            
                             result.Result = "OK";
                         } else {
                             result.Result = "module id is null.";
@@ -184,9 +199,27 @@ namespace RubyMine.Controllers {
                         break;
                     case "edit_issue":   // 修改
                         var issue = _context.Issues.FirstOrDefault(t => t.Id == value.Issue.Id);
+                        string old_subject = issue.Subject;
                         issue.Subject = value.Issue.Subject;
                         issue.UpdatedOn = DateTime.Now;
+
+                        Journal edit_journal = new Journal();
+                        edit_journal.CreatedOn = DateTime.Now;
+                        edit_journal.JournalizedId = value.Issue.Id;
+                        edit_journal.JournalizedType = "Issue";
+                        edit_journal.UserId = value.Issue.AuthorId;
+                        _context.Journals.Add(edit_journal);
                         _context.SaveChanges();
+
+                        JournalDetail issue_journal_detail = new JournalDetail();
+                        issue_journal_detail.JournalId = edit_journal.Id;
+                        issue_journal_detail.Property = "attr";
+                        issue_journal_detail.PropKey = "subject";
+                        issue_journal_detail.OldValue = old_subject;
+                        issue_journal_detail.Value = value.Issue.Subject;
+                        _context.JournalDetails.Add(issue_journal_detail);
+                        _context.SaveChanges();
+
                         result.Result = "OK";
                         result.Value = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
                         break;
@@ -216,6 +249,43 @@ namespace RubyMine.Controllers {
                             result.Result = "Ingore";
                         }
                         break;
+                    case "update_desc":
+                        Issue edit_issue = _context.Issues.FirstOrDefault(t => t.Id == value.Issue.Id);                        
+                        string old_value = edit_issue.Description;
+                        edit_issue.Description = value.Issue.Subject;   // subject==>description
+
+                        Journal journal = new Journal();
+                        journal.CreatedOn = DateTime.Now;
+                        journal.JournalizedType = "Issue";
+                        journal.JournalizedId = value.Issue.Id;
+                        journal.UserId = value.Issue.AuthorId;
+
+                        _context.Journals.Add(journal);
+                        _context.SaveChanges();
+
+                        JournalDetail journalDetail = new JournalDetail();
+                        journalDetail.JournalId = journal.Id;
+                        journalDetail.Property = "attr";
+                        journalDetail.PropKey = "description";
+                        journalDetail.OldValue = old_value;
+                        journalDetail.Value = edit_issue.Description;
+                        _context.JournalDetails.Add(journalDetail);
+                        _context.SaveChanges();
+
+                        result.Result = "OK";
+                        break;
+                    case "add_notes":
+                        Journal notes = new Journal();
+                        notes.CreatedOn = DateTime.Now;
+                        notes.JournalizedType = "Issue";
+                        notes.JournalizedId = value.Issue.Id;
+                        notes.UserId = value.Issue.AuthorId;
+                        notes.Notes = value.Issue.Subject;  // subject ==> notes
+                        _context.Journals.Add(notes);
+                        _context.SaveChanges();
+
+                        result.Result = "OK";
+                        break;
                 }
             } else {
                 result.Result = "SoapIssue is null!";
@@ -224,14 +294,14 @@ namespace RubyMine.Controllers {
         }
 
         // PUT api/<IssueController>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value) {
-        }
+        //[HttpPut("{id}")]
+        //public void Put(int id, [FromBody] string value) {
+        //}
 
-        // DELETE api/<IssueController>/5
-        [HttpDelete("{id}")]
-        public void Delete(int id) {
-        }
+        //// DELETE api/<IssueController>/5
+        //[HttpDelete("{id}")]
+        //public void Delete(int id) {
+        //}
 
         //[HttpPost("authentication")]
         //public ActionResult<string> AddIssue(Issue issue) {
