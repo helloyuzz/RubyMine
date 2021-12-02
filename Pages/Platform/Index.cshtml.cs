@@ -91,8 +91,9 @@ namespace RubyMine.Pages.Platform {
             if (Module_id > 0) {    // 组合查询条件
                 CurrentModule = _context.Modules.FirstOrDefault(t => t.Id == Module_id);
 
-                predicateBuilder = predicateBuilder.And(x => x.Value.Equals(Module_id.ToString()));
-                predicateBuilder = predicateBuilder.And(x => x.CustomFieldId == 54);
+                predicateBuilder.And(x => x.Value.Equals(Module_id.ToString()));
+                predicateBuilder.And(x => x.CustomFieldId == 54);
+                predicateBuilder.And(x => x.CustomizedType.Equals("Issue"));
                 CustomValues = await _context.CustomValues.Where(predicateBuilder).OrderBy(t => t.Position).ToListAsync();
 
                 var quireFieldIds = CustomValues.Select(t => t.CustomizedId).ToList();

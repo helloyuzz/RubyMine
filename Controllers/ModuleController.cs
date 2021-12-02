@@ -92,7 +92,7 @@ namespace RubyMine.Controllers {
                         break;
                     case "default_issue_index": // 重置下级issue排序
                         int issue_index = 1;
-                        var module_issues = _context.CustomValues.Where(t => t.CustomFieldId == 54 && t.Value.Equals(module.Id.ToString()));
+                        var module_issues = _context.CustomValues.Where(t => t.CustomFieldId == 54 && t.CustomizedType.Equals("Issue") && t.Value.Equals(module.Id.ToString()));
                         foreach (CustomValue customValue in module_issues) {
                             customValue.Position = issue_index++;
                         }

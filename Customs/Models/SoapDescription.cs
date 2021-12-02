@@ -7,11 +7,11 @@ using System.Threading.Tasks;
 namespace RubyMine.Customs.Models {
     public class SoapDescription {        
         public SoapDescription(string value) {
-            Result = value;
+            result = value;
         }
-        public string Result { get; set; }
-        public int Issue_id { get; set; }
-        public string Description { get; set; }
+        public string result { get; set; }
+        public int issue_id { get; set; }
+        public string description { get; set; }
         public List<Journal> Journals { get; set; }
         public List<JournalDetail> JournalDetails { get; set; }
         public string notes_tr { get; set; }
