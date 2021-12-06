@@ -20,6 +20,30 @@
     <script src="~/js/site.js" asp-append-version="true"></script>
 
     <link rel="stylesheet" href="~/css/site.css" />
+    <style>
+        /* width */
+        ::-webkit-scrollbar {
+            width: 6px;
+            background: #f0f0f0;
+        }
+
+        /* Track */
+        ::-webkit-scrollbar-track {
+            box-shadow: inset 0 0 5px grey;
+            /*border-radius: 3px;*/
+        }
+
+        /* Handle */
+        ::-webkit-scrollbar-thumb {
+            background: green;
+            border-radius: 3px;
+        }
+
+        /* Handle on hover */
+        ::-webkit-scrollbar-thumb:hover {
+            background: blue;
+        }
+    </style>
 </head>
 <body class="fs-9 bg-f0f0f0 overflow-scroll" style="overflow-x:hidden !important;">
     @if(User.Identity.IsAuthenticated){

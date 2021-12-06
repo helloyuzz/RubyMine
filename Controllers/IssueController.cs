@@ -55,7 +55,7 @@ namespace RubyMine.Controllers {
                 }
                 var edit_user = _context.Users.Where(t => user_ids.Contains(t.Id)).Select(t => new User { Id = t.Id, Firstname = t.Firstname }).ToList();   // 用户名称
                 if (attachment_ids != null) {                                                                                                               // 获取附件
-                    attachment = _context.Attachments.Where(t => t.ContainerType.Equals("Issue") && attachment_ids.Contains(t.Id)).ToList();                // 获取Issue的Attachment
+                    attachment = _context.Attachments.Where(t => t.ContainerType.Equals("Issue") && t.ContainerId == desc.issue_id).ToList();                // 获取Issue的Attachment
                 }
 
                 // 历史记录
@@ -125,14 +125,15 @@ namespace RubyMine.Controllers {
                 // 附件
                 if (attachment != null) {
                     rowCount = attachment.Count();
+                    desc.attachment_length = attachment.Count();
                     foreach (var item in attachment.OrderByDescending(t=>t.Id)) {
-                        var journal_id = desc.JournalDetails.FirstOrDefault(t => t.Property.Equals("attachment") && t.PropKey.Equals(item.Id.ToString())).JournalId;
-                        var journal = desc.Journals.FirstOrDefault(t => t.Id == journal_id);
+                        //var journal_id = desc.JournalDetails.FirstOrDefault(t => t.Property.Equals("attachment") && t.PropKey.Equals(item.Id.ToString())).JournalId;
+                        //var journal = desc.Journals.FirstOrDefault(t => t.Id == journal_id);
 
                         desc.attachment_tr += "<tr>";
                         desc.attachment_tr += " <td class=\"td td-row-index\">" + rowCount + "</td>";
-                        desc.attachment_tr += " <td class=\"td td-author text-269\">" + edit_user.FirstOrDefault(t => t.Id == journal.UserId).Firstname + "</td>";
-                        desc.attachment_tr += " <td class=\"td td-create-on\">" + journal.CreatedOn.ToString("yyyy-MM-dd HH:mm:ss") + "</td>";
+                        desc.attachment_tr += " <td class=\"td td-author text-269\">" + edit_user.FirstOrDefault(t => t.Id == item.AuthorId).Firstname + "</td>";
+                        desc.attachment_tr += " <td class=\"td td-create-on\">" + item.CreatedOn.Value.ToString("yyyy-MM-dd HH:mm:ss") + "</td>";
                         desc.attachment_tr += " <td class=\"td\"><a href=\"" + prev_url + item.Id + "\" target=\"_blank\">" + item.Filename + "</a>&nbsp;<a href=\"" + download_url + item.Id + "/" + item.Filename + "\" title=\"下载\" target=\"_blank\"><img src=\"/images/file_download.png\"/></a></td>";
                         desc.attachment_tr += "</tr>";
                         rowCount--;
@@ -287,6 +288,23 @@ namespace RubyMine.Controllers {
                         _context.SaveChanges();
 
                         result.Result = "OK";
+                        break;
+                    case "move_to_module":
+                        if (_context.Modules.Any(t => t.Id == value.module_id) == false) {
+                            result.Result = "模块id[" + value.module_id + "]不存在。";
+                        } else {
+                            // 获取需调整的Issue
+                            CustomValue customValue = _context.CustomValues.FirstOrDefault(t => t.CustomFieldId == 54 && t.CustomizedId == value.Issue.Id );
+                            _context.CustomValues.Where(t => t.CustomFieldId == 54 && t.Value.Equals(customValue.Value) && t.Position > customValue.Position).Update(t => new CustomValue { Position = t.Position - 1 });
+
+                            // 统计目标模块下的Issue数量
+                            int issueCount = _context.CustomValues.Count(t => t.CustomFieldId == 54 && t.CustomizedType.Equals("Issue") && t.Value.Equals(value.module_id.ToString()));
+                            customValue.Position = issueCount + 1;
+                            customValue.Value = value.module_id.ToString();
+
+                            _context.SaveChanges();
+                            result.Result = "OK";
+                        }
                         break;
                 }
             } else {

@@ -18,5 +18,6 @@ namespace RubyMine.Customs.Models {
         public string history_tr { get; set; }
         public string properties_tr { get; set; }
         public string attachment_tr { get; set; }
+        public int attachment_length { get; set; }
     }
 }

@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using RubyMine.Customs.Models;
+using RubyMine.DbContexts;
 using RubyMine.Jwt;
 using RubyMine.Models;
 using System;
@@ -17,9 +18,9 @@ namespace RubyMine.Controllers {
     [ApiController]
     public class ModuleController : ControllerBase {
         private readonly ILogger<ModuleController> _logger;
-        private readonly RubyMine.DbContexts.RubyRemineDbContext _context;
+        private readonly RubyRemineDbContext _context;
 
-        public ModuleController(ILogger<ModuleController> logger, RubyMine.DbContexts.RubyRemineDbContext context) {
+        public ModuleController(ILogger<ModuleController> logger, RubyRemineDbContext context) {
             _context = context;
             _logger = logger;
         }

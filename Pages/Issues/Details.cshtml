@@ -2,20 +2,13 @@
 @model RubyMine.Pages.Issues.DetailsModel
 
 @{
-    Layout = null;
+    ViewData["Title"]= Model.Issue.Id + "-" + Model.Issue.Subject;
+    Layout = "~/Pages/Shared/_NavicatLayout.cshtml";
 }
 
-<!DOCTYPE html>
 
-<html>
-<head>
-    <meta name="viewport" content="width=device-width" />
-    <title>Details</title>
-</head>
-<body>
-
-<div>
-    <h4>Issue</h4>
+<div class="border-inset bg-white p-3">
+    <h4>@Model.Issue.Id - @Model.Issue.Subject</h4>
     <hr />
     <dl class="row">
         <dt class="col-sm-2">
@@ -158,9 +151,3 @@
         </dd>
     </dl>
 </div>
-<div>
-    <a asp-page="./Edit" asp-route-id="@Model.Issue.Id">Edit</a> |
-    <a asp-page="./Index">Back to List</a>
-</div>
-</body>
-</html>

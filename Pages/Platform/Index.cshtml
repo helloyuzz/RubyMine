@@ -144,8 +144,11 @@
     textarea {
         border: 2px inset !important;
     }
+    .w-e-text-container {
+        height:100% !important;
+    }
     .w-e-text-container p {
-        font-size:small !important;
+        font-size: small !important;
     }
     .w-e-text-container .placeholder {
         display:none !important;
@@ -168,8 +171,14 @@
         }
 
         var itemCount = Model.Modules.Count(t => t.PId == parent_id);
+        int showIndex = 1;
+        string showIndexTip = "";
         if (itemCount > 0) {
             foreach (Module item in Model.Modules.Where(t => t.PId == parent_id).OrderBy(t => t.Index)) {
+                showIndexTip = showIndex++.ToString() + ".";
+                if (parent_id == null) {
+                    showIndexTip = "";
+                }
                 int subNode = Model.Modules.Count(t => t.PId == item.Id);
                 var active = "";
 
@@ -189,8 +198,9 @@
                 if (subNode > 0) {
                     htmlTree += "<li id=\"html_node_" + item.Id + "\" class=\"li-node parent-module node-" + item.Id + "\">";
                     htmlTree += "   <span class=\"span-node module-parent-node caret fs-9 d-inline-block w-100 text-269" + active + "\"" + html_attr_id + html_attr_title + ">";
-                    htmlTree += "               <img class=\"w-auto\" src=\"/images/xp/briefcase.png\">&nbsp;<span id=\"lbl_module_" + item.Id + "\">" + item.Name + "</span>";
+                    htmlTree += "               <img class=\"w-auto\" src=\"/images/xp/briefcase.png\">&nbsp;<span>"+ showIndexTip + "</span><span id=\"lbl_module_" + item.Id + "\">" + item.Name + "</span>";
                     htmlTree += "   </span>";
+                    //show_pid = show_pid + "-" + showIndex.ToString();
 
                     string tempTree = BuildTree(item.Id, user_id, showEdit);
                     if (string.IsNullOrEmpty(tempTree) == false) {
@@ -201,10 +211,12 @@
                     htmlTree += "<li id=\"html_node_" + item.Id + "\" class=\"li-node\">";
                     htmlTree += "   <span class=\"span-node fs-9 d-inline-block w-100" + active + "\" style=\"padding-left:19px;\"" + html_attr_id + html_attr_title + ">";
                     htmlTree += "       <a class=\"text-decoration-none text-dark d-inline-block w-100\" href=\"?action=load&module_id=" + item.Id + "\" title='查看'>";
-                    htmlTree += "           <img src=\"/images/xp/page_white_text.png\">&nbsp;<span id=\"lbl_module_" + item.Id + "\">" + item.Name + "</span>";
+                    htmlTree += "           <img src=\"/images/xp/page_white_text.png\">&nbsp;<span>" + showIndexTip + "</span><span id=\"lbl_module_" + item.Id + "\">" + item.Name + "</span>";
                     htmlTree += "       </a>";
                     htmlTree += "   </span>";
                     htmlTree += "</li>";
+
+                    //show_pid = show_pid + "-" + showIndex.ToString();
                 }
             }
         }
@@ -214,12 +226,12 @@
 }
 <div class="container-fluid mb-0">
     <div class="row">
-        <div class="col-2 p-0 mr-1 pb-2 border-inset bg-white mh-100">
+        <div class="col-3 p-0 mr-1 pb-2 border-inset bg-white mh-100">
             <div class="row m-1 p-1 pt-0 ps-0">
                 @Html.Raw(BuildTree(null, int.Parse(user_id), showEdit))
             </div>
         </div>
-        <div class="col-6 p-1 border-inset bg-white">
+        <div class="col-5 p-1 border-inset bg-white">
             <table id="mainTable" class="table table-hover fs-7 jumpNav border-top-0">
                 <thead>
                     <tr style="background:#eee;">
@@ -256,13 +268,13 @@
 
                     <tr id="tr_@item.Issue.Id" @Html.Raw(html_attr) class="clickable-row tr-node">
                         <td htmlValue="issue" class="fs-7 align-top text-center" style="padding-top:1px;">
-                            <a href="#Issue_id" target="_blank" class="text-666">@Html.DisplayFor(modelItem => item.Issue.Id)</a>
+                            <a asp-page="/Issues/Details" asp-route-id="@item.Issue.Id" target="_blank" class="text-666">@Html.DisplayFor(modelItem => item.Issue.Id)</a>
                         </td>
                         <td htmlValue="issue" class="text-center">
                             @Html.DisplayFor(modelItem => item.Issue.Tracker.Name)
                         </td>
                         <td id="td_@item.Issue.Id" class="link-td" htmlValue="issue" attr-id="@item.Issue.Id" onclick="load_issue_description(@item.Issue.Id)">
-                            <a id="linkLabel_@item.Issue.Id" href="#op" class="link-title text-666 fs-7">
+                            <a id="linkLabel_@item.Issue.Id" asp-page="/Issues/Details" asp-route-id="@item.Issue.Id" target="_blank" class="link-title text-666 fs-7">
                                 <span id="showLabel_@item.Issue.Id" attr-id="@item.Issue.Id">@Html.DisplayFor(modelItem => item.Issue.Subject)</span>
                                 @if (showEdit) {
                                 <img src="~/images/xp/edit.png" id="linkEdit_@item.Issue.Id" attr-id="@item.Issue.Id" class="link-edit bi bi-pencil float-end" style="cursor:pointer" />
@@ -329,28 +341,33 @@
         <div class="col p-1 border-inset bg-white mr-1">
             <ul class="nav nav-tabs m-0 p-0 border-0" id="myTab">
                 <li class="nav-item m-0 p-0 border-0">
-                    <a href="#issue_history" class="nav-link active text-decoration-none rounded-0" data-bs-toggle="tab">描述及历史记录</a>
+                    <a href="#issue_desc" class="nav-link active text-decoration-none rounded-0" data-bs-toggle="tab">描述</a>
                 </li>
                 <li class="nav-item m-0 p-0 border-0" style="margin-left:3px !important">
-                    <a href="#issue_notes" class="nav-link text-decoration-none rounded-0" data-bs-toggle="tab">说明</a>
+                    <a href="#issue_notes" class="nav-link text-decoration-none rounded-0" data-bs-toggle="tab">追加说明</a>
+                </li>
+                <li class="nav-item m-0 p-0 border-0" style="margin-left:3px !important">
+                    <a href="#issue_history" class="nav-link text-decoration-none rounded-0" data-bs-toggle="tab">历史记录</a>
                 </li>
                 <li class="nav-item m-0 p-0 border-0" style="margin-left:3px !important">
                     <a href="#issue_properties" class="nav-link text-decoration-none rounded-0" data-bs-toggle="tab">更改属性</a>
                 </li>
                 <li class="nav-item m-0 p-0 border-0" style="margin-left:3px !important">
-                    <a href="#issue_attachment" class="nav-link text-decoration-none rounded-0" data-bs-toggle="tab">附件</a>
+                    <a href="#issue_attachment" id="txt_issue_attachement" class="nav-link text-decoration-none rounded-0" data-bs-toggle="tab">附件</a>
                 </li>
             </ul>
             <div class="tab-content">
-                <div class="tab-pane fade show active" id="issue_history">
+                <div class="tab-pane fade show active" id="issue_desc">
                     <div id="mk_desc_editor" class="row pb-1 m-0">
                     </div>
                     @if (showEdit) {
-                    <div class="row m-0 mb-2">
-                        <button id="btn_update_issue" href="#description" attr-id="" class="btn btn-sm mt-1 btn-light border-828790 rounded-0 w-auto fs-9 float-end" onclick="update_issue_description($(this));"><i class="bi bi-exclamation-octagon"></i>&nbsp;更新描述</button>
-                    </div>
+                        <div class="row m-0 mb-2">
+                            <button id="btn_update_issue" href="#description" attr-id="" class="btn btn-sm mt-1 btn-light border-828790 rounded-0 w-auto fs-9 float-end" onclick="update_issue_description($(this));"><i class="bi bi-exclamation-octagon"></i>&nbsp;更新描述</button>
+                        </div>
                     }
-                    <p id="html_issue_history" class="m-0 p-0"></p>
+                </div>
+                <div class="tab-pane fade show" id="issue_history">
+                    <p id="html_issue_history" class="border-1 border-ccc m-0 p-1"></p>
                 </div>
 
                 <div class="tab-pane fade border-top border-ccc" id="issue_notes">
@@ -367,13 +384,13 @@
                         </tbody>
                     </table>
                     @if (showEdit) {
-                    <div class="row pb-1 m-0 mb-1">
-                        <div id="mk_notes_editor" class="row p-0 pb-1 m-0">
+                        <div class="row pb-1 m-0 mb-1">
+                            <div id="mk_notes_editor" class="row p-0 pb-1 m-0">
+                            </div>
                         </div>
-                    </div>
-                    <div class="row m-0">
-                        <button id="btn_add_notes" attr-id="" class="btn btn-sm mt-1 btn-light border-828790 rounded-0 w-auto fs-9 float-end" onclick="add_issue_notes($(this));"><i class="bi bi-plus-lg"></i>&nbsp;添加说明</button>
-                    </div>
+                        <div class="row m-0 mt-4">
+                            <button id="btn_add_notes" attr-id="" class="btn btn-sm mt-1 btn-light border-828790 rounded-0 w-auto fs-9 float-end" onclick="add_issue_notes($(this));"><i class="bi bi-plus-lg"></i>&nbsp;追加说明</button>
+                        </div>
                     }
                 </div>
 
@@ -393,6 +410,9 @@
                 </div>
 
                 <div class="tab-pane fade border-top border-ccc" id="issue_attachment">
+                    <div class="p-1">
+                        <input type="file" />
+                    </div>
                     <table class="table table-hover">
                         <thead>
                             <tr>
@@ -416,6 +436,7 @@
         <ul class="p-0 m-0">
             <li class="module-context-item dropdown-item d-cursor" html-action="add_sub_module">添加下级</li>
             <li class="module-context-item dropdown-item d-cursor" html-action="edit_module">编辑</li>
+            <li><hr class="m-0 dropdown-divider"></li>
             <li class="module-context-item dropdown-item d-cursor" html-action="view_module">查看</li>
             <li><hr class="m-0 dropdown-divider"></li>
             <li class="module-context-item dropdown-item d-cursor" html-action="move_up">上移</li>
@@ -424,8 +445,9 @@
             <li class="module-context-item dropdown-item d-cursor" html-action="up_level">上提一级</li>
             <li class="module-context-item dropdown-item d-cursor" html-action="down_level">下降一级</li>
             <li><hr class="m-0 dropdown-divider"></li>
-            <li class="module-context-item dropdown-item d-cursor" html-action="default_module_index">重排下级模块</li>
             <li class="module-context-item dropdown-item d-cursor" html-action="default_issue_index">重排下级问题</li>
+            <li><hr class="m-0 dropdown-divider"></li>
+            <li class="module-context-item dropdown-item d-cursor" html-action="default_module_index">重排下级模块</li>
             <li><hr class="m-0 dropdown-divider"></li>
             <li class="module-context-item dropdown-item disabled d-cursor" html-action="disable" title="标记删除">标记删除<span class="float-end"><i class="bi bi bi-exclamation-octagon"></i></span></li>
         </ul>
@@ -442,8 +464,7 @@
             <li><hr class="m-0 dropdown-divider"></li>
             <li class="issue-context-item dropdown-item disabled d-cursor" html-action="disable" title="标记删除">标记删除<span class="float-end"><i class="bi bi bi-exclamation-octagon"></i></span></li>
             <li><hr class="m-0 dropdown-divider"></li>
-            @*<li class="module-context-item dropdown-item d-cursor" html-action="default_index">重新排序</li>*@
-            <li class="module-context-item dropdown-item d-cursor" html-action="move_to">移动到</li>
+            <li class="issue-context-item dropdown-item d-cursor" html-action="move_to">移动到</li>
         </ul>
     </div>
     <input type="hidden" value="@Model.Module_id" id="txt_module_id" />
@@ -453,20 +474,9 @@
     <input type="hidden" value="" id="txt_issue_module_id" />
 </div>
 
-@*<div class="position-absolute top-0 start-50 translate-middle mt-lg-5 pt-xxl-3" style="z-index: 666">
-    <div id="liveToast" class="toast bg-danger mt-lg-5" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="5000">
-        <div class="toast-body text-white">
-        <i class="bi bi-exclamation-octagon"></i>&nbsp;<span id="showTipContent"></span>
-        </div>
-    </div>
-</div>*@
 <script>
     function showToast(content) {
         alert(content);
-        //$('#showTipContent').text(content);
-        //var toastLiveExample = document.getElementById('liveToast');
-        //var toast = new bootstrap.Toast(toastLiveExample);
-        //toast.show();      
     }
 </script>
 <style>
@@ -480,19 +490,28 @@
         background: white;
     }
 
-        .module-context-menu ul {
-            list-style: none;
-        }
+    .module-context-menu ul {
+        list-style: none;
+    }
 
-            .module-context-menu ul li {
-            }
+    .module-context-menu ul li {
+    }
 </style>
 <dialog id="edit_module_dialog" class="shadow" style="width:400px">
     <div class="row fs-9">
         <div class="col"><input id="edit_module_name" type="text" attr-id="" value="" class="form-control border-inset rounded-0 fs-9 w-100 p-1" autocomplete="off" /></div>
         <div class="col-4" style="padding-top:6px;">
             <a href="#Dialog" class="btn-sm border-1 bg-title text-decoration-none fs-9 rounded-0" onclick="update_module_name($('#edit_module_name'))">save</a>
-            <a href="#Dialog" class="btn-sm border-1 bg-title text-decoration-none fs-9 rounded-0" onclick="close_edit_module_dialog()">cancel</a>
+            <a href="#Dialog" class="btn-sm border-1 bg-title text-decoration-none fs-9 rounded-0" onclick="$('#edit_module_dialog')[0].close();">cancel</a>
+        </div>
+    </div>
+</dialog>
+<dialog id="move_issue_to_dialog" class="shadow" style="width:400px">
+    <div class="row fs-9">
+        <div class="col"><input id="txt_moveTo_moduleId" type="text" attr-id="" value="" class="form-control border-inset rounded-0 fs-9 w-100 p-1" placeholder="请输入模块编号" autocomplete="off" /></div>
+        <div class="col-4" style="padding-top:6px;">
+            <a href="#Dialog" class="btn-sm border-1 bg-title text-decoration-none fs-9 rounded-0" onclick="move_to_module($('#txt_moveTo_moduleId'))">save</a>
+            <a href="#Dialog" class="btn-sm border-1 bg-title text-decoration-none fs-9 rounded-0" onclick="$('#move_issue_to_dialog')[0].close();">cancel</a>
         </div>
     </div>
 </dialog>
@@ -635,6 +654,11 @@
                 }
                 call_issue_ajax(issue_id, '', issue_module_id, 0, 'move_down');
                 break;
+            case "move_to":
+                $('#txt_moveTo_moduleId').attr("attr-id", issue_id);
+                var dlg = document.getElementById("move_issue_to_dialog");
+                dlg.showModal();
+                break;
         }
     });
     // 点击任意右键菜单项，关闭右键菜单
@@ -670,12 +694,22 @@
         }
         call_module_ajax(module_id, module_name, 9999, "update_module_name");   // Ajax更新
         $('#lbl_module_' + module_id).text(module_name);                               // Html界面更新
-        close_edit_module_dialog();                                             // 关闭module_edit_dialog()
+        $('#edit_module_dialog')[0].close();                                            // 关闭module_edit_dialog()
     }
-    // 关闭模块名称编辑对话框
-    function close_edit_module_dialog() {
-        document.getElementById("edit_module_dialog").close();
+    // 移动到模块
+    function move_to_module(obj) {
+        var issue_id = obj.attr("attr-id");
+        if (obj.val() == "") {
+            obj.focus();
+            return;
+        } else if ($.isNumeric(obj.val()) == false) {
+            obj.focus();
+            return;
+        }
+        var module_id = obj.val();
+        call_issue_ajax(issue_id, "", module_id, 9999, "move_to_module");
     }
+    
     /** 此段代码：主要针对issue进行操作
      ** 包括Issue列表、加载、显示、编辑、排序等
      * */
@@ -907,12 +941,17 @@
                                     showToast('说明已更新。');
                                     load_issue_description(issue_id);
                                     break;
+                                case "move_to_module":
+                                    $('#move_issue_to_dialog')[0].close();
+                                    alert("操作成功。");
+                                    window.location.reload();
+                                    break;
                             }
                             break;
                         case "Ingore":
                             break;
                         default:
-                            alert("Request failed: " + jqXHR.Result);
+                            alert("Request failed: " + result.result);
                             break;
                     }
                 },
@@ -1016,6 +1055,7 @@
                         // issue_attachment
                         $('#issue_attachment tbody').find("tr").remove()
                         $('#issue_attachment tbody').append(result.attachment_tr);
+                        $('#txt_issue_attachement').text('附件 (' + result.attachment_length + ')');
                         break;
                     case "Ingore":
                         break;

@@ -54,6 +54,7 @@ namespace RubyMine {
                 .EnableDetailedErrors()
                 );
             services.AddScoped<IGlobalSetting, GlobalSetting>();
+            services.AddTransient<IUploadFile, UploadFile>();
         }
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env) {
