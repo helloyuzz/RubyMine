@@ -2,152 +2,292 @@
 @model RubyMine.Pages.Issues.DetailsModel
 
 @{
-    ViewData["Title"]= Model.Issue.Id + "-" + Model.Issue.Subject;
+    ViewData["Title"] = "#" + Model.Issue.Id + "-" + Model.Issue.Subject;
     Layout = "~/Pages/Shared/_NavicatLayout.cshtml";
+
+    string user_id = User.Claims.FirstOrDefault(t => t.Type.Equals("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier")).Value;
+    bool showEdit = Model.Admin_Role_id.Contains("-" + user_id + ",");
+    string prev_icon = "bi-caret-left";
+    string next_icon = "bi-caret-right";
+    string prev_link = "#On-top";
+    string next_link = "#On-bottom";
+    if (Model.prev_issue_id != null) {
+        prev_icon = "bi-caret-left-fill";
+        prev_link = "/Issues/Details?issue_id=" + Model.prev_issue_id.Value + "&module_id=" + Model.Module.Id;
+    }
+    if (Model.next_issue_id != null) {
+        next_icon = "bi-caret-right-fill";
+        next_link = "/Issues/Details?issue_id=" + Model.next_issue_id.Value + "&module_id=" + Model.Module.Id;
+    }
 }
+<style>
+    .w-e-text-container {
+        height: 100% !important;
+    }
 
+    .w-e-text-container p {
+        font-size: small !important;
+    }
 
-<div class="border-inset bg-white p-3">
-    <h4>@Model.Issue.Id - @Model.Issue.Subject</h4>
-    <hr />
-    <dl class="row">
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Issue.Subject)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Issue.Subject)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Issue.Description)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Issue.Description)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Issue.DueDate)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Issue.DueDate)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Issue.CategoryId)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Issue.CategoryId)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Issue.FixedVersionId)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Issue.FixedVersionId)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Issue.LockVersion)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Issue.LockVersion)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Issue.CreatedOn)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Issue.CreatedOn)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Issue.UpdatedOn)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Issue.UpdatedOn)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Issue.StartDate)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Issue.StartDate)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Issue.DoneRatio)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Issue.DoneRatio)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Issue.EstimatedHours)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Issue.EstimatedHours)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Issue.ParentId)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Issue.ParentId)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Issue.RootId)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Issue.RootId)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Issue.Lft)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Issue.Lft)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Issue.Rgt)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Issue.Rgt)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Issue.IsPrivate)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Issue.IsPrivate)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Issue.ClosedOn)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Issue.ClosedOn)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Issue.Tracker)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Issue.Tracker.Name)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Issue.Project)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Issue.Project.Name)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Issue.Status)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Issue.Status.Name)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Issue.AssignedTo)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Issue.AssignedTo.Firstname)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Issue.Priority)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Issue.Priority.Name)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Issue.Author)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Issue.Author.Firstname)
-        </dd>
-    </dl>
+    .w-e-text-container .placeholder {
+        display: none !important;
+    }
+</style>
+<div class="border-inset p-1" style="background:#FFD">
+    <table class="w-100">
+        <tr>
+            <td>
+                <h4><a href="@prev_link" title="上一条"><i class="bi @prev_icon"></i></a><a href="@next_link"><i class="bi @next_icon"></i></a>&nbsp;#@Model.Issue.Id - @Model.Issue.Subject</h4>
+            </td>
+            <td align="right" valign="middle">
+                <div class="dropdown float-end">
+                    <button class="btn btn-primary dropdown-toggle fs-9 p-1 rounded-0" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                        @Model.Module.Name (@Model.AssociatedIssue.Count)
+                    </button>
+                    <ul class="dropdown-menu fs-9 rounded-0 shadow" aria-labelledby="dropdownMenuButton1" style="z-index:99999;">
+                        @foreach (var item in Model.AssociatedIssue) {
+                        <li><a class="dropdown-item fs-9" href="/Issues/Details?issue_id=@item.Id&module_id=@Model.Module.Id">#@item.Id @item.Subject</a></li>
+                        }
+                    </ul>
+                </div>
+            </td>
+        </tr>
+    </table>
+    <hr class="m-0 mb-1" />
+    <div class="row">
+        <div class="col-8">
+            <div id="mk_desc_editor" class="row pb-1 m-0">
+            </div>
+
+            @if (showEdit) {
+                <div class="row m-0 mb-2">
+                    <button id="btn_update_issue" href="#description" attr-id="" class="btn btn-sm mt-1 btn-light border-828790 rounded-0 w-auto fs-9 float-end" onclick="update_issue_description($(this));" disabled><i class="bi bi-exclamation-octagon"></i>&nbsp;更新 (暂时禁用)</button>
+                </div>
+            }
+        </div>
+        <div class="col p-0 pr-3">
+            <div class="bg-title p-2 border-1 border-bdbdbd">
+                <div class="row">
+                    <div class="col-1">状态</div>
+                    <div class="col">@Model.Issue.Status.Name</div>
+                </div>
+                <div class="row">
+                    <div class="col-1">项目</div>
+                    <div class="col">@Model.Issue.Project.Name</div>
+                </div>
+                <div class="row">
+                    <div class="col-1">作者</div>
+                    <div class="col">@Model.Issue.Author.Firstname</div>
+                </div>
+                <div class="row">
+                    <div class="col-1 pr-0">创建于</div>
+                    <div class="col">@Model.Issue.CreatedOn.Value.ToString("yyyy-MM-dd HH:mm:ss")</div>
+                </div>
+                <div class="row">
+                    <div class="col-1 pr-0">更新于</div>
+                    <div class="col">@Model.Issue.UpdatedOn.Value.ToString("yyyy-MM-dd HH:mm:ss")</div>
+                </div>
+                <div class="row">
+                    <div class="col-1"></div>
+                    <div class="col"></div>
+                </div>
+                <div class="row">
+                    <div class="col-1"></div>
+                    <div class="col"></div>
+                </div>
+            </div>
+            <ul class="nav nav-tabs m-0 p-0 mt-1 border-0" id="myTab">
+                <li class="nav-item m-0 p-0 border-0" style="margin-left:3px !important">
+                    <a id="txt_issue_notes" href="#issue_notes" class="nav-link active text-decoration-none rounded-0" data-bs-toggle="tab">问题补充</a>
+                </li>
+                <li class="nav-item m-0 p-0 border-0" style="margin-left:3px !important">
+                    <a id="txt_issue_history" href="#issue_history" class="nav-link text-decoration-none rounded-0" data-bs-toggle="tab">历史记录</a>
+                </li>
+                <li class="nav-item m-0 p-0 border-0" style="margin-left:3px !important">
+                    <a id="txt_issue_property" href="#issue_properties" class="nav-link text-decoration-none rounded-0" data-bs-toggle="tab">更改属性</a>
+                </li>
+                <li class="nav-item m-0 p-0 border-0" style="margin-left:3px !important">
+                    <a id="txt_issue_attachement" href="#issue_attachment" class="nav-link text-decoration-none rounded-0" data-bs-toggle="tab">附件</a>
+                </li>
+            </ul>
+            <div class="tab-content">
+                <div class="tab-pane fade active show border border-ccc p-1 bg-white" id="issue_notes">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>作者</th>
+                                <th>操作日期</th>
+                                <th>说明</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                    @if (showEdit) {
+                        <div class="row pb-1 m-0 mb-1">
+                            <div id="mk_notes_editor" class="row p-0 pb-1 m-0">
+                            </div>
+                        </div>
+                        <div class="row m-0 mt-4">
+                            <button id="btn_add_notes" attr-id="" class="btn btn-sm mt-1 btn-light border-828790 rounded-0 w-auto fs-9 float-end" onclick="add_issue_notes($(this));" disabled><i class="bi bi-plus-lg"></i>&nbsp;添加补充说明 (暂时禁用)</button>
+                        </div>
+                    }
+                </div>
+                <div class="tab-pane fade bg-white" id="issue_history">
+                    <p id="html_issue_history" class="border-1 border-ccc m-0 p-1"></p>
+                </div>
+
+                <div class="tab-pane fade border border-ccc p-1 bg-white" id="issue_properties">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>作者</th>
+                                <th>操作日期</th>
+                                <th>内容</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="tab-pane fade border border-ccc p-1 bg-white" id="issue_attachment">
+                    <div class="p-1">
+                        <input type="file" />
+                    </div>
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>作者</th>
+                                <th>操作日期</th>
+                                <th>内容</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
+
+<style>
+    .w-e-toolbar .w-e-menu {
+        width: 26px;
+        height: 26px;
+    }
+</style>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/wangeditor@latest/dist/wangEditor.min.js"></script>
+<script type="text/javascript">
+    const E_desc = window.wangEditor;
+    const e_notes = window.wangEditor;
+
+    const desc_Editor = new E_desc("#mk_desc_editor");
+    const notes_Editor = new e_notes("#mk_notes_editor");
+
+    desc_Editor.config.menus = [
+        'head',
+        'bold',
+        'fontSize',
+        'fontName',
+        'italic',
+        'strikeThrough',
+        'indent',
+        'foreColor',
+        'backColor',
+        'link',
+        'list',
+        'todo',
+        'justify',
+        'splitLine',
+        'undo',
+        'redo',
+    ];
+    desc_Editor.create();
+
+
+    notes_Editor.config.menus = [
+        'head',
+        'bold',
+        'fontSize',
+        'fontName',
+        'italic',
+        'strikeThrough',
+        'indent',
+        'foreColor',
+        'backColor',
+        'link',
+        'list',
+        'todo',
+        'justify',
+        'splitLine',
+        'undo',
+        'redo',
+    ];
+    notes_Editor.create();
+</script>
+<script>
+    $(document).ready(function () {
+        desc_Editor.txt.html('@Html.Raw(Model.Issue.Description)');
+        load_issue_description(@Model.Issue.Id);
+    });
+
+    function load_issue_description(issue_id) {
+        if (issue_id <= 0) {
+            return;
+        }
+        $.ajax({
+            url: '/api/Issue/' + issue_id,
+            method: 'GET',
+            dataType: 'json',
+            contentType: 'application/json; charset=utf-8',
+            data: '',
+            complete: function (jqXHR, status) {
+                var result = jQuery.parseJSON(jqXHR.responseText);
+                switch (result.result) {
+                    case "OK":
+                        $('#btn_update_issue').attr("attr-id", result.issue_id);
+                        $('#btn_add_notes').attr("attr-id", result.issue_id);
+                        if (result.description == null) {
+                            desc_Editor.txt.html('');
+                        } else {
+                            desc_Editor.txt.html(result.description);
+                        }
+                        //notes_Editor.txt.html('');
+
+                        // history
+                        $('#html_issue_history').empty().append(result.history_tr);
+
+                        // notes
+                        $('#issue_notes tbody').find("tr").remove()
+                        $('#issue_notes tbody').append(result.notes_tr);
+
+                        // issue_properties
+                        $('#issue_properties tbody').find("tr").remove()
+                        $('#issue_properties tbody').append(result.properties_tr);
+
+                        // issue_attachment
+                        $('#issue_attachment tbody').find("tr").remove()
+                        $('#issue_attachment tbody').append(result.attachment_tr);
+                        $('#txt_issue_attachement').text('附件 (' + result.attachment_length + ')');
+                        $('#txt_issue_notes').text('问题补充 (' + result.notes_length + ')');
+                        $('#txt_issue_history').text('历史记录 (' + result.history_length + ')');
+                        $('#txt_issue_property').text('更改属性 (' + result.property_length + ')');
+                        break;
+                    case "Ingore":
+                        break;
+                    default:
+                        alert("Request failed: " + jqXHR.Result);
+                        break;
+                }
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                ;
+            }
+        });
+    }
+</script>

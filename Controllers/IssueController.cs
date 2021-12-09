@@ -60,6 +60,7 @@ namespace RubyMine.Controllers {
 
                 // 历史记录
                 int rowCount = desc.Journals.Count();
+                desc.history_length = rowCount;
                 foreach (var item in desc.Journals.OrderByDescending(t => t.CreatedOn)) {
                     desc.history_tr += "<p class=\"m-0 p-0\">";
                     desc.history_tr += "<span class=\"badge bg-primary fs-9 m-0 p-1 mr-2 fw-normal\">" + rowCount + "</span>";
@@ -88,6 +89,7 @@ namespace RubyMine.Controllers {
                 // 备注更改，notes == null
                 var notes_Journals = desc.Journals.Where(t => string.IsNullOrEmpty(t.Notes) == false).OrderByDescending(t => t.Id);
                 rowCount = notes_Journals.Count();
+                desc.notes_length = rowCount;
                 foreach (var item in notes_Journals) {
                     desc.notes_tr += "<tr>";
                     desc.notes_tr += "  <td class=\"td td-row-index\">" + rowCount + "</td>";
@@ -102,6 +104,7 @@ namespace RubyMine.Controllers {
                 if (desc.JournalDetails != null) {
                     var properties_Journals = desc.JournalDetails.OrderByDescending(t => t.Id);
                     rowCount = properties_Journals.Count();
+                    desc.property_length = rowCount;
                     foreach (var item in properties_Journals) {
                         var journal = desc.Journals.FirstOrDefault(t => t.Id == item.JournalId);
 

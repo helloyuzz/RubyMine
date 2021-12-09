@@ -199,6 +199,26 @@ th[htmlValue="issue"] {
 }
 
 
+.nav-link {
+    border-color: #ccc #ccc transparent #ccc !important;
+    border-top: 1px solid #ccc;
+    border-left: 1px solid #ccc;
+    border-right: 1px solid #ccc;
+    font-weight: normal !important;
+    padding: 1px !important;
+    padding-left: 6px !important;
+    padding-right: 6px !important;
+}
+
+.nav-tabs .nav-link.active, .nav-tabs .nav-item.show .nav-link {
+    background-color: #f0f0f0 !important;
+}
+
+.nav-link.active {
+    font-weight: bold !important;
+}
+
+
 ::-moz-selection { /* Code for Firefox */
     color: red;
     background: yellow;
