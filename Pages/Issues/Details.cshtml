@@ -32,6 +32,12 @@
     .w-e-text-container .placeholder {
         display: none !important;
     }
+    .nav-tabs .nav-link {
+        background: #f0f0f0 !important;
+    }
+    .nav-link.active, .nav-item.show {
+        background-color: #fff !important;
+    }
 </style>
 <div class="border-inset p-1" style="background:#FFD">
     <table class="w-100">
@@ -41,12 +47,12 @@
             </td>
             <td align="right" valign="middle">
                 <div class="dropdown float-end">
-                    <button class="btn btn-primary dropdown-toggle fs-9 p-1 rounded-0" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                    <button class="btn btn-primary dropdown-toggle fs-9 p-1 ps-3 pr-3 rounded-0" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
                         @Model.Module.Name (@Model.AssociatedIssue.Count)
                     </button>
                     <ul class="dropdown-menu fs-9 rounded-0 shadow" aria-labelledby="dropdownMenuButton1" style="z-index:99999;">
                         @foreach (var item in Model.AssociatedIssue) {
-                        <li><a class="dropdown-item fs-9" href="/Issues/Details?issue_id=@item.Id&module_id=@Model.Module.Id">#@item.Id @item.Subject</a></li>
+                        <li><a class="dropdown-item fs-9 text-decoration-none ps-2" href="/Issues/Details?issue_id=@item.Id&module_id=@Model.Module.Id">#@item.Id @item.Subject</a></li>
                         }
                     </ul>
                 </div>
@@ -55,36 +61,26 @@
     </table>
     <hr class="m-0 mb-1" />
     <div class="row">
-        <div class="col-8">
-            <div id="mk_desc_editor" class="row pb-1 m-0">
-            </div>
-
-            @if (showEdit) {
-                <div class="row m-0 mb-2">
-                    <button id="btn_update_issue" href="#description" attr-id="" class="btn btn-sm mt-1 btn-light border-828790 rounded-0 w-auto fs-9 float-end" onclick="update_issue_description($(this));" disabled><i class="bi bi-exclamation-octagon"></i>&nbsp;更新 (暂时禁用)</button>
-                </div>
-            }
-        </div>
-        <div class="col p-0 pr-3">
+        <div class="col p-0 ps-3 pb-3">
             <div class="bg-title p-2 border-1 border-bdbdbd">
-                <div class="row">
-                    <div class="col-1">状态</div>
+                <div class="row mb-1">
+                    <div class="col-1 fw-bold">状态</div>
                     <div class="col">@Model.Issue.Status.Name</div>
                 </div>
-                <div class="row">
-                    <div class="col-1">项目</div>
+                <div class="row mb-1">
+                    <div class="col-1 fw-bold">项目</div>
                     <div class="col">@Model.Issue.Project.Name</div>
                 </div>
-                <div class="row">
-                    <div class="col-1">作者</div>
+                <div class="row mb-1">
+                    <div class="col-1 fw-bold">作者</div>
                     <div class="col">@Model.Issue.Author.Firstname</div>
                 </div>
-                <div class="row">
-                    <div class="col-1 pr-0">创建于</div>
+                <div class="row mb-1">
+                    <div class="col-1 fw-bold pr-0">创建于</div>
                     <div class="col">@Model.Issue.CreatedOn.Value.ToString("yyyy-MM-dd HH:mm:ss")</div>
                 </div>
-                <div class="row">
-                    <div class="col-1 pr-0">更新于</div>
+                <div class="row mb-1">
+                    <div class="col-1 fw-bold pr-0">更新于</div>
                     <div class="col">@Model.Issue.UpdatedOn.Value.ToString("yyyy-MM-dd HH:mm:ss")</div>
                 </div>
                 <div class="row">
@@ -96,7 +92,7 @@
                     <div class="col"></div>
                 </div>
             </div>
-            <ul class="nav nav-tabs m-0 p-0 mt-1 border-0" id="myTab">
+            <ul class="nav nav-tabs m-0 p-0 mt-2 border-0" id="myTab">
                 <li class="nav-item m-0 p-0 border-0" style="margin-left:3px !important">
                     <a id="txt_issue_notes" href="#issue_notes" class="nav-link active text-decoration-none rounded-0" data-bs-toggle="tab">问题补充</a>
                 </li>
@@ -124,11 +120,11 @@
                         <tbody>
                         </tbody>
                     </table>
-                    @if (showEdit) {
-                        <div class="row pb-1 m-0 mb-1">
-                            <div id="mk_notes_editor" class="row p-0 pb-1 m-0">
-                            </div>
+                    <div class="row pb-1 m-0 mb-4">
+                        <div id="mk_notes_editor" class="row p-0 pb-1 m-0">
                         </div>
+                    </div>
+                    @if (showEdit) {
                         <div class="row m-0 mt-4">
                             <button id="btn_add_notes" attr-id="" class="btn btn-sm mt-1 btn-light border-828790 rounded-0 w-auto fs-9 float-end" onclick="add_issue_notes($(this));" disabled><i class="bi bi-plus-lg"></i>&nbsp;添加补充说明 (暂时禁用)</button>
                         </div>
@@ -171,6 +167,16 @@
                     </table>
                 </div>
             </div>
+        </div>
+        <div class="col-8">
+            <div id="mk_desc_editor" class="row pb-1 m-0">
+            </div>
+
+            @if (showEdit) {
+                <div class="row m-0 mb-2">
+                    <button id="btn_update_issue" href="#description" attr-id="" class="btn btn-sm mt-1 btn-light border-828790 rounded-0 w-auto fs-9 float-end" onclick="update_issue_description($(this));" disabled><i class="bi bi-exclamation-octagon"></i>&nbsp;更新 (暂时禁用)</button>
+                </div>
+            }
         </div>
     </div>
 </div>

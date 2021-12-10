@@ -211,7 +211,7 @@ th[htmlValue="issue"] {
 }
 
 .nav-tabs .nav-link.active, .nav-tabs .nav-item.show .nav-link {
-    background-color: #f0f0f0 !important;
+    background-color: #fff !important;
 }
 
 .nav-link.active {
