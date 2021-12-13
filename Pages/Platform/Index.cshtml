@@ -1003,6 +1003,11 @@
                 call_module_ajax(html_id, '', 9999, action);
             }
         });
+
+        var issue_id = @Model.issue_id;
+        if (issue_id > 0) {
+            $('#td_' + issue_id).click();
+        }
     });
     function load_issue_description(issue_id) {
         if (issue_id <= 0) {

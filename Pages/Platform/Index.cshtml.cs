@@ -23,13 +23,14 @@ namespace RubyMine.Pages.Platform {
             _config = _configuration;
         }
         public IList<DisplayIssue> DisplayIssues { get; set; }
-        public IList<RubyMine.Models.Module> Modules { get; set; }
+        public IList<Module> Modules { get; set; }
         public Module CurrentModule { get; set; }
         public IList<CustomValue> CustomValues { get; set; }
         public int Module_id { get; set; }
         public string Admin_Role_id { get; set; }
         public string Prev_Url { get; set; }
         public string Download_Url { get; set; }
+        public int issue_id { get; set; }
 
         public async Task OnGet() {
             // 可编辑权限
@@ -136,6 +137,9 @@ namespace RubyMine.Pages.Platform {
                     displayIssue.Position = CustomValues.FirstOrDefault(t => t.CustomizedId == issue.Id).Position.Value;
                     DisplayIssues.Add(displayIssue);
                 }
+            }
+            if (DisplayIssues.Count > 0) {
+                issue_id = DisplayIssues[0].Issue.Id;
             }
         }
     }
