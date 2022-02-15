@@ -34,7 +34,7 @@
         margin-left: unset !important;
     }
 </style>
-<p class="mt-3 mb-2">已规划版本<span class="badge rounded-pill bg-eee text-dark fw-normal">@Model.Version.Count</span><a href="@Model.RedmineUrl/issues?utf8=✓&set_filter=1&sort=tracker,cf_22,status&f[]=status_id&op[status_id]==&v[status_id][]=1&f[]=tracker_id&op[tracker_id]==&v[tracker_id][]=2&f[]=&c[]=author&c[]=tracker&c[]=subject&c[]=status&c[]=cf_3&c[]=cf_6&c[]=cf_4&c[]=cf_30&c[]=cf_22&group_by=author&t[]=" target="_top" class="btn btn-sm text-decoration-none btn-primary text-white fs-7 float-end p-0 p-1">新需求</a></p>
+<p class="mt-3 mb-2">已规划版本<span class="badge rounded-pill bg-eee text-dark fw-normal">@Model.Version.Count</span><a href="@Model.RedmineUrl/issues?utf8=✓&set_filter=1&sort=tracker,cf_22,status&f[]=status_id&op[status_id]==&v[status_id][]=1&f[]=tracker_id&op[tracker_id]==&v[tracker_id][]=2&f[]=&c[]=author&c[]=tracker&c[]=subject&c[]=status&c[]=cf_3&c[]=cf_6&c[]=cf_4&c[]=cf_30&c[]=cf_22&group_by=author&t[]=&f[]=project_id&op[project_id]==&v[project_id][]=4" target="_top" class="btn btn-sm text-decoration-none btn-primary text-white fs-7 float-end p-0 p-1">新需求</a></p>
 <div class="accordion accordion-flush" id="accordionFlushExample">
     @foreach (var item in Model.Version.OrderBy(t => t.ProjectId).ThenByDescending(t => t.Sharing).ThenByDescending(t => t.Status).ThenByDescending(t => t.EffectiveDate)) {
         <div class="accordion-item">

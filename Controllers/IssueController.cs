@@ -136,8 +136,8 @@ namespace RubyMine.Controllers {
                         desc.attachment_tr += "<tr>";
                         desc.attachment_tr += " <td class=\"td td-row-index\">" + rowCount + "</td>";
                         desc.attachment_tr += " <td class=\"td td-author text-269\">" + edit_user.FirstOrDefault(t => t.Id == item.AuthorId).Firstname + "</td>";
-                        desc.attachment_tr += " <td class=\"td td-create-on\">" + item.CreatedOn.Value.ToString("yyyy-MM-dd HH:mm:ss") + "</td>";
-                        desc.attachment_tr += " <td class=\"td\"><a href=\"" + prev_url + item.Id + "\" target=\"_blank\">" + item.Filename + "</a>&nbsp;<a href=\"" + download_url + item.Id + "/" + item.Filename + "\" title=\"下载\" target=\"_blank\"><img src=\"/images/file_download.png\"/></a></td>";
+                        //desc.attachment_tr += " <td class=\"td td-create-on\">" + item.CreatedOn.Value.ToString("yyyy-MM-dd HH:mm:ss") + "</td>";
+                        desc.attachment_tr += " <td class=\"td\"><a href=\"" + prev_url + item.Id + "\" target=\"_blank\">" + item.Filename + "</a>&nbsp;<a href=\"" + download_url + item.Id + "/" + item.Filename + "\" title=\"下载\" target=\"_blank\"><img src=\"/images/file_download.png\"/></a><br>" + item.CreatedOn.Value.ToString("yyyy-MM-dd HH:mm:ss") + "</td>";
                         desc.attachment_tr += "</tr>";
                         rowCount--;
                     }
@@ -227,7 +227,7 @@ namespace RubyMine.Controllers {
                         _context.SaveChanges();
 
                         result.Result = "OK";
-                        result.Value = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+                        result.Value = DateTime.Now.ToString("yy-MM-dd HH:mm:ss");
                         break;
                     case "move_up":
                         // 当前位置

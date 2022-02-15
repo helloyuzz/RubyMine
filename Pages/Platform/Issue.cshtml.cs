@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Claims;
 using System.Threading.Tasks;
 using Abp.Linq.Expressions;
-using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -13,18 +12,10 @@ using RubyMine.DbContexts;
 using RubyMine.Models;
 
 namespace RubyMine.Pages.Platform {
-    [Authorize]
-    public class IndexModel : PageModel {
+    public class IssueModel : PageModel {
         private readonly RubyRemineDbContext _context;
         private readonly IConfiguration _config;
-
-        public IndexModel(RubyRemineDbContext context,IConfiguration _configuration) {
-            _context = context;
-            _config = _configuration;
-        }
         public IList<DisplayIssue> DisplayIssues { get; set; }
-        public IList<Module> Modules { get; set; }
-        public IList<TreeIssue> Issues { get; set; }
         public Module CurrentModule { get; set; }
         public IList<CustomValue> CustomValues { get; set; }
         public int Module_id { get; set; }
@@ -33,10 +24,13 @@ namespace RubyMine.Pages.Platform {
         public string Download_Url { get; set; }
         public string Issue_url { get; set; }
         public int issue_id { get; set; }
-
+        public IssueModel(RubyRemineDbContext context, IConfiguration _configuration) {
+            _context = context;
+            _config = _configuration;
+        }
         public async Task OnGet() {
             // 可编辑权限
-            Admin_Role_id = _config["AppSettings:Admin_Role_id"];        
+            Admin_Role_id = _config["AppSettings:Admin_Role_id"];
 
             Prev_Url = _config["AppSettings:Attachment_PreviewUrl"];
             Download_Url = _config["AppSettings:Attachment_DownloadUrl"];
@@ -46,7 +40,7 @@ namespace RubyMine.Pages.Platform {
             string action = Request.Query["action"];
             string queryUrl = Request.QueryString.Value;
             Module_id = RMUtils.QueryInt(Request, "module_id");
-            
+
             User cua = CookieUtils.Get(HttpContext.User.Claims.ToList());
 
             ActiveNodes nodes = GlobalCache.ActiveNodes.FirstOrDefault(t => t.Key == cua.Id).Value;
@@ -82,25 +76,6 @@ namespace RubyMine.Pages.Platform {
                     break;
             }
 
-            // 查询所有模块列表
-            Modules = await _context.Modules.ToListAsync();
-            Issues = new List<TreeIssue>();
-            using (var cmd = _context.Database.GetDbConnection().CreateCommand()) {
-                cmd.CommandText = "SELECT t.id,t.`subject`,k.`value` as 'module_id',k.position from issues t left join custom_values k on t.id=k.customized_id where t.project_id=5 and k.customized_type='Issue' and k.custom_field_id=54 order by module_id,position";
-                _context.Database.OpenConnection();
-                using (var db = cmd.ExecuteReader()) {
-                    while (db.Read()) {
-                        TreeIssue item = new TreeIssue();
-                        item.Id = RMUtils.ParseInt(db[0]);
-                        item.Subject = db[1].ToString();
-                        item.Module_id = RMUtils.ParseInt(db[2]);
-                        item.Position = RMUtils.ParseInt(db[3]);
-                        Issues.Add(item);
-                    }
-                }
-            }
-
-            /*
             // 根据模块Id查询所有Issue
             var predicateBuilder = PredicateBuilder.New<CustomValue>(false);
             predicateBuilder = predicateBuilder.And(x => x.CustomFieldId == 54);
@@ -133,12 +108,12 @@ namespace RubyMine.Pages.Platform {
                         Subject = t.Subject,
                         StatusId = t.StatusId,
                         Status = t.Status,
-                        AssignedToId = t.AssignedToId,                        
+                        AssignedToId = t.AssignedToId,
                         PriorityId = t.PriorityId,
                         Priority = t.Priority,
                         FixedVersionId = t.FixedVersionId,
                         AuthorId = t.AuthorId,
-                        Author=t.Author,
+                        Author = t.Author,
                         LockVersion = t.LockVersion,
                         CreatedOn = t.CreatedOn,
                         UpdatedOn = t.UpdatedOn,
@@ -160,7 +135,6 @@ namespace RubyMine.Pages.Platform {
             if (DisplayIssues.Count > 0) {
                 issue_id = DisplayIssues[0].Issue.Id;
             }
-            */
         }
     }
 }

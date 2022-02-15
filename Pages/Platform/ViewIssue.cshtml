@@ -1,0 +1,68 @@
+﻿@page
+@model RubyMine.Pages.Platform.ViewIssueModel
+@{
+    Layout = null;
+    string user_id = User.Claims.FirstOrDefault(t => t.Type.Equals("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier")).Value;
+    bool showEdit = Model.Admin_Role_id.Contains("-" + user_id + ",");
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>CKEditor 5 – Document editor</title>
+    <script src="https://cdn.ckeditor.com/ckeditor5/30.0.0/decoupled-document/ckeditor.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js" integrity="sha384-QJHtvGhmr9XOIpI6YVutG+2QOK9T+ZnN4kzFN1RtK3zEFEIsxhlmWl5/YESvpZ13" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+</head>
+<body style="overflow-x:hidden">
+    <form action="" method="post">
+        <input type="hidden" asp-for="Issue.Id"/>
+        @*<h1> - </h1>*@
+        <div class="row">
+            <div class="col">
+
+                <div class="form-floating mb-3">
+                    <input type="text" class="form-control fs-5 fw-bold" asp-for="Issue.Subject" placeholder="name@example.com" value="@Model.Issue.Subject">
+                    <label for="floatingInputValue">@Model.Issue.Id - @Model.Issue.Status.Name</label>
+                </div>
+    @if(showEdit){
+                <button type="submit" class="btn btn-primary float-end end-0 top-0 mt-2 me-2 position-absolute">保存</button>
+        }
+            </div>
+        </div>
+        <!-- The toolbar will be rendered in this container. -->
+        <div id="toolbar-container"></div>
+        <!-- This container will become the editable. -->
+        <div id="editor">
+            <p>This is the initial editor content.</p>
+        </div>
+        <div class="mt-3 text-black-50">
+            @Model.Issue.Author.Firstname
+            @Model.Issue.UpdatedOn
+        </div>
+        <textarea asp-for="Issue.Description" class="w-100 d-none"></textarea>
+        <script>
+        DecoupledEditor
+            .create(document.querySelector('#editor'))
+            .then(editor => {
+                const toolbarContainer = document.querySelector('#toolbar-container');
+
+                toolbarContainer.appendChild(editor.ui.view.toolbar.element);
+                editor.setData('@Html.Raw(Model.Issue.Description)');
+                //editor.on('change', function (e) { console.log(e.editor.getData()); });
+
+                editor.model.document.on('change:data', (evt, data) => {
+                    //console.log(data);
+                    document.getElementById('Issue_Description').value = editor.getData();
+                    //console.log(editor.getData());
+                });
+            })
+            .catch(error => {
+                console.error(error);
+            });
+        </script>
+    </form>
+</body>
+</html>

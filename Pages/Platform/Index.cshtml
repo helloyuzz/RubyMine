@@ -18,7 +18,7 @@
         padding: 0;
     }
 
-    .caret {
+    .caret,caret-issue {
         cursor: pointer;
         -webkit-user-select: none; /* Safari 3.1+ */
         -moz-user-select: none; /* Firefox 2+ */
@@ -26,14 +26,19 @@
         user-select: none;
     }
 
-        .caret::before {
-            content: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='9' height='9' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='rgba%280,0,0,.5%29' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M5 14l6-6-6-6'/%3e%3c/svg%3e");
-            color: black;
-            display: inline-block;
-            /*margin-right: 6px;*/
-            transition: transform 0.13s ease;
-            transform-origin: .5em 50%;
-        }
+    .caret::before {
+        content: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='9' height='9' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='rgba%280,0,0,.5%29' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M5 14l6-6-6-6'/%3e%3c/svg%3e");
+        color: black;
+        display: inline-block;
+        /*margin-right: 6px;*/
+        transition: transform 0.13s ease;
+        transform-origin: .5em 50%;
+    }
+    .caret-issue::before {
+        content: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='9' height='9' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='rgba%280,0,0,.5%29' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M8 9.5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3z'/%3e%3c/svg%3e");
+        color: black;
+        display: inline-block;
+    }
 
     .caret-down::before {
         -ms-transform: rotate(90deg); /* IE 9 */
@@ -84,18 +89,10 @@
     .footer {
         bottom: auto !important;
     }
-
     .op-link {
         color: #adb5c9 !important;
     }
 
-    /*.jumpNav li.active, tr.active {*/
-    /*border-radius: 0.3rem;*/
-    /*border: 1px solid #90c9e3;
-    }*/
-    /*    li.active {
-        background-color: #cde8ff;
-    }*/
     .parent-module {
         padding-left: 19px;
     }
@@ -113,14 +110,14 @@
         padding: 0px !important;
     }
 
-        th[htmlValue="issue"] {
-            padding: 3px !important;
-        }
+    th[htmlValue="issue"] {
+        padding: 3px !important;
+    }
 
-        td[htmlValue="issue"] {
-            border: solid 1px #d7d7d7;
-            padding: 2px !important;
-        }
+    td[htmlValue="issue"] {
+        border: solid 1px #d7d7d7;
+        padding: 2px !important;
+    }
 
 
     textarea {
@@ -141,6 +138,9 @@
 
     .nav-tabs .nav-link {
         background: #f0f0f0 !important;
+    }
+    .w-e-toolbar,.nav-item {
+        font-size:9pt;
     }
 </style>
 
@@ -181,243 +181,85 @@
                 }
                 string html_attr_id = " attr-id=\"" + item.Id + "\" attr-pid=\"" + pid + "\" attr-index=\"" + item.Index + "\"";
                 string html_attr_title = " attr-title=\"" + item.Name + "\"";
-
-                //string edit_icon = "<span class=\"float-end p-0\"><i id=\"edit_icon_" + item.Id + "\" class=\"edit-icon bi bi-pencil d-none mr-2\"" + html_attr_id + html_attr_title + " title=\"编辑\" style=\"cursor:pointer;\"></i><i id=\"add_icon_" + item.Id + "\"" + html_attr_id + " class=\"add-icon bi bi-plus-lg d-none\" title=\"新增下级\" style=\"cursor:pointer;\"></i></span>";
-
+                string show_caret = "caret-issue";
                 if (subNode > 0) {
-                    htmlTree += "<li id=\"html_node_" + item.Id + "\" class=\"li-node parent-module node-" + item.Id + "\">";
-                    htmlTree += "   <span class=\"span-node module-parent-node caret fs-9 d-inline-block w-100 text-269" + active + "\"" + html_attr_id + html_attr_title + ">";
-                    htmlTree += "               <img class=\"w-auto\" src=\"/images/xp/briefcase.png\">&nbsp;<span>" + showIndexTip + "</span><span id=\"lbl_module_" + item.Id + "\">" + item.Name + "</span>";
-                    htmlTree += "   </span>";
-                    //show_pid = show_pid + "-" + showIndex.ToString();
+                    show_caret = "caret";
+                }
 
+                htmlTree += "<li id=\"html_node_" + item.Id + "\" class=\"li-node parent-module node-" + item.Id + "\">";
+                htmlTree += "   <span class=\"span-node module-parent-node " + show_caret + " d-inline-block w-100 text-269" + active + "\"" + html_attr_id + html_attr_title + ">";
+                htmlTree += "               <img class=\"w-auto\" src=\"/images/xp/briefcase.png\">&nbsp;<span>" + showIndexTip + "</span><span id=\"lbl_module_" + item.Id + "\">" + item.Name + "</span>";
+                htmlTree += "   </span>";
+                if (subNode > 0) {
                     string tempTree = BuildTree(item.Id, user_id);
                     if (string.IsNullOrEmpty(tempTree) == false) {
                         htmlTree += tempTree;
                     }
-                    htmlTree += "</li>";
-                } else {
-                    htmlTree += "<li id=\"html_node_" + item.Id + "\" class=\"li-node\">";
-                    htmlTree += "   <span class=\"span-node fs-9 d-inline-block w-100" + active + "\" style=\"padding-left:19px;\"" + html_attr_id + html_attr_title + ">";
-                    htmlTree += "       <a class=\"text-decoration-none text-dark d-inline-block w-100\" href=\"?action=load&module_id=" + item.Id + "\" title='查看'>";
-                    htmlTree += "           <img src=\"/images/xp/page_white_text.png\">&nbsp;<span>" + showIndexTip + "</span><span id=\"lbl_module_" + item.Id + "\">" + item.Name + "</span>";
-                    htmlTree += "       </a>";
-                    htmlTree += "   </span>";
-                    htmlTree += "</li>";
-
-                    //show_pid = show_pid + "-" + showIndex.ToString();
                 }
+                htmlTree += BuildIssue(item.Id);
+                htmlTree += "</li>";
+                //else {
+                //    htmlTree += "<li id=\"html_node_" + item.Id + "\" class=\"li-node parent-module node-" + item.Id + "\">";
+                //    htmlTree += "   <span class=\"span-node d-inline-block w-100" + active + "\" style=\"padding-left:19px;\"" + html_attr_id + html_attr_title + ">";
+                //    htmlTree += "       <a class=\"text-decoration-none text-dark d-inline-block w-100\" target=\"issue_content\" href=\"/Platform/Issue?action=load&module_id=" + item.Id + "\" title='查看'>";
+                //    htmlTree += "           <img src=\"/images/xp/briefcase.png\">&nbsp;<span>" + showIndexTip + "</span><span id=\"lbl_module_" + item.Id + "\">" + item.Name + "</span>";
+                //    htmlTree += "       </a>";
+                //    htmlTree += "   </span>";
+                //    htmlTree += BuildIssue(item.Id);
+                //    htmlTree += "</li>";
+                //}
             }
         }
         htmlTree += "</ul>";
         return htmlTree;
     }
+    string BuildIssue(int module_id) {
+        string temp = "";
+
+        var issues = Model.Issues.Where(t=>t.Module_id == module_id).OrderBy(t=>t.Position);
+        if (issues.Count() > 0) {
+            temp += "<ul id='ul_" + module_id + "' htmlid='" + module_id + "' class=\"d-block\">";
+            foreach (var item in issues) {
+                string html_attr_id = " attr-id=\"" + item.Id + "\" attr-pid=\"" + module_id + "\" attr-index=\"" + item.Position + "\"";
+                string html_attr_title = " attr-title=\"" + item.Subject + "\"";
+
+                temp += "<li id='html_node_" + item.Id + "' class=\"li-node\">";
+                temp += "   <span class=\"issue-node d-inline-block w-100\" style=\"padding-left:19px;\"" + html_attr_id + html_attr_title + ">";
+                temp += "       <a class=\"text-decoration-none text-dark d-inline-block w-100\" target=\"issue_content\" href=\"/Platform/ViewIssue?issue_id=" + item.Id + "\" title='查看'>";
+                temp += "           <img src=\"/images/xp/page_word.png\">&nbsp;<span>" + item.Id + ".</span><span id=\"lbl_module_" + item.Id + "\">" + item.Subject + "</span>";
+                temp += "       </a>";
+                temp += "   </span>";
+                temp +="</li>";
+            }
+            temp += "</ul>";
+        }
+
+        return temp;
+    }
 }
-<div class="container-fluid mb-0">
-    <div class="row">
-        <div class="col-3 p-0 mr-1 pb-2 border-inset bg-white mh-100">
-            <div class="row m-1 p-1 pt-0 ps-0">
+<table width="100%" height="100%">
+    <tr>
+        <td valign="top" width="26%">
+            <div id="module_div" class="bg-white p-1 border-inset h-100 overflow-scroll" style="overflow-x:hidden !important;">
                 @Html.Raw(BuildTree(null, int.Parse(user_id)))
             </div>
-        </div>
-        <div class="col-5 p-1 border-inset bg-white">
-            <table id="mainTable" class="table table-hover fs-7 jumpNav border-top-0">
-                <thead>
-                    <tr style="background:#eee;">
-                        <th htmlValue="issue" width="40px" class="border-bottom-0 text-center">
-                            #
-                        </th>
-                        <th htmlValue="issue" width="49px" class="border-bottom-0 text-center">
-                            @Html.DisplayNameFor(model => model.DisplayIssues[0].Issue.TrackerId)
-                        </th>
-                        <th htmlValue="issue" class="border-bottom-0">
-                            @Html.DisplayNameFor(model => model.DisplayIssues[0].Issue.Subject) (@Model.DisplayIssues.Count)
-                        </th>
-                        <th htmlValue="issue" width="49px" class="border-bottom-0 text-center">
-                            @Html.DisplayNameFor(model => model.DisplayIssues[0].Issue.AuthorId)
-                        </th>
-                        <th htmlValue="issue" width="69px" class="border-bottom-0 text-center">
-                            @Html.DisplayNameFor(model => model.DisplayIssues[0].Issue.StatusId)
-                        </th>
-                        <th htmlValue="issue" width="60px" class="border-bottom-0">
-                            @Html.DisplayNameFor(model => model.DisplayIssues[0].Issue.ProjectId)
-                        </th>
-                        <th htmlValue="issue" width="129px" class="border-bottom-0 text-center">
-                            @Html.DisplayNameFor(model => model.DisplayIssues[0].Issue.UpdatedOn)
-                        </th>
-                        <th width="33px" htmlValue="issue" class="text-center border-bottom-0">
-                            新增
-                        </th>
-                    </tr>
-                </thead>
-                @if (Model.Module_id > 0) {
-                    var rowIndex = 0;
-                    <tbody>
-                        @foreach (var item in Model.DisplayIssues.OrderBy(t => t.Position)) {
-                            var html_attr = " attr-id=\"" + item.Issue.Id + "\" attr-module-id=\"" + Model.Module_id + "\" attr-prev-issue-id=\"" + item.Issue.Id + "\"";
-                            rowIndex++;
+        </td>
+        <td valign="top" class="p-1 pt-0">
+            <div class="p-1 bg-white h-100 border-inset">
+                <iframe id="issue_content" name="issue_content" src="/Platform/ViewIssue" width="100%" height="100%">
 
-                            <tr id="tr_@item.Issue.Id" @Html.Raw(html_attr) class="clickable-row tr-node">
-                                <td htmlValue="issue" class="fs-7 align-top text-center" style="padding-top:1px;">
-                                    <a asp-page="/Issues/Details" asp-route-issue_id="@item.Issue.Id" asp-route-module_id="@Model.Module_id" target="_blank" class="text-666">@Html.DisplayFor(modelItem => item.Issue.Id)</a>
-                                </td>
-                                <td htmlValue="issue" class="text-center">
-                                    @Html.DisplayFor(modelItem => item.Issue.Tracker.Name)
-                                </td>
-                                <td id="td_@item.Issue.Id" class="link-td" htmlValue="issue" attr-id="@item.Issue.Id" onclick="load_issue_description(@item.Issue.Id)">
-                                    <a id="linkLabel_@item.Issue.Id" asp-page="/Issues/Details" asp-route-issue_id="@item.Issue.Id" asp-route-module_id="@Model.Module_id" target="_blank" class="link-title text-666 fs-7">
-                                        <span>@rowIndex.</span><span id="showLabel_@item.Issue.Id" attr-id="@item.Issue.Id">@Html.DisplayFor(modelItem => item.Issue.Subject)</span>
-                                    </a>
-                                    @if (showEdit) {
-                                        <img src="~/images/xp/edit.png" id="linkEdit_@item.Issue.Id" attr-id="@item.Issue.Id" class="link-edit bi bi-pencil float-end" style="cursor:pointer" />
-                                    }
-                                    <div id="linkDiv_@item.Issue.Id" class="d-none">
-                                        <textarea id="editSubject_@item.Issue.Id" class="link-subject form-control w-100 fs-9 p-0 rounded-0 border-998888" onclick="event.stopPropagation();">@Html.DisplayFor(modelItem => item.Issue.Subject)</textarea>
-                                        <div class="btn-group pt-1 float-end">
-                                            <button id="linkSave_@item.Issue.Id" @Html.Raw(html_attr) class="form-control link-save btn-5693af btn-sm ms-0 fs-9 save-subject w-auto mr-1" onclick="create_issue('edit',$(this));">Save</button>
-                                            <button id="linkCancel_@item.Issue.Id" class="form-control link-cancel btn-normal btn-sm ms-0 fs-9 save-subject w-auto d-inline" attr-id="@item.Issue.Id">Cancel</button>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td htmlValue="issue">
-                                    @Html.DisplayFor(modelItem => item.Issue.Author.Firstname)
-                                </td>
-                                <td htmlValue="issue" class="text-center">
-                                    @Html.DisplayFor(modelItem => item.Issue.Status.Name)
-                                </td>
-                                <td htmlValue="issue" class="text-center">
-                                    @Html.DisplayFor(modelItem => item.Issue.Project.Name)
-                                </td>
-                                <td htmlValue="issue" class="text-center" title="该 @item.Issue.Tracker.Name 创建于&nbsp;@RMUtils.PraseDateTime(item.Issue.CreatedOn)">
-                                    <a id="update_on_@item.Issue.Id" href="#UpdateOn" class="text-dark">@Html.Raw(RMUtils.PraseDateTime(item.Issue.UpdatedOn))</a>
-                                </td>
-                                <td htmlValue="issue" class="align-middle text-center">
-                                    @if (showEdit) {
-                                        <img class="add-button" @Html.Raw(html_attr) src="/images/xp/file_add.png" style="cursor:pointer" />
-                                        <span class="d-none">-</span>
-                                    } else {
-                                        <span>-</span>
-                                    }
-                                </td>
-                            </tr>
-                        }
-                        @if (showEdit && Model.DisplayIssues.Count <= 0) {
-                            <tr id="tr_9999" class="clickable-row">
-                                <td htmlValue="issue" class="fs-7 align-top text-center" style="padding-top:1px;">-</td>
-                                <td htmlValue="issue" class="text-center">-</td>
-                                <td colspan="3" id="td_9999" class="link-td" htmlValue="issue" attr-id="9999">
-                                    <div id="linkDiv_9999" class="d-block">
-                                        <textarea id="initSubject_9999" class="link-subject form-control w-100 fs-9 p-0 rounded-0 border-998888"></textarea>
-                                        <div class="btn-group pt-1 float-end">
-                                            <button id="linkSave_9999" attr-id="0" attr-module-id="@Model.Module_id" attr-prev-issue-id="0" class="form-control link-save btn-5693af btn-sm ms-0 fs-9 save-subject w-auto mr-1" onclick="create_issue('init',$(this));">Create</button>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td htmlValue="issue" class="text-center">-</td>
-                                <td htmlValue="issue" class="text-center">-</td>
-                                <td htmlValue="issue" class="align-middle text-center">-</td>
-                            </tr>
-                        }
-                        <tr>
-                            <td htmlValue="issue" class="lh-lg" colspan="9"><img src="/images/xp/doc_convert.png" />&nbsp;<label id="showRecordCount">@Model.DisplayIssues.Count</label> rows.</td>
-                        </tr>
-                    </tbody>
-                } else {
-                    <tr class="clickable-row">
-                        <td colspan="8" htmlValue="issue">请选择模块</td>
-                    </tr>
-                }
-            </table>
+                </iframe>
+            </div>
+        </td>
+    </tr>
+</table>
+<div class="container-fluid mb-0 h-100">
+    <div class="row">
+        <div class="col-2 p-0 mr-1 pb-2 border-inset bg-white overflow-scroll">
+        </div>
+        <div class="col-6 p-1 border-inset bg-white">
         </div>&nbsp;
         <div class="col p-1 border-inset bg-white mr-1">
-            <ul class="nav nav-tabs m-0 p-0 border-0" id="myTab">
-                <li class="nav-item m-0 p-0 border-0">
-                    <a href="#issue_desc" class="nav-link active text-decoration-none rounded-0" data-bs-toggle="tab">描述及历史记录</a>
-                </li>
-                <li class="nav-item m-0 p-0 border-0" style="margin-left:3px !important">
-                    <a id="txt_issue_notes" href="#issue_notes" class="nav-link text-decoration-none rounded-0" data-bs-toggle="tab">问题补充</a>
-                </li>
-                @*<li class="nav-item m-0 p-0 border-0" style="margin-left:3px !important">
-                        <a id="txt_issue_history" href="#issue_history" class="nav-link text-decoration-none rounded-0" data-bs-toggle="tab"></a>
-                    </li>*@
-                <li class="nav-item m-0 p-0 border-0" style="margin-left:3px !important">
-                    <a id="txt_issue_property" href="#issue_properties" class="nav-link text-decoration-none rounded-0" data-bs-toggle="tab">更改属性</a>
-                </li>
-                <li class="nav-item m-0 p-0 border-0" style="margin-left:3px !important">
-                    <a id="txt_issue_attachement" href="#issue_attachment" class="nav-link text-decoration-none rounded-0" data-bs-toggle="tab">附件</a>
-                </li>
-            </ul>
-            <div class="tab-content">
-                <div class="tab-pane fade show active" id="issue_desc">
-                    <div id="mk_desc_editor" class="row pb-1 m-0">
-                    </div>
-                    @if (showEdit) {
-                        <div class="row m-0 mb-2">
-                            <button id="btn_update_issue" href="#description" attr-id="" class="btn btn-sm mt-1 btn-light border-828790 rounded-0 w-auto fs-9 float-end" onclick="update_issue_description($(this));"><i class="bi bi-exclamation-octagon"></i>&nbsp;更新描述</button>
-                        </div>
-                    }
-                    <p id="html_issue_history" class="border-1 border-ccc m-0 p-1"></p>
-                </div>
-                @*<div class="tab-pane fade show" id="issue_history">
-                    </div>*@
-
-                <div class="tab-pane fade border border-ccc" id="issue_notes">
-                    <table class="table table-hover">
-                        <thead>
-                            <tr>
-                                <th>#</th>
-                                <th>作者</th>
-                                <th>操作日期</th>
-                                <th>说明</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                        </tbody>
-                    </table>
-                    <div class="row pb-1 m-0 mb-1">
-                        <div id="mk_notes_editor" class="row p-0 pb-1 m-0">
-                        </div>
-                    </div>
-                    @if (showEdit) {
-                        <div class="row m-0 mt-4">
-                            <button id="btn_add_notes" attr-id="" class="btn btn-sm mt-1 btn-light border-828790 rounded-0 w-auto fs-9 float-end" onclick="add_issue_notes($(this));"><i class="bi bi-plus-lg"></i>&nbsp;添加补充说明</button>
-                        </div>
-                    }
-                </div>
-
-                <div class="tab-pane fade border-top border-ccc" id="issue_properties">
-                    <table class="table table-hover">
-                        <thead>
-                            <tr>
-                                <th>#</th>
-                                <th>作者</th>
-                                <th>操作日期</th>
-                                <th>内容</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                        </tbody>
-                    </table>
-                </div>
-
-                <div class="tab-pane fade border-top border-ccc" id="issue_attachment">
-                    <div class="p-1">
-                        <input type="file" />
-                    </div>
-                    <table class="table table-hover">
-                        <thead>
-                            <tr>
-                                <th>#</th>
-                                <th>作者</th>
-                                <th>操作日期</th>
-                                <th>内容</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
         </div>
     </div>
 </div>
@@ -426,10 +268,11 @@
         <!-- Module-Context-menu -->
         <div id="html_ModuleContextMenu" class="module-context-menu shadow">
             <ul class="p-0 m-0">
-                <li class="module-context-item dropdown-item d-cursor" html-action="add_sub_module">添加下级</li>
-                <li class="module-context-item dropdown-item d-cursor" html-action="edit_module">编辑</li>
+                <li class="module-context-item dropdown-item d-cursor" html-action="add_sub_module">添加下级目录</li>
+                <li class="module-context-item dropdown-item d-cursor" html-action="add_sub_issue">增加需求</li>
                 <li><hr class="m-0 dropdown-divider"></li>
-                <li class="module-context-item dropdown-item d-cursor" html-action="view_module">查看</li>
+                <li class="module-context-item dropdown-item d-cursor" html-action="edit_module">重命名</li>
+                @*<li class="module-context-item dropdown-item d-cursor" html-action="view_module">查看</li>*@
                 <li><hr class="m-0 dropdown-divider"></li>
                 <li class="module-context-item dropdown-item d-cursor" html-action="move_up">上移</li>
                 <li class="module-context-item dropdown-item d-cursor" html-action="move_down">下移</li>
@@ -437,11 +280,11 @@
                 <li class="module-context-item dropdown-item d-cursor" html-action="up_level">上提一级</li>
                 <li class="module-context-item dropdown-item d-cursor" html-action="down_level">下降一级</li>
                 <li><hr class="m-0 dropdown-divider"></li>
-                <li class="module-context-item dropdown-item d-cursor" html-action="default_issue_index">重排下级问题</li>
+                <li class="module-context-item dropdown-item d-cursor" html-action="default_module_index">重排下级目录</li>
+                <li class="module-context-item dropdown-item d-cursor" html-action="default_issue_index">重排下级需求</li>
+                @*<li><hr class="m-0 dropdown-divider"></li>*@
                 <li><hr class="m-0 dropdown-divider"></li>
-                <li class="module-context-item dropdown-item d-cursor" html-action="default_module_index">重排下级模块</li>
-                <li><hr class="m-0 dropdown-divider"></li>
-                <li class="module-context-item dropdown-item disabled d-cursor" html-action="disable" title="标记删除">标记删除<span class="float-end"><i class="bi bi bi-exclamation-octagon"></i></span></li>
+                <li class="module-context-item dropdown-item disabled d-cursor" html-action="disable" title="标记删除">删除<span class="float-end"><i class="bi bi bi-exclamation-octagon"></i></span></li>
             </ul>
         </div>
     </div>
@@ -449,14 +292,16 @@
         <!-- Issue-Context-menu -->
         <div id="html_IssueContextMenu" class="issue-context-menu shadow">
             <ul class="p-0 m-0">
-                <li class="issue-context-item dropdown-item d-cursor" html-action="view_issue">状态</li>
+                <li class="issue-context-item dropdown-item d-cursor" html-action="add_sub_issue">增加需求</li>
                 <li><hr class="m-0 dropdown-divider"></li>
                 <li class="issue-context-item dropdown-item d-cursor" html-action="move_up">上移</li>
                 <li class="issue-context-item dropdown-item d-cursor" html-action="move_down">下移</li>
                 <li><hr class="m-0 dropdown-divider"></li>
-                <li class="issue-context-item dropdown-item disabled d-cursor" html-action="disable" title="标记删除">标记删除<span class="float-end"><i class="bi bi bi-exclamation-octagon"></i></span></li>
-                <li><hr class="m-0 dropdown-divider"></li>
-                <li class="issue-context-item dropdown-item d-cursor" html-action="move_to">移动到</li>
+                <li class="issue-context-item dropdown-item d-cursor" html-action="move_to">移动至</li>
+                @*<li><hr class="m-0 dropdown-divider"></li>
+        <li><hr class="m-0 dropdown-divider"></li>
+        <li class="issue-context-item dropdown-item disabled d-cursor" html-action="view_issue">状态</li>
+        <li class="issue-context-item dropdown-item disabled d-cursor" html-action="disable" title="标记删除">删除<span class="float-end"><i class="bi bi bi-exclamation-octagon"></i></span></li>*@
             </ul>
         </div>
     </div>
@@ -542,7 +387,7 @@
             return false;                                   // disable default context menu
         });
         // Issue context menu
-        $('tr.tr-node').bind('contextmenu', function (e) {
+        $('span.issue-node').bind('contextmenu', function (e) {
             hide_issue_context_menu();
             hide_module_context_menu();
 
@@ -622,37 +467,7 @@
                     break;
             }
         });
-        $('li.issue-context-item').click(function () {
-            var issue_id = $('#txt_issue_id').val();
-            var issue_module_id = $('#txt_issue_module_id').val();
-            if (issue_id <= 0 || issue_module_id <= 0) {
-                return;
-            }
-
-            var action = $(this).attr("html-action");
-            var current_rowIndex = $('#tr_' + issue_id).index();
-            var row_count = $('#tr_' + issue_id).siblings().length;
-
-            switch (action) {
-                case "move_up":
-                    if (current_rowIndex < 1) {
-                        return;
-                    }
-                    call_issue_ajax(issue_id, '', issue_module_id, 0, 'move_up');
-                    break;
-                case "move_down":
-                    if (current_rowIndex == row_count - 1) {
-                        return;
-                    }
-                    call_issue_ajax(issue_id, '', issue_module_id, 0, 'move_down');
-                    break;
-                case "move_to":
-                    $('#txt_moveTo_moduleId').attr("attr-id", issue_id);
-                    var dlg = document.getElementById("move_issue_to_dialog");
-                    dlg.showModal();
-                    break;
-            }
-        });
+  
         // 点击任意右键菜单项，关闭右键菜单
         $(document).bind('contextmenu click', function () {
             hide_module_context_menu();
@@ -688,54 +503,7 @@
             $('#lbl_module_' + module_id).text(module_name);                               // Html界面更新
             $('#edit_module_dialog')[0].close();                                            // 关闭module_edit_dialog()
         }
-        // 移动到模块
-        function move_to_module(obj) {
-            var issue_id = obj.attr("attr-id");
-            if (obj.val() == "") {
-                obj.focus();
-                return;
-            } else if ($.isNumeric(obj.val()) == false) {
-                obj.focus();
-                return;
-            }
-            var module_id = obj.val();
-            call_issue_ajax(issue_id, "", module_id, 9999, "move_to_module");
-        }
 
-        /** 此段代码：主要针对issue进行操作
-         ** 包括Issue列表、加载、显示、编辑、排序等
-         * */
-
-        // 绑定add button click
-        function add_new_issue_tr(obj) {
-            $('img.add-button').each(function () {
-                $(this).toggleClass("d-none");
-            });
-
-            var html_id = obj.attr("attr-id");
-            var module_id = obj.attr("attr-module-id");
-            var prev_issue_id = obj.attr("attr-prev-issue-id");
-
-            var row_index = $('#tr_' + html_id).index();
-
-            var new_row = document.getElementById("mainTable").insertRow(row_index + 2);
-            var html = "";
-            html += "<td class=\"align-middle text-center\">-</td>";
-            html += "<td class=\"align-middle text-center\">🆔需求</td>";
-            html += "<td colspan=\"3\" class=\"pt-1 pb-1\">";
-            html += "   <textarea id=\"newSubject_" + html_id + "\" class=\"form-control w-100 border-bdbdbd fs-9 rounded-0\"></textarea>";
-            html += "</td > ";
-            html += "<td colspan=\"2\" class=\"ps-1 align-middle\">";
-            html += "   <div class=\"btn-group w-75\">";
-            html += "       <button attr-id='" + html_id + "' attr-module-id='" + module_id + "' attr-prev-issue-id='" + prev_issue_id + "' class=\"form-control btn-5693af btn-sm m-0 fs-9\" onclick=\"create_issue('new',$(this));\"><i class=\"bi bi-clipboard-check\"></i>Create</button>&nbsp;";
-            html += "       <button id=\"cancel_btn_" + html_id + "\" class=\"form-control btn-normal btn-sm m-0 ps-1 fs-9\" onclick=\"cancel(" + html_id + ")\"><i class=\"bi bi-trash\"></i>Cancel</button>";
-            html += "   </div>";
-            html += "</td>";
-            html += "<td class=\"align-middle text-center\"></td>";
-            new_row.innerHTML = html;
-
-            $('#newSubject_' + html_id).focus();
-        }
         // 添加说明
         function add_issue_notes(obj) {
             var issue_id = obj.attr("attr-id");
@@ -749,22 +517,7 @@
                 return;
             }
             call_issue_ajax(issue_id, issue_notes, 0, 0, "add_notes");
-        }
-        // 编辑描述
-        function update_issue_description(obj) {
-            var issue_id = obj.attr("attr-id");
-            var issue_description = desc_Editor.txt.html();
-
-            if (issue_id == "") {
-                showToast('请先选择左侧问题。');
-                return;
-            } else if (issue_description == "") {
-                showToast('请录入问题描述。');
-                return;
-            }
-            call_issue_ajax(issue_id, issue_description, 0, 0, "update_desc");
-            //alert(issue_id);
-        }
+        }        
         // 移动节点
         function move(obj_id, parent_id, action) {
             switch (action) {
@@ -794,70 +547,6 @@
                     if (obj.index() > 0) {  // 第一个元素不支持调整等级
                         call_module_ajax(obj_id, '', parent_id, action);
                     }
-                    break;
-            }
-        }
-        function cancel(textarea_row_index) {
-            var cancel_btn = $('#cancel_btn_' + textarea_row_index);
-            cancel_btn.parent().parent().parent().remove();
-            $('img.add-button').each(function () {
-                $(this).toggleClass("d-none");
-            });
-        }
-        function onEdit() {
-            $('img.link-edit').each(function () {
-                $(this).toggleClass("d-none");
-            });
-        }
-        function offEdit() {
-            $('img.link-edit').each(function () {
-                $(this).toggleClass("d-none");
-            });
-        }
-        function cancel_edit(obj) {
-            var id = obj.attr("attr-id");
-            $('#linkLabel_' + id).toggleClass("d-none");
-            $('#linkDiv_' + id).toggleClass("d-none");
-            onEdit();
-        }
-        function edit_issue(obj) {
-            offEdit();
-            var id = obj.attr("attr-id");
-            $('#linkLabel_' + id).toggleClass("d-none");
-            $('#linkDiv_' + id).toggleClass("d-none");
-            $('#editSubject_' + id).focus();
-        }
-        // 保存、更新
-        function create_issue(action, obj) {
-            var html_id = obj.attr("attr-id");
-            var module_id = obj.attr("attr-module-id");
-            var prev_issue_id = obj.attr("attr-prev-issue-id");
-
-            var newSubject = "";
-            switch (action) {
-                case "init":
-                    newSubject = $('#initSubject_9999').val().trim();
-                    if (newSubject == "") {
-                        $('#initSubject_9999').focus();
-                        return;
-                    }
-                    call_issue_ajax(0, newSubject, module_id, prev_issue_id, "create_issue");
-                    break;
-                case "new":
-                    newSubject = $('#newSubject_' + html_id).val().trim();
-                    if (newSubject == "") {
-                        $('#newSubject_' + html_id).focus();
-                        return;
-                    }
-                    call_issue_ajax(0, newSubject, module_id, prev_issue_id, "create_issue");
-                    break;
-                case "edit":
-                    newSubject = $('#editSubject_' + html_id).val().trim();
-                    if (newSubject == "") {
-                        $('#editSubject_' + html_id).focus();
-                        return;
-                    }
-                    call_issue_ajax(html_id, newSubject, module_id, prev_issue_id, "edit_issue");
                     break;
             }
         }
@@ -898,66 +587,9 @@
             }
         });
     }
-    // issue操作
-    function call_issue_ajax(issue_id, issue_subject, module_id, prev_issue_id, action) {
-        var obj = {
-            "action": action, "module_id": module_id, "prev_issue_id": prev_issue_id, "issue": {
-                "id": issue_id, "subject": issue_subject, "authorId":@user_id
-            }
-        };
-        //'{\"action\":\"' + action + '\",\"module_id\":' + module_id + ',\"prev_issue_id\":' + prev_issue_id + ',\"issue\":{\"id\": ' + issue_id + ',\"subject\": \"' + issue_subject + '\",\"authorId\":@user_id}}',
-        $.ajax({
-            url: '/api/Issue',
-            method: 'POST',
-            dataType: 'json',
-            contentType: 'application/json; charset=utf-8',
-            data: JSON.stringify(obj),
-            complete: function (jqXHR, status) {
-                var result = jQuery.parseJSON(jqXHR.responseText);
-                switch (result.result) {
-                    case "OK":
-                        switch (action) {
-                            case "move_up":
-                            case "move_down":
-                            case "create_issue":
-                                window.location.reload();
-                                break;
-                            case "edit_issue":
-                                $('#showLabel_' + issue_id).text(issue_subject);
-                                $('#update_on_' + issue_id).text(result.value);
-                                $('#linkCancel_' + issue_id).click();
-                                load_issue_description(issue_id);
-                                break;
-                            case "update_desc":
-                                showToast('描述已更新。');
-                                load_issue_description(issue_id);
-                                break;
-                            case "add_notes":
-                                showToast('说明已更新。');
-                                load_issue_description(issue_id);
-                                break;
-                            case "move_to_module":
-                                $('#move_issue_to_dialog')[0].close();
-                                alert("操作成功。");
-                                window.location.reload();
-                                break;
-                        }
-                        break;
-                    case "Ingore":
-                        break;
-                    default:
-                        alert("Request failed: " + result.result);
-                        break;
-                }
-            },
-            error: function (jqXHR, textStatus, errorThrown) {
-                ;
-            }
-        });
-    }
 </script>
 <script>
-    var recordCount = @Model.DisplayIssues.Count;
+    var recordCount = @Model.Issues.Count;
     var toggler = document.getElementsByClassName("caret");
 
     for (var i = 0; i < toggler.length; i++) {
@@ -967,25 +599,12 @@
     }
 
     $(document).ready(function () {
-        $('textarea').focus(function () {
-            return false;
-        });
+        //$('textarea').focus(function () {
+        //    return false;
+        //});
         $("#module_tree span").click(function () {            // li绑定click
             $("#module_tree span").removeClass('active');
             $(this).addClass('active');
-        });
-        $("#mainTable tr").click(function () {              // issue绑定click，支持选中效果
-            $("#mainTable tr").removeClass('active');
-            $(this).addClass('active');
-        });
-        $("img.add-button").click(function () {             // 点击新增issue按钮
-            add_new_issue_tr($(this));
-        });
-        $('img.link-edit').click(function () {              // 点击编辑issue按钮
-            edit_issue($(this));
-        });
-        $('button.link-cancel').click(function () {         // 点击取消编辑issue按钮
-            cancel_edit($(this));
         });
         $('span.span-node').click(function () {    // 点击模块名称
             var html_id = $(this).attr("attr-id");
@@ -1000,122 +619,8 @@
                     action = "show_module_true";
                 }
                 $('#ul_' + html_id).toggleClass("d-none");
-                call_module_ajax(html_id, '', 9999, action);
+                //call_module_ajax(html_id, '', 9999, action);
             }
         });
-
-        var issue_id = @Model.issue_id;
-        if (issue_id > 0) {
-            $('#td_' + issue_id).click();
-        }
     });
-    function load_issue_description(issue_id) {
-        if (issue_id <= 0) {
-            return;
-        }
-        $.ajax({
-            url: '/api/Issue/' + issue_id,
-            method: 'GET',
-            dataType: 'json',
-            contentType: 'application/json; charset=utf-8',
-            data: '',
-            complete: function (jqXHR, status) {
-                var result = jQuery.parseJSON(jqXHR.responseText);
-                switch (result.result) {
-                    case "OK":
-                        $('#btn_update_issue').attr("attr-id", result.issue_id);
-                        $('#btn_add_notes').attr("attr-id", result.issue_id);
-                        if (result.description == null) {
-                            desc_Editor.txt.html('');
-                        } else {
-                            desc_Editor.txt.html(result.description);
-                        }
-                        //notes_Editor.txt.html('');
-
-                        // history
-                        $('#html_issue_history').empty().append(result.history_tr);
-
-                        // notes
-                        $('#issue_notes tbody').find("tr").remove()
-                        $('#issue_notes tbody').append(result.notes_tr);
-
-                        // issue_properties
-                        $('#issue_properties tbody').find("tr").remove()
-                        $('#issue_properties tbody').append(result.properties_tr);
-
-                        // issue_attachment
-                        $('#issue_attachment tbody').find("tr").remove()
-                        $('#issue_attachment tbody').append(result.attachment_tr);
-                        $('#txt_issue_attachement').text('附件 (' + result.attachment_length + ')');
-                        $('#txt_issue_notes').text('问题补充 (' + result.notes_length + ')');
-                        //$('#txt_issue_history').text('历史记录 (' + result.history_length + ')');
-                        $('#txt_issue_property').text('更改属性 (' + result.property_length + ')');
-                        break;
-                    case "Ingore":
-                        break;
-                    default:
-                        alert("Request failed: " + jqXHR.Result);
-                        break;
-                }
-            },
-            error: function (jqXHR, textStatus, errorThrown) {
-                ;
-            }
-        });
-    }
-</script>
-<style>
-    .w-e-toolbar .w-e-menu {
-        width: 26px;
-        height: 26px;
-    }
-</style>
-<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/wangeditor@latest/dist/wangEditor.min.js"></script>
-<script type="text/javascript">
-    const E_desc = window.wangEditor;
-    const e_notes = window.wangEditor;
-
-    const desc_Editor = new E_desc("#mk_desc_editor");
-    const notes_Editor = new e_notes("#mk_notes_editor");
-
-    desc_Editor.config.menus = [
-        'head',
-        'bold',
-        'fontSize',
-        'fontName',
-        'italic',
-        'strikeThrough',
-        'indent',
-        'foreColor',
-        'backColor',
-        'link',
-        'list',
-        'todo',
-        'justify',
-        'splitLine',
-        'undo',
-        'redo',
-    ];
-    desc_Editor.create();
-
-
-    notes_Editor.config.menus = [
-        'head',
-        'bold',
-        'fontSize',
-        'fontName',
-        'italic',
-        'strikeThrough',
-        'indent',
-        'foreColor',
-        'backColor',
-        'link',
-        'list',
-        'todo',
-        'justify',
-        'splitLine',
-        'undo',
-        'redo',
-    ];
-    notes_Editor.create();
 </script>
