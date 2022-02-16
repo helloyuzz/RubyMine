@@ -3,7 +3,7 @@
 @{
     Layout = null;
     string user_id = User.Claims.FirstOrDefault(t => t.Type.Equals("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier")).Value;
-    bool showEdit = Model.Admin_Role_id.Contains("-" + user_id + ",");
+    bool showEdit = Model.Admin_Role_id.Contains("-" + user_id + ",");    
 }
 
 <!DOCTYPE html>
@@ -19,12 +19,14 @@
 <body style="overflow-x:hidden">
     <form action="" method="post">
         <input type="hidden" asp-for="Issue.Id"/>
+        <input type="hidden" asp-for="Issue.AuthorId" value="@user_id"/>
+        <input type="hidden" asp-for="Module_id" />
         @*<h1> - </h1>*@
         <div class="row">
             <div class="col">
 
                 <div class="form-floating mb-3">
-                    <input type="text" class="form-control fs-5 fw-bold" asp-for="Issue.Subject" placeholder="name@example.com" value="@Model.Issue.Subject">
+                    <input type="text" class="form-control fs-5 fw-bold" asp-for="Issue.Subject" placeholder="name@example.com" value="@Model.Issue.Subject" onfocus="this.select();">
                     <label for="floatingInputValue">@Model.Issue.Id - @Model.Issue.Status.Name</label>
                 </div>
     @if(showEdit){

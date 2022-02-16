@@ -588,19 +588,19 @@
         });
 
         // 禁用系统菜单
-        $('.module-context-menu .issue-context-menu').bind('contextmenu', function () {
+        $('.context-menu').bind('contextmenu', function () {
             return false;
         });
 
         // 点击任意菜单项，隐藏
-        $('.module-context-menu li .issue-context-menu li').click(function () {
+        $('.context-menu li').click(function () {
             hide_menu();
         });
 
         // 隐藏右键菜单，隐藏输入框置空
         function hide_menu() {
-            $('#html_ModuleContextMenu').hide();
-            $('#html_IssueContextMenu').hide();
+            $('#module_menu').hide();
+            $('#issue_menu').hide();
             $("#txt_module_id").val("");
             $('#txt_module_pid').val('');
             $('#txt_module_name').val('');

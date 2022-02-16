@@ -63,6 +63,24 @@
                         </span>
                         <a href="/Platform/" class="text-decoration-none fw-normal mr-4 text-dark fw-bold" title="返回开发平台主页"><img class="w-auto mb-1" src="/images/xp/shield.png" /><span class="fw-bold mt-1">3.0产品开发管理平台</span></a>
                     </div>
+                    <div class="col">
+                        <div class="btn-group float-end">
+                            <button type="button" class="btn btn-danger dropdown-toggle p-1 shadow" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="bi bi-diagram-3"></i>
+                            </button>
+                            <ul id="ul_show_level" class="dropdown-menu p-0 rounded-3 shadow">
+                                <li class="p-0 m-0"><a class="dropdown-item p-0 fs-9 show-level" level="1" href="#">展开到第1级</a></li>
+                                <li class="p-0 m-0"><hr class="dropdown-divider"></li>
+                                <li class="p-0 m-0"><a class="dropdown-item p-0 fs-9 show-level" level="2" href="#">展开到第2级</a></li>
+                                <li class="p-0 m-0"><a class="dropdown-item p-0 fs-9 show-level" level="3" href="#">展开到第3级</a></li>
+                                <li class="p-0 m-0"><a class="dropdown-item p-0 fs-9 show-level" level="4" href="#">展开到第4级</a></li>
+                                <li class="p-0 m-0"><a class="dropdown-item p-0 fs-9 show-level" level="5" href="#">展开到第5级</a></li>
+                                <li class="p-0 m-0"><a class="dropdown-item p-0 fs-9 show-level" level="6" href="#">展开到第6级</a></li>
+                                <li class="p-0 m-0"><hr class="dropdown-divider"></li>
+                                <li class="p-0 m-0"><a class="dropdown-item p-0 fs-9 show-level" level="30" href="#">全部显示</a></li>
+                            </ul>
+                        </div>
+                    </div>
                 </div>
                 <div style="background-image:url('/images/line-dot.png');background-repeat:repeat-x;height:2px;margin-bottom:2px;">
                     <img src="/images/whitepoint.png" />
@@ -97,5 +115,22 @@
     } else {
     @RenderBody()
     }
+    <script>
+        $(document).ready(function () {
+            $('#ul_show_level a').click(function () {
+                var obj = $(this);
+                var level = obj.attr("level");
+                expland_to(level);
+            });
+        });
+        function expland_to(level) {
+            for (var n = 1; n <= 30; n++) {
+                $('ul.level-' + n).addClass("d-none");
+            }
+            for (var n = 1; n <= level; n++) {
+                $('ul.level-' + n).removeClass("d-none");
+            }
+        }
+    </script>
 </body>
 </html>

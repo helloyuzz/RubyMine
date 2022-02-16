@@ -156,19 +156,17 @@ namespace RubyMine.Controllers {
                         soapResult.Result = "OK";
                         soapResult.Value = JsonConvert.SerializeObject(newModule);
                         break;
-                    case "show_module_true":
-                    case "show_module_false":
+                    case "ex_true":
+                    case "ex_false":
                         ActiveNodes activeNodes = GlobalCache.ActiveNodes.FirstOrDefault(t => t.Key == module.User_id).Value;
                         if (activeNodes == null) {
                             activeNodes = new ActiveNodes();
                             GlobalCache.ActiveNodes.Add(module.User_id, activeNodes);
                         }
-                        if (activeNodes.Contains(module.Id) == false) {
-                            activeNodes.Add(module.Id);
-                        }
-                        if (module.Action.Equals("show_module_false") && activeNodes.Contains(module.Id)) {
                             activeNodes.Remove(module.Id);
-                        }
+                        if (module.Action.Equals("ex_true")) {
+                            activeNodes.Add(module.Id);
+                        } 
                         soapResult.Result = "OK";
                         break;
                 }

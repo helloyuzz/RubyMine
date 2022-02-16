@@ -45,7 +45,9 @@ html {
 .box-shadow {
   box-shadow: 0 .25rem .75rem rgba(0, 0, 0, .05);
 }
-
+.border-eee {
+    border:1px solid #eeeeee !important;
+}
 button.accept-policy {
   font-size: 1rem;
   line-height: inherit;

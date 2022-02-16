@@ -93,7 +93,7 @@
         color: #adb5c9 !important;
     }
 
-    .parent-module {
+    .module-li {
         padding-left: 19px;
     }
 
@@ -128,13 +128,13 @@
         height: 100% !important;
     }
 
-        .w-e-text-container p {
-            font-size: small !important;
-        }
+    .w-e-text-container p {
+        font-size: small !important;
+    }
 
-        .w-e-text-container .placeholder {
-            display: none !important;
-        }
+    .w-e-text-container .placeholder {
+        display: none !important;
+    }
 
     .nav-tabs .nav-link {
         background: #f0f0f0 !important;
@@ -142,21 +142,24 @@
     .w-e-toolbar,.nav-item {
         font-size:9pt;
     }
+    .level-1 {
+        display:block !important;
+    }
 </style>
 
 @functions{
-    string BuildTree(int? parent_id, int user_id) {
+    string BuildTree(int? parent_id, int user_id,int level) {
         string htmlTree = "";
+        var ex_true = "d-none";
         if (parent_id == null) {
             htmlTree = "<ul id=\"module_tree\" class=\"jumpNav\">";
         } else {
-            htmlTree = "<ul id=\"ul_" + parent_id + "\" htmlId=\"" + parent_id + "\" class=\"";
+            htmlTree = "<ul id='ul_" + parent_id + "' htmlId='" + parent_id + "' class='";
+                ex_true = "d-block";
             if (GlobalCache.ActiveNodes.FirstOrDefault(t => t.Key == user_id).Value.Contains(parent_id.Value)) {
-                htmlTree += "d-block";
-            } else {
-                htmlTree += "d-none";
-            }
-            htmlTree += "\">";
+            } 
+            htmlTree += ex_true;
+            htmlTree += " level-" + level + "'>";
         }
 
         var itemCount = Model.Modules.Count(t => t.PId == parent_id);
@@ -169,6 +172,7 @@
                     showIndexTip = "";
                 }
                 int subNode = Model.Modules.Count(t => t.PId == item.Id);
+                subNode += Model.Issues.Count(t=>t.Module_id == item.Id);
                 var active = "";
 
                 if (Model.Module_id == item.Id) {
@@ -179,54 +183,42 @@
                 if (item.PId != null) {
                     pid = item.PId.Value;
                 }
-                string html_attr_id = " attr-id=\"" + item.Id + "\" attr-pid=\"" + pid + "\" attr-index=\"" + item.Index + "\"";
-                string html_attr_title = " attr-title=\"" + item.Name + "\"";
+                string html_attr = " module-id='" + item.Id + "' module-pid='" + pid + "' module-name='" + item.Name + "' issue-id=''";
                 string show_caret = "caret-issue";
                 if (subNode > 0) {
                     show_caret = "caret";
                 }
 
-                htmlTree += "<li id=\"html_node_" + item.Id + "\" class=\"li-node parent-module node-" + item.Id + "\">";
-                htmlTree += "   <span class=\"span-node module-parent-node " + show_caret + " d-inline-block w-100 text-269" + active + "\"" + html_attr_id + html_attr_title + ">";
-                htmlTree += "               <img class=\"w-auto\" src=\"/images/xp/briefcase.png\">&nbsp;<span>" + showIndexTip + "</span><span id=\"lbl_module_" + item.Id + "\">" + item.Name + "</span>";
+                htmlTree += "<li id='module_" + item.Id + "' class='module-li node-" + item.Id + "'>";
+                htmlTree += "   <span id='span_" + item.Id + "' class='module " + show_caret + " d-inline-block w-100 text-269" + active + "'" + html_attr + ">";
+                htmlTree += "        <img class='w-auto' src='/images/xp/module.png'>&nbsp;<label id='lbl_module_" + item.Id + "' title='模块编号:" + item.Id + "'>" + item.Name+"</label>";
                 htmlTree += "   </span>";
                 if (subNode > 0) {
-                    string tempTree = BuildTree(item.Id, user_id);
+                    string tempTree = BuildTree(item.Id, user_id,level+1);
                     if (string.IsNullOrEmpty(tempTree) == false) {
                         htmlTree += tempTree;
                     }
                 }
-                htmlTree += BuildIssue(item.Id);
+                htmlTree += BuildIssue(item.Id,level+1);
                 htmlTree += "</li>";
-                //else {
-                //    htmlTree += "<li id=\"html_node_" + item.Id + "\" class=\"li-node parent-module node-" + item.Id + "\">";
-                //    htmlTree += "   <span class=\"span-node d-inline-block w-100" + active + "\" style=\"padding-left:19px;\"" + html_attr_id + html_attr_title + ">";
-                //    htmlTree += "       <a class=\"text-decoration-none text-dark d-inline-block w-100\" target=\"issue_content\" href=\"/Platform/Issue?action=load&module_id=" + item.Id + "\" title='查看'>";
-                //    htmlTree += "           <img src=\"/images/xp/briefcase.png\">&nbsp;<span>" + showIndexTip + "</span><span id=\"lbl_module_" + item.Id + "\">" + item.Name + "</span>";
-                //    htmlTree += "       </a>";
-                //    htmlTree += "   </span>";
-                //    htmlTree += BuildIssue(item.Id);
-                //    htmlTree += "</li>";
-                //}
             }
         }
         htmlTree += "</ul>";
         return htmlTree;
     }
-    string BuildIssue(int module_id) {
+    string BuildIssue(int module_id,int level) {
         string temp = "";
 
         var issues = Model.Issues.Where(t=>t.Module_id == module_id).OrderBy(t=>t.Position);
         if (issues.Count() > 0) {
-            temp += "<ul id='ul_" + module_id + "' htmlid='" + module_id + "' class=\"d-block\">";
+            temp += "<ul id='ul_issue_" + module_id + "' htmlid='" + module_id + "' class='level-" + level + "'>";
             foreach (var item in issues) {
-                string html_attr_id = " attr-id=\"" + item.Id + "\" attr-pid=\"" + module_id + "\" attr-index=\"" + item.Position + "\"";
-                string html_attr_title = " attr-title=\"" + item.Subject + "\"";
+                string html_attr = " module-id='" + item.Module_id + "' module-pid='' module-name='' issue-id='" + item.Id + "'";
 
-                temp += "<li id='html_node_" + item.Id + "' class=\"li-node\">";
-                temp += "   <span class=\"issue-node d-inline-block w-100\" style=\"padding-left:19px;\"" + html_attr_id + html_attr_title + ">";
-                temp += "       <a class=\"text-decoration-none text-dark d-inline-block w-100\" target=\"issue_content\" href=\"/Platform/ViewIssue?issue_id=" + item.Id + "\" title='查看'>";
-                temp += "           <img src=\"/images/xp/page_word.png\">&nbsp;<span>" + item.Id + ".</span><span id=\"lbl_module_" + item.Id + "\">" + item.Subject + "</span>";
+                temp += "<li id='issue_" + item.Id + "' class='issue-li'>";
+                temp += "   <span class='issue d-inline-block w-100' style='padding-left:19px;'" + html_attr + ">";
+                temp += "       <a class='text-decoration-none text-dark d-inline-block w-100' target='issue_content' href='/Platform/ViewIssue?issue_id=" + item.Id + "' title='查看'>";
+                temp += "           <img src='/images/xp/page_word.png'>&nbsp;<label title='需求编号:" + item.Id + "'>" +item.Subject + "</label>";
                 temp += "       </a>";
                 temp += "   </span>";
                 temp +="</li>";
@@ -241,7 +233,7 @@
     <tr>
         <td valign="top" width="26%">
             <div id="module_div" class="bg-white p-1 border-inset h-100 overflow-scroll" style="overflow-x:hidden !important;">
-                @Html.Raw(BuildTree(null, int.Parse(user_id)))
+                @Html.Raw(BuildTree(null, int.Parse(user_id),0))
             </div>
         </td>
         <td valign="top" class="p-1 pt-0">
@@ -263,63 +255,47 @@
         </div>
     </div>
 </div>
-@if (showEdit) {
-    <div class="container p-0">
-        <!-- Module-Context-menu -->
-        <div id="html_ModuleContextMenu" class="module-context-menu shadow">
-            <ul class="p-0 m-0">
-                <li class="module-context-item dropdown-item d-cursor" html-action="add_sub_module">添加下级目录</li>
-                <li class="module-context-item dropdown-item d-cursor" html-action="add_sub_issue">增加需求</li>
-                <li><hr class="m-0 dropdown-divider"></li>
-                <li class="module-context-item dropdown-item d-cursor" html-action="edit_module">重命名</li>
-                @*<li class="module-context-item dropdown-item d-cursor" html-action="view_module">查看</li>*@
-                <li><hr class="m-0 dropdown-divider"></li>
-                <li class="module-context-item dropdown-item d-cursor" html-action="move_up">上移</li>
-                <li class="module-context-item dropdown-item d-cursor" html-action="move_down">下移</li>
-                <li><hr class="m-0 dropdown-divider"></li>
-                <li class="module-context-item dropdown-item d-cursor" html-action="up_level">上提一级</li>
-                <li class="module-context-item dropdown-item d-cursor" html-action="down_level">下降一级</li>
-                <li><hr class="m-0 dropdown-divider"></li>
-                <li class="module-context-item dropdown-item d-cursor" html-action="default_module_index">重排下级目录</li>
-                <li class="module-context-item dropdown-item d-cursor" html-action="default_issue_index">重排下级需求</li>
-                @*<li><hr class="m-0 dropdown-divider"></li>*@
-                <li><hr class="m-0 dropdown-divider"></li>
-                <li class="module-context-item dropdown-item disabled d-cursor" html-action="disable" title="标记删除">删除<span class="float-end"><i class="bi bi bi-exclamation-octagon"></i></span></li>
-            </ul>
-        </div>
-    </div>
-    <div class="container p-0">
-        <!-- Issue-Context-menu -->
-        <div id="html_IssueContextMenu" class="issue-context-menu shadow">
-            <ul class="p-0 m-0">
-                <li class="issue-context-item dropdown-item d-cursor" html-action="add_sub_issue">增加需求</li>
-                <li><hr class="m-0 dropdown-divider"></li>
-                <li class="issue-context-item dropdown-item d-cursor" html-action="move_up">上移</li>
-                <li class="issue-context-item dropdown-item d-cursor" html-action="move_down">下移</li>
-                <li><hr class="m-0 dropdown-divider"></li>
-                <li class="issue-context-item dropdown-item d-cursor" html-action="move_to">移动至</li>
-                @*<li><hr class="m-0 dropdown-divider"></li>
-        <li><hr class="m-0 dropdown-divider"></li>
-        <li class="issue-context-item dropdown-item disabled d-cursor" html-action="view_issue">状态</li>
-        <li class="issue-context-item dropdown-item disabled d-cursor" html-action="disable" title="标记删除">删除<span class="float-end"><i class="bi bi bi-exclamation-octagon"></i></span></li>*@
-            </ul>
-        </div>
-    </div>
-}
-<input type="hidden" value="@Model.Module_id" id="txt_module_id" />
-<input type="hidden" value="" id="txt_module_name" />
-<input type="hidden" value="" id="txt_module_pid" />
-<input type="hidden" value="" id="txt_issue_id" />
-<input type="hidden" value="" id="txt_issue_module_id" />
 
-<script>
-    function showToast(content) {
-        alert(content);
-    }
-</script>
+<div class="container p-0">
+    <div id="module_menu" class="shadow">
+        <ul id="ul_module" class="p-0 m-0 d-none">
+            <li class="context-item dropdown-item d-cursor" html-type="module" html-action="add_sub_module">添加下级目录</li>
+            <li class="context-item dropdown-item d-cursor" html-type="module" html-action="add_issue">添加需求</li>
+            <li><hr class="m-0 dropdown-divider"></li>
+            <li class="context-item dropdown-item d-cursor" html-type="module" html-action="edit_module">重命名</li>
+            <li><hr class="m-0 dropdown-divider"></li>
+            <li class="context-item dropdown-item d-cursor" html-type="module" html-action="move_module_up">上移</li>
+            <li class="context-item dropdown-item d-cursor" html-type="module" html-action="move_module_down">下移</li>
+            <li><hr class="m-0 dropdown-divider"></li>
+            <li class="context-item dropdown-item d-cursor" html-type="module" html-action="up_level">上提一级</li>
+            <li class="context-item dropdown-item d-cursor" html-type="module" html-action="down_level">下降一级</li>
+            <li><hr class="m-0 dropdown-divider"></li>
+            <li class="context-item dropdown-item d-cursor" html-type="module" html-action="default_module_index">重排序(目录)</li>
+            <li class="context-item dropdown-item d-cursor" html-type="module" html-action="default_issue_index">重排序(需求)</li>
+            <li><hr class="m-0 dropdown-divider"></li>
+            <li class="context-item dropdown-item disabled d-cursor" html-type="module" html-action="disable" title="标记删除">删除<span class="float-end"><i class="bi bi bi-exclamation-octagon"></i></span></li>
+        </ul>
+        <ul id="ul_issue" class="p-0 m-0 d-none">
+            <li class="context-item dropdown-item d-cursor" html-type="issue" html-action="add_issue">添加需求</li>
+            <li><hr class="m-0 dropdown-divider"></li>
+            <li class="context-item dropdown-item d-cursor" html-type="issue" html-action="edit_issue">重命名</li>
+            <li class="context-item dropdown-item d-cursor" html-type="issue" html-action="move_issue_up">上移</li>
+            <li class="context-item dropdown-item d-cursor" html-type="issue" html-action="move_issue_down">下移</li>
+            <li><hr class="m-0 dropdown-divider"></li>
+            <li class="context-item dropdown-item d-cursor" html-type="issue" html-action="move_issue_to">移动至</li>
+        </ul>
+    </div>
+</div>
+
+<input type="hidden" id="txt_module_id" value="@Model.Module_id" />
+<input type="hidden" id="txt_issue_id" value="" />
+<input type="hidden" id="txt_module_pid" value="" />
+<input type="hidden" id="txt_module_name" value="" />
+
+
 <style>
     /* Context menu */
-    .module-context-menu, .issue-context-menu {
+    #module_menu {
         display: none;
         position: absolute;
         border: 1px solid #9f9d9d;
@@ -328,231 +304,248 @@
         background: white;
     }
 
-        .module-context-menu ul {
-            list-style: none;
-        }
+    #module_menu ul {
+        list-style: none;
+    }
 
-            .module-context-menu ul li {
-            }
+    #module_menu ul li {
+    }
 </style>
 <dialog id="edit_module_dialog" class="shadow" style="width:400px">
     <div class="row fs-9">
         <div class="col"><input id="edit_module_name" type="text" attr-id="" value="" class="form-control border-inset rounded-0 fs-9 w-100 p-1" autocomplete="off" /></div>
         <div class="col-4" style="padding-top:6px;">
-            <a href="#Dialog" class="btn-sm border-1 bg-title text-decoration-none fs-9 rounded-0" onclick="update_module_name($('#edit_module_name'))">save</a>
+            <a href="#Dialog" class="btn-sm border-1 bg-title text-decoration-none fs-9 rounded-0" onclick="update_module_name()">save</a>
             <a href="#Dialog" class="btn-sm border-1 bg-title text-decoration-none fs-9 rounded-0" onclick="$('#edit_module_dialog')[0].close();">cancel</a>
         </div>
     </div>
 </dialog>
 <dialog id="move_issue_to_dialog" class="shadow" style="width:400px">
     <div class="row fs-9">
-        <div class="col"><input id="txt_moveTo_moduleId" type="text" attr-id="" value="" class="form-control border-inset rounded-0 fs-9 w-100 p-1" placeholder="请输入模块编号" autocomplete="off" /></div>
+        <div class="col"><input id="txt_move_issue_id" type="text" attr-id="" value="" class="form-control border-inset rounded-0 fs-9 w-100 p-1" placeholder="请输入模块编号" autocomplete="off" /></div>
         <div class="col-4" style="padding-top:6px;">
-            <a href="#Dialog" class="btn-sm border-1 bg-title text-decoration-none fs-9 rounded-0" onclick="move_to_module($('#txt_moveTo_moduleId'))">save</a>
+            <a href="#Dialog" class="btn-sm border-1 bg-title text-decoration-none fs-9 rounded-0" onclick="move_to_module()">save</a>
             <a href="#Dialog" class="btn-sm border-1 bg-title text-decoration-none fs-9 rounded-0" onclick="$('#move_issue_to_dialog')[0].close();">cancel</a>
         </div>
     </div>
 </dialog>
-@if (showEdit) {
-    <script>
-        /** 此段代码：主要针对模块进行操作
-         ** 包括模块加载、显示、排序、重置、新增、修改、禁用操作
-         */
-        // Module context menu
-        $("span.span-node").bind('contextmenu', function (e) {  // module右键菜单
-            hide_module_context_menu();                     // 先关闭已打开的右键菜单
-            hide_issue_context_menu();
-
-            var html_id = $(this).attr("id");               // 选中元素的html DOM id
-            var id = $(this).attr("attr-id");               // 选中元素的module_id;
-            var pid = $(this).attr("attr-pid");             // 选中元素的pid
-            var module_name = $(this).attr("attr-title");   // 选中元素的module name
-
-            $("#txt_module_id").val(id);                    // 隐藏赋值
-            $('#txt_module_pid').val(pid);                         // 同上
-            $('#txt_module_name').val(module_name);         // 同上，显示用
-
-            $("span.span-node").each(function () {              // 取消active效果
-                $(this).removeClass("active");
-            });
-            $(this).toggleClass("active");                  // 选中当前节点 current_module
-            var top = e.pageY + 5;                          // 菜单定位
-            var left = e.pageX;
-
-            $(".module-context-menu").toggle(100).css({     // Show contextmenu
-                top: top + "px",
-                left: left + "px"
-            });
-
-            return false;                                   // disable default context menu
-        });
-        // Issue context menu
-        $('span.issue-node').bind('contextmenu', function (e) {
-            hide_issue_context_menu();
-            hide_module_context_menu();
-
-            var issue_id = $(this).attr("attr-id");
-            var issue_module_id = $(this).attr("attr-module-id");
-            $('#txt_issue_id').val(issue_id);
-            $('#txt_issue_module_id').val(issue_module_id);
-
-            $("tr.tr-node").each(function () {              // 取消active效果
-                $(this).removeClass("active");
-            });
-            $(this).toggleClass("active");                  // 选中当前节点 current_module
-            var top = e.pageY + 5;                          // 菜单定位
-            var left = e.pageX;
-
-            $(".issue-context-menu").toggle(100).css({     // Show contextmenu
-                top: top + "px",
-                left: left + "px"
-            });
-
-            return false;
-        });
-
-        // 右键菜单操作
-        $("li.module-context-item").click(function () {
-            var module_id = $('#txt_module_id').val().trim();
-            var parent_id = $('#txt_module_pid').val().trim();           // current_module 不能为空
-            if (module_id == "") {                          //
-                return;
-            }
-            var action = $(this).attr("html-action");       // 操作类型action_type
-            switch (action) {
-                case "add_sub_module":                         // 新增
-                    call_module_ajax(module_id, '', parent_id, "create_module");
-                    break
-                case "edit_module":                                // 编辑
-                    var module_name = $('#lbl_module_' + module_id).text();
-                    $('#edit_module_name').val(module_name);
-                    $('#edit_module_name').attr("attr-id", module_id);
-                    var dlg = document.getElementById("edit_module_dialog");
-                    dlg.showModal();
-                    break;
-                case "view_module":
-                    window.location = "/Platform?action=load&module_id=" + module_id;
-                    break;
-                case "move_up":                             // 上移
-                    move(module_id, parent_id, "up");
-                    break;
-                case "move_down":                           // 下移
-                    move(module_id, parent_id, "down");
-                    break;
-                case "disable":                             // 禁用
-                    break;
-                case "default_module_index":                       // 恢复模块下的默认排序，出现排序错误时使用此功能
-                    var module_name = $('#txt_module_name').val();
-                    if (confirm("当前操作会 初始化 [" + module_name + "] 下级模块排序，是否继续？")) {
-                        call_module_ajax(module_id, '', 9999, "default_module_index");
-                    }
-                    break;
-                case "default_issue_index":
-                    var module_name = $('#txt_module_name').val();
-                    if (confirm("当前操作会 初始化 [" + module_name + "] 下级问题排序，是否继续？")) {
-                        call_module_ajax(module_id, '', 9999, "default_issue_index");
-                    }
-                    break;
-                case "disable":
-                    var module_name = $('#txt_module_name').val();
-                    if (confirm("当前操作会 禁用 [" + module_name + "] 及其下级模块，是否继续？")) {
-                        call_module_ajax(module_id, '', 9999, "disable");
-                    }
-                    break;
-                case "up_level":                            // 上提一级显示排序
-                    move(module_id, parent_id, "up_level");
-                    break;
-                case "down_level":                          // 下降一级显示排序
-                    move(module_id, parent_id, "down_level");
-                    break;
-            }
-        });
-  
-        // 点击任意右键菜单项，关闭右键菜单
-        $(document).bind('contextmenu click', function () {
-            hide_module_context_menu();
-            hide_issue_context_menu();
-        });
-        // disable context-menu from custom menu
-        $('.module-context-menu .issue-context-menu').bind('contextmenu', function () {
-            return false;
-        });
-        // Clicked context-menu item
-        $('.module-context-menu li .issue-context-menu li').click(function () {
-            $(".module-context-menu").hide();
-        });
-        // 隐藏右键菜单时，隐藏输入框内容置空
-        function hide_module_context_menu() {
-            $('#html_ModuleContextMenu').hide();
-            $("#txt_module_id").val("");
-            $('#txt_module_pid').val('');
-            $('#txt_module_name').val('');
-        }
-        function hide_issue_context_menu() {
-            $('#html_IssueContextMenu').hide();
-        }
-        // 更新模块名称
-        function update_module_name(obj) {
-            var module_id = obj.attr("attr-id");
-            var module_name = obj.val();
-            if (module_name == "") {    // 标题不能为空
-                obj.focus();
-                return;
-            }
-            call_module_ajax(module_id, module_name, 9999, "update_module_name");   // Ajax更新
-            $('#lbl_module_' + module_id).text(module_name);                               // Html界面更新
-            $('#edit_module_dialog')[0].close();                                            // 关闭module_edit_dialog()
-        }
-
-        // 添加说明
-        function add_issue_notes(obj) {
-            var issue_id = obj.attr("attr-id");
-            var issue_notes = notes_Editor.txt.html();
-
-            if (issue_id == "") {
-                showToast('请先选择左侧问题。');
-                return;
-            } else if (issue_notes == "") {
-                showToast("请录入问题说明");
-                return;
-            }
-            call_issue_ajax(issue_id, issue_notes, 0, 0, "add_notes");
-        }        
-        // 移动节点
-        function move(obj_id, parent_id, action) {
-            switch (action) {
-                case "up":
-                    var obj = $('#html_node_' + obj_id);
-                    if (obj.index() > 0) {
-                        call_module_ajax(obj_id, '', parent_id, action);
-                        var prev_node = obj.prev('.li-node');
-                        obj.insertBefore(prev_node);
-                    }
-                    break;
-                case "down":
-                    var obj = $('#html_node_' + obj_id);
-                    if (obj.index() < obj.siblings().length) {
-                        call_module_ajax(obj_id, '', parent_id, action);
-                        obj.insertAfter(obj.next('.li-node'));
-                    }
-                    break;
-                case "up_level":
-                    var obj = $('#html_node_' + obj_id);
-                    if (parent_id > 0) {
-                        call_module_ajax(obj_id, '', parent_id, action);
-                    }
-                    break;
-                case "down_level":
-                    var obj = $('#html_node_' + obj_id);
-                    if (obj.index() > 0) {  // 第一个元素不支持调整等级
-                        call_module_ajax(obj_id, '', parent_id, action);
-                    }
-                    break;
-            }
-        }
-    </script>
-}
 <script>
+    $(document).ready(function () {
+        $("#module_tree span").click(function () {            // li绑定click
+            var obj = $(this);
+            var module_id = obj.attr("module-id");
+            var expand = "";
+
+            $("#module_tree span").removeClass('active');
+            obj.addClass('active');
+
+            sync_value(obj);
+
+            if (obj.hasClass("module")) {
+                var ul_module = $('#ul_' + module_id);
+                var ul_issue = $('#ul_issue_' + module_id);
+                if (ul_module.hasClass("d-none") || ul_issue.hasClass("d-none")) {
+                    ul_module.removeClass("d-none");
+                    ul_issue.removeClass("d-none");
+                    expand = "ex_false";
+                } else {
+                    ul_module.addClass("d-none");
+                    ul_issue.addClass("d-none");
+                    expand = "ex_true";
+                }
+            }
+
+            //call_module_ajax(module_id, '', -1, expand);
+        });
+
+        var recordCount = @Model.Issues.Count;
+        var toggler = document.getElementsByClassName("caret");
+
+        for (var i = 0; i < toggler.length; i++) {
+            toggler[i].addEventListener("click", function () {
+                $('#ul_' + $(this).attr('htmlId')).toggleClass("d-block");
+            });
+        }
+        //expland_to(2);
+    });
+    function sync_value(obj) {
+        $("#txt_module_id").val(obj.attr("module-id"));         // 隐藏赋值
+        $('#txt_module_pid').val(obj.attr("module-pid"));       // 同上
+        $('#txt_module_name').val(obj.attr("module-name"));     // 同上，显示用
+        $('#txt_issue_id').val(obj.attr("issue-id"));            // 同上，显示用
+    }
+    function reset_val() {
+        $("#txt_module_id").val("");
+        $("#txt_issue_id").val("");
+        $('#txt_module_pid').val('');
+        $('#txt_module_name').val('');
+    }
+    $(document).click(function () {
+        hide_menu();
+    });
+    //$(document).contextmenu(function () {
+    //    hide_menu();
+    //});
+
+    $("#module_tree span").bind('contextmenu', function (e) { // module右键菜单
+        var obj = $(this);
+        sync_value(obj);
+
+        $("#module_tree span").removeClass('active');
+        obj.toggleClass("active");                  // 选中当前节点 current_module
+
+        $('#ul_module').addClass("d-none")
+        $('#ul_issue').addClass("d-none")
+        if (obj.hasClass("module")) {
+            $('#ul_module').removeClass("d-none");
+        } else {
+            $('#ul_issue').removeClass("d-none");
+        }
+
+        var top = e.pageY + 5;                          // 菜单定位
+        var left = e.pageX;
+
+        $("#module_menu").show(100).css({
+            top: top + "px",
+            left: left + "px"
+        });
+
+        return false;   // disable default context menu
+    });
+
+    // 右键菜单操作
+    $("li.context-item").click(function () {
+        var module_id = $('#txt_module_id').val().trim();
+        var issue_id = $('#txt_issue_id').val().trim();
+        var parent_id = $('#txt_module_pid').val().trim();      // current_module 不能为空
+        var module_name = $('#txt_module_name').val().trim();
+        var current_rowIndex = $('#issue_' + issue_id).index();
+        var row_count = $('#issue_' + issue_id).siblings().length;
+
+        var obj = $(this);
+        if (module_id == "") {                                  //
+            return;
+        }
+        var action = obj.attr("html-action");                   // 操作类型action_type
+        var type = obj.attr("html-type");
+        switch (action) {
+            case "add_issue":
+                $('#issue_content').attr("src", "/Platform/ViewIssue?issue_id=-1&module_id=" + module_id);
+                break;
+            case "add_sub_module":                              // 新增
+                call_module_ajax(module_id, '', parent_id, "create_module");
+                break
+            case "edit_module":                                 // 编辑
+                $('#edit_module_name').val(module_name);
+                $('#edit_module_name').attr("attr-id", module_id);
+                var dlg = document.getElementById("edit_module_dialog");
+                dlg.showModal();
+                break;
+            case "edit_issue":
+                $('#edit_module_name').val(module_name);
+                $('#edit_module_name').attr("attr-id", module_id);
+                var dlg = document.getElementById("edit_module_dialog");
+                dlg.showModal();
+                break;
+            case "move_module_up":                              // 上移
+                move_module(module_id, parent_id, "up");
+                break;
+            case "move_module_down":                            // 下移
+                move_module(module_id, parent_id, "down");
+                break;
+            case "disable":                                     // 禁用
+                break;
+            case "default_module_index":                        // 恢复模块下的默认排序，出现排序错误时使用此功能
+                var module_name = $('#txt_module_name').val();
+                if (confirm("重排序下级模块，是否继续？[" + module_name + "]")) {
+                    call_module_ajax(module_id, '', 9999, "default_module_index");
+                }
+                break;
+            case "default_issue_index":
+                var module_name = $('#txt_module_name').val();
+                if (confirm("重排序下级需求，是否继续？[" + module_name + "]")) {
+                    call_module_ajax(module_id, '', 9999, "default_issue_index");
+                }
+                break;
+            case "disable":
+                var module_name = $('#txt_module_name').val();
+                if (confirm("当前操作会 禁用 [" + module_name + "] 及其下级模块，是否继续？")) {
+                    call_module_ajax(module_id, '', 9999, "disable");
+                }
+                break;
+            case "up_level":                            // 上提一级显示排序
+                move_module(module_id, parent_id, "up_level");
+                break;
+            case "down_level":                          // 下降一级显示排序
+                move_module(module_id, parent_id, "down_level");
+                break;
+            case "move_issue_up":                
+                if (current_rowIndex > 0) {
+                    call_issue_ajax(issue_id, '', module_id, 0, 'move_up');
+                }
+                break;
+            case "move_issue_down":
+                if (current_rowIndex <= row_count - 1) {
+                    call_issue_ajax(issue_id, '', module_id, 0, 'move_down');
+                }
+                break;
+            case "move_issue_to":
+                $('#txt_move_issue_id').attr("attr-id", issue_id);
+                var dlg = document.getElementById("move_issue_to_dialog");
+                dlg.showModal();
+                break;
+        }
+        hide_menu();
+    });
+    // 更新模块名称
+    function update_module_name() {
+        var obj = $('#edit_module_name');
+        var module_id = obj.attr("attr-id");
+        var module_name = obj.val();
+        if (module_name == "") {    // 标题不能为空
+            obj.focus();
+            return;
+        }
+        call_module_ajax(module_id, module_name, 9999, "update_module_name");   // Ajax更新
+        $('#lbl_module_' + module_id).text(module_name);                               // Html界面更新
+        $('#edit_module_dialog')[0].close();                                            // 关闭module_edit_dialog()
+    }
+    // 移动节点
+    function move_module(obj_id, parent_id, action) {
+        switch (action) {
+            case "up":
+                var obj = $('#module_' + obj_id);
+                if (obj.index() > 0) {
+                    call_module_ajax(obj_id, '', parent_id, action);
+                    var prev_node = obj.prev('.module-li');
+                    obj.insertBefore(prev_node);
+                }
+                break;
+            case "down":
+                var obj = $('#module_' + obj_id);
+                if (obj.index() < obj.siblings().length) {
+                    call_module_ajax(obj_id, '', parent_id, action);
+                    obj.insertAfter(obj.next('.module-li'));
+                }
+                break;
+            case "up_level":
+                var obj = $('#module_' + obj_id);
+                if (parent_id > 0) {
+                    call_module_ajax(obj_id, '', parent_id, action);
+                }
+                break;
+            case "down_level":
+                var obj = $('#module_' + obj_id);
+                if (obj.index() > 0) {  // 第一个元素不支持调整等级
+                    call_module_ajax(obj_id, '', parent_id, action);
+                }
+                break;
+        }
+    }
+
+    function hide_menu() {
+        $('#module_menu').hide();
+    }
 
     function call_module_ajax(module_id, module_name, parent_id, action) {  // 模块操作
         $.ajax({
@@ -587,40 +580,61 @@
             }
         });
     }
-</script>
-<script>
-    var recordCount = @Model.Issues.Count;
-    var toggler = document.getElementsByClassName("caret");
-
-    for (var i = 0; i < toggler.length; i++) {
-        toggler[i].addEventListener("click", function () {
-            $('#ul_' + $(this).attr('htmlId')).toggleClass("d-block");
-        });
-    }
-
-    $(document).ready(function () {
-        //$('textarea').focus(function () {
-        //    return false;
-        //});
-        $("#module_tree span").click(function () {            // li绑定click
-            $("#module_tree span").removeClass('active');
-            $(this).addClass('active');
-        });
-        $('span.span-node').click(function () {    // 点击模块名称
-            var html_id = $(this).attr("attr-id");
-            var html_text = $('#lbl_module_' + html_id).text();
-            $('txt_module_id').val(html_id);
-            $('txt_module_name').val(html_text);
-
-            if ($(this).hasClass("module-parent-node")) {
-                var ul_item = $('#ul_' + html_id);
-                var action = "show_module_false";
-                if (ul_item.hasClass("d-none")) {
-                    action = "show_module_true";
+    // issue操作
+    function call_issue_ajax(issue_id, issue_subject, module_id, prev_issue_id, action) {
+        var obj = {
+            "action": action, "module_id": module_id, "prev_issue_id": prev_issue_id, "issue": {
+                "id": issue_id, "subject": issue_subject, "authorId":@user_id
+            }
+        };
+        
+        $.ajax({
+            url: '/api/Issue',
+            method: 'POST',
+            dataType: 'json',
+            contentType: 'application/json; charset=utf-8',
+            data: JSON.stringify(obj),
+            complete: function (jqXHR, status) {
+                var result = jQuery.parseJSON(jqXHR.responseText);
+                switch (result.result) {
+                    case "OK":
+                        switch (action) {
+                            case "move_up":
+                            case "move_down":
+                            case "create_issue":
+                                window.location.reload();
+                                break;
+                            case "move_to_module":
+                                $('#move_issue_to_dialog')[0].close();
+                                alert("操作成功。");
+                                window.location.reload();
+                                break;
+                        }
+                        break;
+                    case "Ingore":
+                        break;
+                    default:
+                        alert("Request failed: " + result.result);
+                        break;
                 }
-                $('#ul_' + html_id).toggleClass("d-none");
-                //call_module_ajax(html_id, '', 9999, action);
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                ;
             }
         });
-    });
+    }
+    // 移动到模块
+    function move_to_module() {
+        var obj = $('#txt_move_issue_id');
+        var issue_id = obj.attr("attr-id");
+        if (obj.val() == "") {
+            obj.focus();
+            return;
+        } else if ($.isNumeric(obj.val()) == false) {
+            obj.focus();
+            return;
+        }
+        var module_id = obj.val();
+        call_issue_ajax(issue_id, "", module_id, 9999, "move_to_module");
+    }
 </script>

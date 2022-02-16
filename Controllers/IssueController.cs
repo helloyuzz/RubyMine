@@ -231,7 +231,7 @@ namespace RubyMine.Controllers {
                         break;
                     case "move_up":
                         // 当前位置
-                        CustomValue upValue = _context.CustomValues.FirstOrDefault(t => t.CustomFieldId == 54 && t.CustomizedType.Equals("Issue") && t.Value.Equals(value.module_id.ToString()) && t.CustomizedId == value.Issue.Id);
+                        CustomValue upValue = _context.CustomValues.FirstOrDefault(t => t.CustomFieldId == 54 && t.CustomizedId == value.Issue.Id);
                         if (upValue.Position > 1) {
                             // 交换次序
                             _context.CustomValues.FirstOrDefault(t => t.CustomFieldId == 54 && t.CustomizedType.Equals("Issue") && t.Value.Equals(value.module_id.ToString()) && t.Position == upValue.Position - 1).Position = upValue.Position;
@@ -243,7 +243,7 @@ namespace RubyMine.Controllers {
                         }
                         break;
                     case "move_down":
-                        CustomValue downValue = _context.CustomValues.FirstOrDefault(t => t.CustomFieldId == 54 && t.CustomizedType.Equals("Issue") && t.Value.Equals(value.module_id.ToString()) && t.CustomizedId == value.Issue.Id);
+                        CustomValue downValue = _context.CustomValues.FirstOrDefault(t => t.CustomFieldId == 54 && t.CustomizedId == value.Issue.Id);
                         int module_count = _context.CustomValues.Count(t => t.CustomFieldId == 54 && t.CustomizedType.Equals("Issue") && t.Value.Equals(value.module_id.ToString()));
                         if (downValue.Position < module_count) {
                             // 交换次序
