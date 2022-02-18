@@ -22,12 +22,18 @@ namespace RubyMine.Pages.Platform {
         public int Module_id { get; set; }
         [BindProperty(SupportsGet = true)]
         public Issue Issue { get; set; }
+        [TempData]
+        public int Issue_result_id { get; set; }
+        [TempData]
+        public string Issue_result_name { get; set; }
+        [TempData]
+        public string Issue_result_type { get; set; }
         public void OnGet() {
             Issue_id = RMUtils.QueryInt(Request, "issue_id");
             Admin_Role_id = _config["AppSettings:Admin_Role_id"];   // 可编辑权限
 
             if (Issue_id > 0) {
-                Issue = db.Issues.Include(t => t.Author).Include(t => t.Status).Select(t => new Issue() { Id = t.Id, Subject = t.Subject, Description = t.Description, Author = t.Author, UpdatedOn = t.UpdatedOn, Status = t.Status }).FirstOrDefault(t => t.Id == Issue_id);
+                Issue = db.Issues.Include(t => t.Author).Include(t => t.Status).Select(t => new Issue() { Id = t.Id, Subject = t.Subject, Description = t.Description, Author = t.Author,AuthorId=t.AuthorId, UpdatedOn = t.UpdatedOn, Status = t.Status }).FirstOrDefault(t => t.Id == Issue_id);
             } else {
                 Issue = new Issue();
                 Issue.Status = new IssueStatus();
@@ -76,13 +82,23 @@ namespace RubyMine.Pages.Platform {
 
                 db.CustomValues.Add(new_custom_value);
                 db.SaveChanges();
-
+                Issue_result_id = Issue.Id;
+                Issue_result_name = Issue.Subject;
+                Issue_result_type = "add";
             } else {
+                string user_id = User.Claims.FirstOrDefault(t => t.Type.Equals("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier")).Value;
                 var item = db.Issues.FirstOrDefault(t => t.Id == Issue.Id);
-                item.Subject = Issue.Subject;
-                item.UpdatedOn = DateTime.Now;
-                item.Description = Issue.Description;
-                await db.SaveChangesAsync();
+                if (user_id.Equals(item.AuthorId.ToString())) {
+                    item.Subject = Issue.Subject;
+                    item.UpdatedOn = DateTime.Now;
+                    item.Description = Issue.Description;
+                    await db.SaveChangesAsync();
+                    Issue_result_type = "update";
+                } else {
+                    Issue_result_type = "decline";
+                }
+                Issue_result_id = item.Id;
+                Issue_result_name = item.Subject;
             }
 
             return RedirectToPage("./ViewIssue", new { issue_id = Issue.Id });

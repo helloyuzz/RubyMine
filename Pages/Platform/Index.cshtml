@@ -7,6 +7,7 @@
 
     string user_id = User.Claims.FirstOrDefault(t => t.Type.Equals("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier")).Value;
     bool showEdit = Model.Admin_Role_id.Contains("-" + user_id + ",");
+    string issue_id = Request.Query["issue_id"];
 }
 <style>
     ul, #module_tree {
@@ -18,7 +19,7 @@
         padding: 0;
     }
 
-    .caret,caret-issue {
+    .caret, caret-issue {
         cursor: pointer;
         -webkit-user-select: none; /* Safari 3.1+ */
         -moz-user-select: none; /* Firefox 2+ */
@@ -26,14 +27,15 @@
         user-select: none;
     }
 
-    .caret::before {
-        content: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='9' height='9' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='rgba%280,0,0,.5%29' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M5 14l6-6-6-6'/%3e%3c/svg%3e");
-        color: black;
-        display: inline-block;
-        /*margin-right: 6px;*/
-        transition: transform 0.13s ease;
-        transform-origin: .5em 50%;
-    }
+        .caret::before {
+            content: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='9' height='9' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='rgba%280,0,0,.5%29' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M5 14l6-6-6-6'/%3e%3c/svg%3e");
+            color: black;
+            display: inline-block;
+            /*margin-right: 6px;*/
+            transition: transform 0.13s ease;
+            transform-origin: .5em 50%;
+        }
+
     .caret-issue::before {
         content: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='9' height='9' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='rgba%280,0,0,.5%29' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M8 9.5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3z'/%3e%3c/svg%3e");
         color: black;
@@ -89,6 +91,7 @@
     .footer {
         bottom: auto !important;
     }
+
     .op-link {
         color: #adb5c9 !important;
     }
@@ -110,14 +113,14 @@
         padding: 0px !important;
     }
 
-    th[htmlValue="issue"] {
-        padding: 3px !important;
-    }
+        th[htmlValue="issue"] {
+            padding: 3px !important;
+        }
 
-    td[htmlValue="issue"] {
-        border: solid 1px #d7d7d7;
-        padding: 2px !important;
-    }
+        td[htmlValue="issue"] {
+            border: solid 1px #d7d7d7;
+            padding: 2px !important;
+        }
 
 
     textarea {
@@ -128,36 +131,42 @@
         height: 100% !important;
     }
 
-    .w-e-text-container p {
-        font-size: small !important;
-    }
+        .w-e-text-container p {
+            font-size: small !important;
+        }
 
-    .w-e-text-container .placeholder {
-        display: none !important;
-    }
+        .w-e-text-container .placeholder {
+            display: none !important;
+        }
 
     .nav-tabs .nav-link {
         background: #f0f0f0 !important;
     }
-    .w-e-toolbar,.nav-item {
-        font-size:9pt;
+
+    .w-e-toolbar, .nav-item {
+        font-size: 9pt;
     }
+
     .level-1 {
-        display:block !important;
+        display: block !important;
     }
 </style>
 
 @functions{
-    string BuildTree(int? parent_id, int user_id,int level) {
+    string BuildTree(int? parent_id, int user_id, int level) {
         string htmlTree = "";
         var ex_true = "d-none";
         if (parent_id == null) {
             htmlTree = "<ul id=\"module_tree\" class=\"jumpNav\">";
         } else {
             htmlTree = "<ul id='ul_" + parent_id + "' htmlId='" + parent_id + "' class='";
+            if (level < 3) {
                 ex_true = "d-block";
+            } else {
+                ex_true = "d-none";
+            }
             if (GlobalCache.ActiveNodes.FirstOrDefault(t => t.Key == user_id).Value.Contains(parent_id.Value)) {
-            } 
+            }
             htmlTree += ex_true;
             htmlTree += " level-" + level + "'>";
         }
@@ -172,7 +181,7 @@
                     showIndexTip = "";
                 }
                 int subNode = Model.Modules.Count(t => t.PId == item.Id);
-                subNode += Model.Issues.Count(t=>t.Module_id == item.Id);
+                subNode += Model.Issues.Count(t => t.Module_id == item.Id);
                 var active = "";
 
                 if (Model.Module_id == item.Id) {
@@ -191,37 +200,41 @@
 
                 htmlTree += "<li id='module_" + item.Id + "' class='module-li node-" + item.Id + "'>";
                 htmlTree += "   <span id='span_" + item.Id + "' class='module " + show_caret + " d-inline-block w-100 text-269" + active + "'" + html_attr + ">";
-                htmlTree += "        <img class='w-auto' src='/images/xp/module.png'>&nbsp;<label id='lbl_module_" + item.Id + "' title='模块编号:" + item.Id + "'>" + item.Name+"</label>";
+                htmlTree += "        <img class='w-auto' src='/images/xp/module.png'>&nbsp;<label id='lbl_module_" + item.Id + "' title='模块编号:" + item.Id + "'>" + item.Name + "</label>";
                 htmlTree += "   </span>";
                 if (subNode > 0) {
-                    string tempTree = BuildTree(item.Id, user_id,level+1);
+                    string tempTree = BuildTree(item.Id, user_id, level + 1);
                     if (string.IsNullOrEmpty(tempTree) == false) {
                         htmlTree += tempTree;
                     }
                 }
-                htmlTree += BuildIssue(item.Id,level+1);
+                htmlTree += BuildIssue(item.Id, level + 1);
                 htmlTree += "</li>";
             }
         }
         htmlTree += "</ul>";
         return htmlTree;
     }
-    string BuildIssue(int module_id,int level) {
+    string BuildIssue(int module_id, int level) {
         string temp = "";
+        string ul_class = "d-none";
+        if (level < 3) {
+            ul_class = "d-block";
+        }
 
-        var issues = Model.Issues.Where(t=>t.Module_id == module_id).OrderBy(t=>t.Position);
+        var issues = Model.Issues.Where(t => t.Module_id == module_id).OrderBy(t => t.Position);
         if (issues.Count() > 0) {
-            temp += "<ul id='ul_issue_" + module_id + "' htmlid='" + module_id + "' class='level-" + level + "'>";
+            temp += "<ul id='ul_issue_" + module_id + "' htmlid='" + module_id + "' class='" + ul_class + " level-" + level + "'>";
             foreach (var item in issues) {
-                string html_attr = " module-id='" + item.Module_id + "' module-pid='' module-name='' issue-id='" + item.Id + "'";
+                string html_attr = " module-id='" + item.Module_id + "' module-pid='' module-name='' issue-id='" + item.Id + "' issue-name='" + item.Subject + "'";
 
                 temp += "<li id='issue_" + item.Id + "' class='issue-li'>";
                 temp += "   <span class='issue d-inline-block w-100' style='padding-left:19px;'" + html_attr + ">";
                 temp += "       <a class='text-decoration-none text-dark d-inline-block w-100' target='issue_content' href='/Platform/ViewIssue?issue_id=" + item.Id + "' title='查看'>";
-                temp += "           <img src='/images/xp/page_word.png'>&nbsp;<label title='需求编号:" + item.Id + "'>" +item.Subject + "</label>";
+                temp += "           <img src='/images/xp/page_word.png'>&nbsp;<label id='lbl_issue_" + item.Id + "' title='需求编号:" + item.Id + "'>" + item.Subject + "</label>";
                 temp += "       </a>";
                 temp += "   </span>";
-                temp +="</li>";
+                temp += "</li>";
             }
             temp += "</ul>";
         }
@@ -233,13 +246,12 @@
     <tr>
         <td valign="top" width="26%">
             <div id="module_div" class="bg-white p-1 border-inset h-100 overflow-scroll" style="overflow-x:hidden !important;">
-                @Html.Raw(BuildTree(null, int.Parse(user_id),0))
+                @Html.Raw(BuildTree(null, int.Parse(user_id), 0))
             </div>
         </td>
         <td valign="top" class="p-1 pt-0">
             <div class="p-1 bg-white h-100 border-inset">
-                <iframe id="issue_content" name="issue_content" src="/Platform/ViewIssue" width="100%" height="100%">
-
+                <iframe id="issue_content" name="issue_content" src="/Platform/ViewIssue?issue_id=@issue_id" width="100%" height="100%">
                 </iframe>
             </div>
         </td>
@@ -278,7 +290,9 @@
         <ul id="ul_issue" class="p-0 m-0 d-none">
             <li class="context-item dropdown-item d-cursor" html-type="issue" html-action="add_issue">添加需求</li>
             <li><hr class="m-0 dropdown-divider"></li>
+            <li class="context-item dropdown-item d-cursor" html-type="issue" html-action="open_blank">新窗口打开</li>
             <li class="context-item dropdown-item d-cursor" html-type="issue" html-action="edit_issue">重命名</li>
+            <li><hr class="m-0 dropdown-divider"></li>
             <li class="context-item dropdown-item d-cursor" html-type="issue" html-action="move_issue_up">上移</li>
             <li class="context-item dropdown-item d-cursor" html-type="issue" html-action="move_issue_down">下移</li>
             <li><hr class="m-0 dropdown-divider"></li>
@@ -291,6 +305,7 @@
 <input type="hidden" id="txt_issue_id" value="" />
 <input type="hidden" id="txt_module_pid" value="" />
 <input type="hidden" id="txt_module_name" value="" />
+<input type="hidden" id="txt_issue_name" value="" />
 
 
 <style>
@@ -304,19 +319,28 @@
         background: white;
     }
 
-    #module_menu ul {
-        list-style: none;
-    }
+        #module_menu ul {
+            list-style: none;
+        }
 
-    #module_menu ul li {
-    }
+            #module_menu ul li {
+            }
 </style>
 <dialog id="edit_module_dialog" class="shadow" style="width:400px">
     <div class="row fs-9">
-        <div class="col"><input id="edit_module_name" type="text" attr-id="" value="" class="form-control border-inset rounded-0 fs-9 w-100 p-1" autocomplete="off" /></div>
+        <div class="col"><input id="edit_module_name" type="text" attr-id="" value="" class="form-control border-inset rounded-0 fs-9 w-100 p-1" autocomplete="off" onfocus="this.select();" placeholder="请输入模块名称..."/></div>
         <div class="col-4" style="padding-top:6px;">
-            <a href="#Dialog" class="btn-sm border-1 bg-title text-decoration-none fs-9 rounded-0" onclick="update_module_name()">save</a>
+            <a href="#Dialog" class="btn-sm border-1 bg-title text-decoration-none fs-9 rounded-0" onclick="update_module_name()">保存</a>
             <a href="#Dialog" class="btn-sm border-1 bg-title text-decoration-none fs-9 rounded-0" onclick="$('#edit_module_dialog')[0].close();">cancel</a>
+        </div>
+    </div>
+</dialog>
+<dialog id="edit_issue_dialog" class="shadow" style="width:600px">
+    <div class="row fs-9">
+        <div class="col"><input id="edit_issue_name" type="text" attr-id="" value="" class="form-control border-inset rounded-0 fs-9 w-100 p-1" autocomplete="off" onfocus="this.select();" placeholder="请输入需求标题..."/></div>
+        <div class="col-3 text-end" style="padding-top:6px;">
+            <a href="#Dialog" class="btn-sm border-1 bg-title text-decoration-none fs-9 rounded-0" onclick="update_issue_name()">保存</a>
+            <a href="#Dialog" class="btn-sm border-1 bg-title text-decoration-none fs-9 rounded-0" onclick="$('#edit_issue_dialog')[0].close();">cancel</a>
         </div>
     </div>
 </dialog>
@@ -324,7 +348,7 @@
     <div class="row fs-9">
         <div class="col"><input id="txt_move_issue_id" type="text" attr-id="" value="" class="form-control border-inset rounded-0 fs-9 w-100 p-1" placeholder="请输入模块编号" autocomplete="off" /></div>
         <div class="col-4" style="padding-top:6px;">
-            <a href="#Dialog" class="btn-sm border-1 bg-title text-decoration-none fs-9 rounded-0" onclick="move_to_module()">save</a>
+            <a href="#Dialog" class="btn-sm border-1 bg-title text-decoration-none fs-9 rounded-0" onclick="move_to_module()">移动</a>
             <a href="#Dialog" class="btn-sm border-1 bg-title text-decoration-none fs-9 rounded-0" onclick="$('#move_issue_to_dialog')[0].close();">cancel</a>
         </div>
     </div>
@@ -334,6 +358,7 @@
         $("#module_tree span").click(function () {            // li绑定click
             var obj = $(this);
             var module_id = obj.attr("module-id");
+            var module_pid = obj.attr("module-pid");
             var expand = "";
 
             $("#module_tree span").removeClass('active');
@@ -342,13 +367,17 @@
             sync_value(obj);
 
             if (obj.hasClass("module")) {
-                var ul_module = $('#ul_' + module_id);
-                var ul_issue = $('#ul_issue_' + module_id);
-                if (ul_module.hasClass("d-none") || ul_issue.hasClass("d-none")) {
+                var ul_module = $('#ul_' + module_id);      // module列表
+                var ul_issue = $('#ul_issue_' + module_id); // issue列表
+                if (ul_module.hasClass("d-none") || ul_issue.hasClass("d-none")) {  // 显示module列表，显示issue列表
+                    var ul = $('#ul_' + module_pid + ' ul');
+                    ul.removeClass("d-block");
+                    ul.addClass("d-none");
+
                     ul_module.removeClass("d-none");
                     ul_issue.removeClass("d-none");
                     expand = "ex_false";
-                } else {
+                } else {    // 隐藏module列表，隐藏issue列表
                     ul_module.addClass("d-none");
                     ul_issue.addClass("d-none");
                     expand = "ex_true";
@@ -373,12 +402,14 @@
         $('#txt_module_pid').val(obj.attr("module-pid"));       // 同上
         $('#txt_module_name').val(obj.attr("module-name"));     // 同上，显示用
         $('#txt_issue_id').val(obj.attr("issue-id"));            // 同上，显示用
+        $('#txt_issue_name').val(obj.attr("issue-name"));
     }
     function reset_val() {
         $("#txt_module_id").val("");
         $("#txt_issue_id").val("");
         $('#txt_module_pid').val('');
         $('#txt_module_name').val('');
+        $('#txt_issue_name').val('');
     }
     $(document).click(function () {
         hide_menu();
@@ -419,6 +450,7 @@
         var issue_id = $('#txt_issue_id').val().trim();
         var parent_id = $('#txt_module_pid').val().trim();      // current_module 不能为空
         var module_name = $('#txt_module_name').val().trim();
+        var issue_name = $('#txt_issue_name').val().trim();
         var current_rowIndex = $('#issue_' + issue_id).index();
         var row_count = $('#issue_' + issue_id).siblings().length;
 
@@ -432,6 +464,9 @@
             case "add_issue":
                 $('#issue_content').attr("src", "/Platform/ViewIssue?issue_id=-1&module_id=" + module_id);
                 break;
+            case "open_blank":
+                window.open("/Platform/ViewIssue?issue_id=" + issue_id,"_blank");
+                break;
             case "add_sub_module":                              // 新增
                 call_module_ajax(module_id, '', parent_id, "create_module");
                 break
@@ -442,9 +477,9 @@
                 dlg.showModal();
                 break;
             case "edit_issue":
-                $('#edit_module_name').val(module_name);
-                $('#edit_module_name').attr("attr-id", module_id);
-                var dlg = document.getElementById("edit_module_dialog");
+                $('#edit_issue_name').val(issue_name);
+                $('#edit_issue_name').attr("attr-id", issue_id);
+                var dlg = document.getElementById("edit_issue_dialog");
                 dlg.showModal();
                 break;
             case "move_module_up":                              // 上移
@@ -479,7 +514,7 @@
             case "down_level":                          // 下降一级显示排序
                 move_module(module_id, parent_id, "down_level");
                 break;
-            case "move_issue_up":                
+            case "move_issue_up":
                 if (current_rowIndex > 0) {
                     call_issue_ajax(issue_id, '', module_id, 0, 'move_up');
                 }
@@ -509,6 +544,19 @@
         call_module_ajax(module_id, module_name, 9999, "update_module_name");   // Ajax更新
         $('#lbl_module_' + module_id).text(module_name);                               // Html界面更新
         $('#edit_module_dialog')[0].close();                                            // 关闭module_edit_dialog()
+    }
+    // 更新issue名称
+    function update_issue_name() {
+        var obj = $('#edit_issue_name');
+        var issue_id = obj.attr("attr-id");
+        var issue_name = obj.val();
+        if (issue_name == "") {    // 标题不能为空
+            obj.focus();
+            return;
+        }
+        call_issue_ajax(issue_id, issue_name, 9999,9999, "update_issue_name");   // Ajax更新
+        $('#lbl_issue_' + issue_id).text(issue_name);                               // Html界面更新
+        $('#edit_issue_dialog')[0].close();                                            // 关闭module_edit_dialog()
     }
     // 移动节点
     function move_module(obj_id, parent_id, action) {
@@ -587,7 +635,7 @@
                 "id": issue_id, "subject": issue_subject, "authorId":@user_id
             }
         };
-        
+
         $.ajax({
             url: '/api/Issue',
             method: 'POST',
@@ -636,5 +684,9 @@
         }
         var module_id = obj.val();
         call_issue_ajax(issue_id, "", module_id, 9999, "move_to_module");
+    }
+    function update_html_issue_name(issue_id,issue_name) {
+        $('#lbl_issue_' + issue_id).text(issue_name);
+        alert(issue_name + "已修改");
     }
 </script>

@@ -309,6 +309,16 @@ namespace RubyMine.Controllers {
                             result.Result = "OK";
                         }
                         break;
+                    case "update_issue_name":
+                        var update_item = _context.Issues.FirstOrDefault(t => t.Id == value.Issue.Id);
+                        if (update_item != null) {
+                            update_item.Subject = value.Issue.Subject;
+                            _context.SaveChanges();
+                            result.Result = "OK";
+                        } else {
+                            result.Result = "Ingore";
+                        }
+                        break;
                 }
             } else {
                 result.Result = "SoapIssue is null!";

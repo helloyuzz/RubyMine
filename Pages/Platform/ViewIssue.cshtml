@@ -3,58 +3,99 @@
 @{
     Layout = null;
     string user_id = User.Claims.FirstOrDefault(t => t.Type.Equals("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier")).Value;
-    bool showEdit = Model.Admin_Role_id.Contains("-" + user_id + ",");    
-}
+    bool allow_edit = false;    // 是否也许提交form
+    string submit_action = "";  // form action
 
+    if (Model.Issue_id < 0) {   // 新增，允许提交form
+        allow_edit = true;
+    } else {                    // 查看，检查是否为issue作者
+        allow_edit = user_id.Equals(Model.Issue.AuthorId.ToString());
+        if (allow_edit == false) {  // 禁止提交form
+            submit_action = "return false;";
+        }
+    }
+}
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" dir="ltr">
 <head>
-    <meta charset="utf-8">
-    <title>CKEditor 5 – Document editor</title>
-    <script src="https://cdn.ckeditor.com/ckeditor5/30.0.0/decoupled-document/ckeditor.js"></script>
+    <title>@Model.Issue.Subject</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js" integrity="sha384-QJHtvGhmr9XOIpI6YVutG+2QOK9T+ZnN4kzFN1RtK3zEFEIsxhlmWl5/YESvpZ13" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+    @*<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>*@
+    <link rel="icon" type="image/png" href="https://c.cksource.com/a/1/logos/ckeditor5.png">
+
+    <script src="~/lib/jquery-3.6.0/dist/jquery.js"></script>
+    <link rel="stylesheet" type="text/css" href="/lib/ckeditor5/sample/styles.css">
 </head>
-<body style="overflow-x:hidden">
-    <form action="" method="post">
-        <input type="hidden" asp-for="Issue.Id"/>
-        <input type="hidden" asp-for="Issue.AuthorId" value="@user_id"/>
+<body style="overflow-x:hidden" class="h-100" data-editor="DecoupledDocumentEditor" data-collaboration="false" data-revision-history="false">
+    <form action="" method="post" class="h-100" onsubmit="@submit_action">
+        <input type="hidden" asp-for="Issue.Id" />
+        <input type="hidden" asp-for="Issue.AuthorId" value="@user_id" />
         <input type="hidden" asp-for="Module_id" />
-        @*<h1> - </h1>*@
-        <div class="row">
-            <div class="col">
+        <table class="w-100 h-100">
+            <tr>
+                <td height="40px">
+                    <div class="row">
+                        <div class="col pe-3">
+                            <div class="form-floating mb-3">
+                                <input type="text" class="form-control fs-5 fw-bold" asp-for="Issue.Subject" placeholder="name@example.com" value="@Model.Issue.Subject" autocomplete="off" onfocus="this.select();">
+                                <label for="floatingInputValue">@Model.Issue.Id - @Model.Issue.Status.Name</label>
+                            </div>
+                            @if (allow_edit) {
+                            <button type="submit" class="btn btn-primary float-end end-0 top-0 mt-2 me-4 position-absolute">保存</button>
+                            } else {
+                            <button type="button" class="btn btn-success float-end end-0 top-0 mt-2 me-4 position-absolute">仅作者可编辑</button>
+                            }
+                        </div>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td valign="top">
+                    <main>
+                        <div class="centered">
+                            <div class="row">
+                                <div class="document-editor__toolbar p-0"></div>
+                            </div>
+                            <div class="row row-editor">
+                                <div class="editor-container">
+                                    <div class="editor">
 
-                <div class="form-floating mb-3">
-                    <input type="text" class="form-control fs-5 fw-bold" asp-for="Issue.Subject" placeholder="name@example.com" value="@Model.Issue.Subject" onfocus="this.select();">
-                    <label for="floatingInputValue">@Model.Issue.Id - @Model.Issue.Status.Name</label>
-                </div>
-    @if(showEdit){
-                <button type="submit" class="btn btn-primary float-end end-0 top-0 mt-2 me-2 position-absolute">保存</button>
-        }
-            </div>
-        </div>
-        <!-- The toolbar will be rendered in this container. -->
-        <div id="toolbar-container"></div>
-        <!-- This container will become the editable. -->
-        <div id="editor">
-            <p>This is the initial editor content.</p>
-        </div>
-        <div class="mt-3 text-black-50">
-            @Model.Issue.Author.Firstname
-            @Model.Issue.UpdatedOn
-        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </main>
+
+                </td>
+            </tr>
+            <tr>
+                <td height="18px">
+                    <div class="mt-3 text-black-50">
+                        Author:@Model.Issue.Author.Firstname
+                        @Model.Issue.UpdatedOn
+                    </div>
+                </td>
+            </tr>
+        </table>
         <textarea asp-for="Issue.Description" class="w-100 d-none"></textarea>
-        <script>
-        DecoupledEditor
-            .create(document.querySelector('#editor'))
+    </form>
+    <script src="/lib/ckeditor5-demo/build/ckeditor.js"></script>
+    <script>
+        DecoupledDocumentEditor
+            .create(document.querySelector('.editor'), {
+                licenseKey: '',
+            })
             .then(editor => {
-                const toolbarContainer = document.querySelector('#toolbar-container');
+                window.editor = editor;
 
-                toolbarContainer.appendChild(editor.ui.view.toolbar.element);
+                // Set a custom container for the toolbar.
+                document.querySelector('.document-editor__toolbar').appendChild(editor.ui.view.toolbar.element);
+                document.querySelector('.ck-toolbar').classList.add('ck-reset_all');
+
                 editor.setData('@Html.Raw(Model.Issue.Description)');
-                //editor.on('change', function (e) { console.log(e.editor.getData()); });
-
                 editor.model.document.on('change:data', (evt, data) => {
                     //console.log(data);
                     document.getElementById('Issue_Description').value = editor.getData();
@@ -62,9 +103,32 @@
                 });
             })
             .catch(error => {
+                console.error('Oops, something went wrong!');
+                console.error('Please, report the following error on https://github.com/ckeditor/ckeditor5/issues with the build id and the error stack trace:');
+                console.warn('Build id: mgmmep9hygqn-cgnj2yipj5t');
                 console.error(error);
             });
-        </script>
-    </form>
+    </script>
+    <script>
+        $(document).ready(function () {
+            var issue_id = '@TempData.Peek("Issue_result_id")';
+            var issue_name = '@Html.Raw(TempData.Peek("Issue_result_name"))';
+            var issue_type = '@TempData.Peek("Issue_result_type")';
+            if (issue_name != "") {
+                if (issue_type == "add") {
+                    alert(issue_name + "已添加");
+                    parent.location = "/Platform?issue_id=" + issue_id;
+                } else if (issue_type == "update") {
+                    if (self != top) { // iframe嵌入式
+                        parent.update_html_issue_name(issue_id, issue_name);
+                    } else {
+                        alert(issue_name + "已修改");
+                    }
+                } else if (issue_type == "decline") {
+                    alert("仅限作者编辑");
+                }
+            }
+        });
+    </script>
 </body>
 </html>
