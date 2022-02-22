@@ -34,9 +34,13 @@ namespace RubyMine.Pages.Platform {
 
             if (Issue_id > 0) {
                 Issue = db.Issues.Include(t => t.Author).Include(t => t.Status).Select(t => new Issue() { Id = t.Id, Subject = t.Subject, Description = t.Description, Author = t.Author,AuthorId=t.AuthorId, UpdatedOn = t.UpdatedOn, Status = t.Status }).FirstOrDefault(t => t.Id == Issue_id);
+                if (string.IsNullOrEmpty(Issue.Description)) {
+                    Issue.Description = "";
+                }
             } else {
                 Issue = new Issue();
                 Issue.Status = new IssueStatus();
+                Issue.Description = "";
                 Issue.Author = new User();
                 if (Issue_id < 0) {
                     Issue.Subject = "[请输入需求标题]";

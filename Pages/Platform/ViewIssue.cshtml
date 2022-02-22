@@ -95,7 +95,7 @@
                 document.querySelector('.document-editor__toolbar').appendChild(editor.ui.view.toolbar.element);
                 document.querySelector('.ck-toolbar').classList.add('ck-reset_all');
 
-                editor.setData('@Html.Raw(Model.Issue.Description)');
+                editor.setData(`@Html.Raw(Model.Issue.Description.Replace("\\","\\\\"))`);
                 editor.model.document.on('change:data', (evt, data) => {
                     //console.log(data);
                     document.getElementById('Issue_Description').value = editor.getData();

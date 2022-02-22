@@ -476,6 +476,15 @@ footer {
 	color: rgba(0,0,0,.4);
 }
 
+
+p, ol, ul {
+	margin-bottom: 0px !important;
+}
+
+.ck-content .image {
+	margin-left: 0px !important;
+}
+
 /* --------- RWD --------------------------------------------------------------------------------------------------- */
 @media screen and ( max-width: 800px ) {
 	:root {
