@@ -273,30 +273,39 @@
         <ul id="ul_module" class="p-0 m-0 d-none">
             <li class="context-item dropdown-item d-cursor" html-type="module" html-action="add_sub_module">添加下级目录</li>
             <li class="context-item dropdown-item d-cursor" html-type="module" html-action="add_issue">添加需求</li>
-            <li><hr class="m-0 dropdown-divider"></li>
-            <li class="context-item dropdown-item d-cursor" html-type="module" html-action="edit_module">重命名</li>
-            <li><hr class="m-0 dropdown-divider"></li>
-            <li class="context-item dropdown-item d-cursor" html-type="module" html-action="move_module_up">上移</li>
-            <li class="context-item dropdown-item d-cursor" html-type="module" html-action="move_module_down">下移</li>
-            <li><hr class="m-0 dropdown-divider"></li>
-            <li class="context-item dropdown-item d-cursor" html-type="module" html-action="up_level">上提一级</li>
-            <li class="context-item dropdown-item d-cursor" html-type="module" html-action="down_level">下降一级</li>
-            <li><hr class="m-0 dropdown-divider"></li>
-            <li class="context-item dropdown-item d-cursor" html-type="module" html-action="default_module_index">重排序(目录)</li>
-            <li class="context-item dropdown-item d-cursor" html-type="module" html-action="default_issue_index">重排序(需求)</li>
-            <li><hr class="m-0 dropdown-divider"></li>
-            <li class="context-item dropdown-item disabled d-cursor" html-type="module" html-action="disable" title="标记删除">删除<span class="float-end"><i class="bi bi bi-exclamation-octagon"></i></span></li>
+            @if (showEdit) {
+                <li><hr class="m-0 dropdown-divider"></li>
+                <li class="context-item dropdown-item d-cursor" html-type="module" html-action="edit_module">重命名</li>
+                <li><hr class="m-0 dropdown-divider"></li>
+                <li class="context-item dropdown-item d-cursor" html-type="module" html-action="move_module_up">上移</li>
+                <li class="context-item dropdown-item d-cursor" html-type="module" html-action="move_module_down">下移</li>
+                <li><hr class="m-0 dropdown-divider"></li>
+                <li class="context-item dropdown-item d-cursor" html-type="module" html-action="up_level">上提一级</li>
+                <li class="context-item dropdown-item d-cursor" html-type="module" html-action="down_level">下降一级</li>
+                <li><hr class="m-0 dropdown-divider"></li>
+                <li class="context-item dropdown-item d-cursor" html-type="module" html-action="move_module_to">移动至</li>
+                <li><hr class="m-0 dropdown-divider"></li>
+                <li class="context-item dropdown-item d-cursor" html-type="module" html-action="default_module_index">重排序(目录)</li>
+                <li class="context-item dropdown-item d-cursor" html-type="module" html-action="default_issue_index">重排序(需求)</li>
+                <li><hr class="m-0 dropdown-divider"></li>
+                <li class="context-item dropdown-item disabled d-cursor" html-type="module" html-action="disable" title="标记删除">删除<span class="float-end"><i class="bi bi bi-exclamation-octagon"></i></span></li>
+            }
         </ul>
         <ul id="ul_issue" class="p-0 m-0 d-none">
             <li class="context-item dropdown-item d-cursor" html-type="issue" html-action="add_issue">添加需求</li>
             <li><hr class="m-0 dropdown-divider"></li>
             <li class="context-item dropdown-item d-cursor" html-type="issue" html-action="open_blank">新窗口打开</li>
-            <li class="context-item dropdown-item d-cursor" html-type="issue" html-action="edit_issue">重命名</li>
-            <li><hr class="m-0 dropdown-divider"></li>
-            <li class="context-item dropdown-item d-cursor" html-type="issue" html-action="move_issue_up">上移</li>
-            <li class="context-item dropdown-item d-cursor" html-type="issue" html-action="move_issue_down">下移</li>
-            <li><hr class="m-0 dropdown-divider"></li>
-            <li class="context-item dropdown-item d-cursor" html-type="issue" html-action="move_issue_to">移动至</li>
+            @if (showEdit) {
+                <li class="context-item dropdown-item d-cursor" html-type="issue" html-action="edit_issue">重命名</li>
+                <li><hr class="m-0 dropdown-divider"></li>
+                <li class="context-item dropdown-item d-cursor" html-type="issue" html-action="move_issue_up">上移</li>
+                <li class="context-item dropdown-item d-cursor" html-type="issue" html-action="move_issue_down">下移</li>
+                <li><hr class="m-0 dropdown-divider"></li>
+                <li class="context-item dropdown-item d-cursor" html-type="issue" html-action="move_issue_top">置顶</li>
+                <li class="context-item dropdown-item d-cursor" html-type="issue" html-action="move_issue_bottom">置底</li>
+                <li><hr class="m-0 dropdown-divider"></li>
+                <li class="context-item dropdown-item d-cursor" html-type="issue" html-action="move_issue_to">移动至</li>
+            }
         </ul>
     </div>
 </div>
@@ -328,7 +337,7 @@
 </style>
 <dialog id="edit_module_dialog" class="shadow" style="width:400px">
     <div class="row fs-9">
-        <div class="col"><input id="edit_module_name" type="text" attr-id="" value="" class="form-control border-inset rounded-0 fs-9 w-100 p-1" autocomplete="off" onfocus="this.select();" placeholder="请输入模块名称..."/></div>
+        <div class="col"><input id="edit_module_name" type="text" attr-id="" value="" class="form-control border-inset rounded-0 fs-9 w-100 p-1" autocomplete="off" onfocus="this.select();" placeholder="请输入模块名称..." /></div>
         <div class="col-4" style="padding-top:6px;">
             <a href="#Dialog" class="btn-sm border-1 bg-title text-decoration-none fs-9 rounded-0" onclick="update_module_name()">保存</a>
             <a href="#Dialog" class="btn-sm border-1 bg-title text-decoration-none fs-9 rounded-0" onclick="$('#edit_module_dialog')[0].close();">cancel</a>
@@ -337,7 +346,7 @@
 </dialog>
 <dialog id="edit_issue_dialog" class="shadow" style="width:600px">
     <div class="row fs-9">
-        <div class="col"><input id="edit_issue_name" type="text" attr-id="" value="" class="form-control border-inset rounded-0 fs-9 w-100 p-1" autocomplete="off" onfocus="this.select();" placeholder="请输入需求标题..."/></div>
+        <div class="col"><input id="edit_issue_name" type="text" attr-id="" value="" class="form-control border-inset rounded-0 fs-9 w-100 p-1" autocomplete="off" onfocus="this.select();" placeholder="请输入需求标题..." /></div>
         <div class="col-3 text-end" style="padding-top:6px;">
             <a href="#Dialog" class="btn-sm border-1 bg-title text-decoration-none fs-9 rounded-0" onclick="update_issue_name()">保存</a>
             <a href="#Dialog" class="btn-sm border-1 bg-title text-decoration-none fs-9 rounded-0" onclick="$('#edit_issue_dialog')[0].close();">cancel</a>
@@ -348,8 +357,17 @@
     <div class="row fs-9">
         <div class="col"><input id="txt_move_issue_id" type="text" attr-id="" value="" class="form-control border-inset rounded-0 fs-9 w-100 p-1" placeholder="请输入模块编号" autocomplete="off" /></div>
         <div class="col-4" style="padding-top:6px;">
-            <a href="#Dialog" class="btn-sm border-1 bg-title text-decoration-none fs-9 rounded-0" onclick="move_to_module()">移动</a>
+            <a href="#Dialog" class="btn-sm border-1 bg-title text-decoration-none fs-9 rounded-0" onclick="move_to_module('issue')">移动</a>
             <a href="#Dialog" class="btn-sm border-1 bg-title text-decoration-none fs-9 rounded-0" onclick="$('#move_issue_to_dialog')[0].close();">cancel</a>
+        </div>
+    </div>
+</dialog>
+<dialog id="move_module_to_dialog" class="shadow" style="width:400px">
+    <div class="row fs-9">
+        <div class="col"><input id="txt_move_module_id" type="text" attr-id="" value="" class="form-control border-inset rounded-0 fs-9 w-100 p-1" placeholder="请输入模块编号" autocomplete="off" /></div>
+        <div class="col-4" style="padding-top:6px;">
+            <a href="#Dialog" class="btn-sm border-1 bg-title text-decoration-none fs-9 rounded-0" onclick="move_to_module('module')">移动</a>
+            <a href="#Dialog" class="btn-sm border-1 bg-title text-decoration-none fs-9 rounded-0" onclick="$('#move_module_to_dialog')[0].close();">cancel</a>
         </div>
     </div>
 </dialog>
@@ -514,15 +532,30 @@
             case "down_level":                          // 下降一级显示排序
                 move_module(module_id, parent_id, "down_level");
                 break;
-            case "move_issue_up":
+            case "move_issue_up":                       // 上移
                 if (current_rowIndex > 0) {
                     call_issue_ajax(issue_id, '', module_id, 0, 'move_up');
                 }
                 break;
-            case "move_issue_down":
+            case "move_issue_down":                     // 下移
                 if (current_rowIndex <= row_count - 1) {
                     call_issue_ajax(issue_id, '', module_id, 0, 'move_down');
                 }
+                break;
+            case "move_issue_top":                      // 置顶
+                if (current_rowIndex > 0) {
+                    call_issue_ajax(issue_id, '', module_id, 0, 'move_issue_top');
+                }
+                break;
+            case "move_issue_bottom":                   // 置底
+                if (current_rowIndex <= row_count - 1) {
+                    call_issue_ajax(issue_id, '', module_id, 0, 'move_issue_bottom');
+                }
+                break;
+            case "move_module_to":  // 移动模块
+                $('#txt_move_module_id').attr("attr-id", module_id);
+                var dlg = document.getElementById("move_module_to_dialog");
+                dlg.showModal();
                 break;
             case "move_issue_to":
                 $('#txt_move_issue_id').attr("attr-id", issue_id);
@@ -649,11 +682,18 @@
                         switch (action) {
                             case "move_up":
                             case "move_down":
+                            case "move_issue_top":
+                            case "move_issue_bottom":
                             case "create_issue":
                                 window.location.reload();
                                 break;
-                            case "move_to_module":
+                            case "move_to_module_issue":
                                 $('#move_issue_to_dialog')[0].close();
+                                alert("操作成功。");
+                                window.location.reload();
+                                break;
+                            case "move_to_module_module":
+                                $('#move_module_to_dialog')[0].close();
                                 alert("操作成功。");
                                 window.location.reload();
                                 break;
@@ -672,8 +712,13 @@
         });
     }
     // 移动到模块
-    function move_to_module() {
-        var obj = $('#txt_move_issue_id');
+    function move_to_module(type) {
+        var obj;
+        if (type == "module") {
+            obj = $('#txt_move_module_id');
+        } else if (type == "issue") {
+            obj = $('#txt_move_issue_id');
+        }
         var issue_id = obj.attr("attr-id");
         if (obj.val() == "") {
             obj.focus();
@@ -682,9 +727,9 @@
             obj.focus();
             return;
         }
-        var module_id = obj.val();
-        call_issue_ajax(issue_id, "", module_id, 9999, "move_to_module");
-    }
+        var to_module_id = obj.val();
+        call_issue_ajax(issue_id, "", to_module_id, 9999, "move_to_module_" + type);
+    }    
     function update_html_issue_name(issue_id,issue_name) {
         $('#lbl_issue_' + issue_id).text(issue_name);
         alert(issue_name + "已修改");

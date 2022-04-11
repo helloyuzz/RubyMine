@@ -255,6 +255,23 @@ namespace RubyMine.Controllers {
                             result.Result = "Ingore";
                         }
                         break;
+                    case "move_issue_top":
+                        CustomValue topValue = _context.CustomValues.FirstOrDefault(t => t.CustomFieldId == 54 && t.CustomizedId == value.Issue.Id);
+                        _context.CustomValues.Where(t => t.CustomFieldId == 54 && t.CustomizedType.Equals("Issue") && t.Value.Equals(value.module_id.ToString()) && t.Position < topValue.Position).Update(t => new CustomValue { Position = t.Position + 1 });
+                        topValue.Position = 1;
+
+                        _context.SaveChanges();
+                        result.Result = "OK";
+                        break;
+                    case "move_issue_bottom":
+                        CustomValue bottomValue = _context.CustomValues.FirstOrDefault(t => t.CustomFieldId == 54 && t.CustomizedId == value.Issue.Id);
+                        int maxIssueCount = _context.CustomValues.Count(t => t.CustomFieldId == 54 && t.CustomizedType.Equals("Issue") && t.Value.Equals(value.module_id.ToString()));
+                        _context.CustomValues.Where(t => t.CustomFieldId == 54 && t.CustomizedType.Equals("Issue") && t.Value.Equals(value.module_id.ToString()) && t.Position > bottomValue.Position).Update(t => new CustomValue { Position = t.Position - 1 });
+                        bottomValue.Position = maxIssueCount;
+
+                        _context.SaveChanges();
+                        result.Result = "OK";
+                        break;
                     case "update_desc":
                         Issue edit_issue = _context.Issues.FirstOrDefault(t => t.Id == value.Issue.Id);                        
                         string old_value = edit_issue.Description;
@@ -292,7 +309,7 @@ namespace RubyMine.Controllers {
 
                         result.Result = "OK";
                         break;
-                    case "move_to_module":
+                    case "move_to_module_issue":
                         if (_context.Modules.Any(t => t.Id == value.module_id) == false) {
                             result.Result = "模块id[" + value.module_id + "]不存在。";
                         } else {
@@ -308,6 +325,19 @@ namespace RubyMine.Controllers {
                             _context.SaveChanges();
                             result.Result = "OK";
                         }
+                        break;
+                    case "move_to_module_module":
+                        var to_module_id = value.module_id;
+                        Module module = _context.Modules.FirstOrDefault(t => t.Id == value.Issue.Id);
+                        
+                        _context.Modules.Where(t => t.PId == module.PId && t.Index > module.Index).Update(t => new Module { Index = t.Index - 1 });
+
+                        int maxModuleCount = _context.Modules.Count(t => t.PId == to_module_id);
+                        module.PId = to_module_id;
+                        module.Index = maxModuleCount + 1;
+
+                        _context.SaveChanges();
+                        result.Result = "OK";
                         break;
                     case "update_issue_name":
                         var update_item = _context.Issues.FirstOrDefault(t => t.Id == value.Issue.Id);
