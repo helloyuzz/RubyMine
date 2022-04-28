@@ -36,6 +36,8 @@ namespace RubyMine.Pages.Platform {
                 Issue = db.Issues.Include(t => t.Author).Include(t => t.Status).Select(t => new Issue() { Id = t.Id, Subject = t.Subject, Description = t.Description, Author = t.Author,AuthorId=t.AuthorId, UpdatedOn = t.UpdatedOn, Status = t.Status }).FirstOrDefault(t => t.Id == Issue_id);
                 if (string.IsNullOrEmpty(Issue.Description)) {
                     Issue.Description = "";
+                } else if (Issue.Description.StartsWith("http://192.168.3.50:3399/")) {
+                    Response.Redirect(Issue.Description);
                 }
             } else {
                 Issue = new Issue();
@@ -73,6 +75,9 @@ namespace RubyMine.Pages.Platform {
                 Issue.ProjectId = 5;      // 3.0项目
                 Issue.Lft = 1;
                 Issue.Rgt = 2;
+                if (Issue.Description.StartsWith("http")) {
+                    Issue.Subject = "#FlowChart_" + Issue.Subject;
+                }
                 db.Issues.Add(Issue);
                 db.SaveChanges();         // 先保存到数据库，获取Issue.id
 

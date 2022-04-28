@@ -342,7 +342,21 @@ namespace RubyMine.Controllers {
                     case "update_issue_name":
                         var update_item = _context.Issues.FirstOrDefault(t => t.Id == value.Issue.Id);
                         if (update_item != null) {
-                            update_item.Subject = value.Issue.Subject;
+                            if (update_item.Subject.StartsWith("#FlowChart_")) {
+                                update_item.Subject = "#FlowChart_" + value.Issue.Subject;
+                            } else {
+                                update_item.Subject = value.Issue.Subject;
+                            }
+
+                            var temp_desc = "";
+                            if(update_item.Description != null) {
+                                temp_desc = update_item.Description.Trim();
+                            }
+                            if (string.IsNullOrEmpty(temp_desc) || update_item.Description.StartsWith("http://") || update_item.Description.StartsWith("https://")) {
+                                if (string.IsNullOrEmpty(value.Issue.Description) == false && value.Issue.Description.StartsWith("http")) {
+                                    update_item.Description = value.Issue.Description;
+                                }
+                            }
                             _context.SaveChanges();
                             result.Result = "OK";
                         } else {

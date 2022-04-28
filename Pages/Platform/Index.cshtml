@@ -226,12 +226,18 @@
         if (issues.Count() > 0) {
             temp += "<ul id='ul_issue_" + module_id + "' htmlid='" + module_id + "' class='" + ul_class + " level-" + level + "'>";
             foreach (var item in issues) {
-                string html_attr = " module-id='" + item.Module_id + "' module-pid='' module-name='' issue-id='" + item.Id + "' issue-name='" + item.Subject + "'";
+                var subject = item.Subject;
+                var icon = "page_word.png";
+                if (subject.StartsWith("#FlowChart_")) {
+                    subject = subject.Replace("#FlowChart_", "");
+                    icon = "chart_organisation.png";
+                }
+                string html_attr = " module-id='" + item.Module_id + "' module-pid='' module-name='' issue-id='" + item.Id + "' issue-name='" + subject + "'";
 
                 temp += "<li id='issue_" + item.Id + "' class='issue-li'>";
                 temp += "   <span class='issue d-inline-block w-100' style='padding-left:19px;'" + html_attr + ">";
                 temp += "       <a class='text-decoration-none text-dark d-inline-block w-100' target='issue_content' href='/Platform/ViewIssue?issue_id=" + item.Id + "' title='查看'>";
-                temp += "           <img src='/images/xp/page_word.png'>&nbsp;<label id='lbl_issue_" + item.Id + "' title='需求编号:" + item.Id + "'>" + item.Subject + "</label>";
+                temp += "           <img src='/images/xp/" + icon + "'>&nbsp;<label id='lbl_issue_" + item.Id + "' title='需求编号:" + item.Id + "'>" + subject + "</label>";
                 temp += "       </a>";
                 temp += "   </span>";
                 temp += "</li>";
@@ -273,6 +279,7 @@
         <ul id="ul_module" class="p-0 m-0 d-none">
             <li class="context-item dropdown-item d-cursor" html-type="module" html-action="add_sub_module">添加下级目录</li>
             <li class="context-item dropdown-item d-cursor" html-type="module" html-action="add_issue">添加需求</li>
+            <li class="context-item dropdown-item d-cursor" html-type="module" html-action="add_flowchart">添加流程图(Url)</li>
             @if (showEdit) {
                 <li><hr class="m-0 dropdown-divider"></li>
                 <li class="context-item dropdown-item d-cursor" html-type="module" html-action="edit_module">重命名</li>
@@ -296,7 +303,7 @@
             <li><hr class="m-0 dropdown-divider"></li>
             <li class="context-item dropdown-item d-cursor" html-type="issue" html-action="open_blank">新窗口打开</li>
             @if (showEdit) {
-                <li class="context-item dropdown-item d-cursor" html-type="issue" html-action="edit_issue">重命名</li>
+                <li class="context-item dropdown-item d-cursor" html-type="issue" html-action="edit_issue">修改</li>
                 <li><hr class="m-0 dropdown-divider"></li>
                 <li class="context-item dropdown-item d-cursor" html-type="issue" html-action="move_issue_up">上移</li>
                 <li class="context-item dropdown-item d-cursor" html-type="issue" html-action="move_issue_down">下移</li>
@@ -324,7 +331,7 @@
         position: absolute;
         border: 1px solid #9f9d9d;
         border-radius: 1px;
-        width: 130px;
+        width: 160px;
         background: white;
     }
 
@@ -344,9 +351,20 @@
         </div>
     </div>
 </dialog>
-<dialog id="edit_issue_dialog" class="shadow" style="width:600px">
+<dialog id="edit_issue_dialog" class="shadow" style="width:600px;height:268px;">
     <div class="row fs-9">
-        <div class="col"><input id="edit_issue_name" type="text" attr-id="" value="" class="form-control border-inset rounded-0 fs-9 w-100 p-1" autocomplete="off" onfocus="this.select();" placeholder="请输入需求标题..." /></div>
+        <div class="col">
+            <label for="exampleFormControlInput1" class="form-label">Subject</label>
+            <input id="edit_issue_name" type="text" attr-id="" value="" class="form-control border-inset rounded-0 fs-9 w-100 p-1" autocomplete="off" onfocus="this.select();" placeholder="请输入需求标题..." />
+        </div>
+    </div>
+    <div class="row fs-9 mt-3">
+        <div class="col">
+            <label for="exampleFormControlInput1" class="form-label">Url(FlowChart):</label>
+            <input id="edit_issue_description" type="text" attr-id="" value="" class="form-control border-inset rounded-0 fs-9 w-100 p-1" autocomplete="off" placeholder="默认不填..." />
+        </div>
+    </div>
+    <div class="row mt-3">
         <div class="col-3 text-end" style="padding-top:6px;">
             <a href="#Dialog" class="btn-sm border-1 bg-title text-decoration-none fs-9 rounded-0" onclick="update_issue_name()">保存</a>
             <a href="#Dialog" class="btn-sm border-1 bg-title text-decoration-none fs-9 rounded-0" onclick="$('#edit_issue_dialog')[0].close();">cancel</a>
@@ -482,6 +500,9 @@
             case "add_issue":
                 $('#issue_content').attr("src", "/Platform/ViewIssue?issue_id=-1&module_id=" + module_id);
                 break;
+            case "add_flowchart":
+                $('#issue_content').attr("src", "/Platform/ViewIssue?issue_id=-1&flowchart=true&module_id=" + module_id);
+                break;
             case "open_blank":
                 window.open("/Platform/ViewIssue?issue_id=" + issue_id,"_blank");
                 break;
@@ -534,22 +555,22 @@
                 break;
             case "move_issue_up":                       // 上移
                 if (current_rowIndex > 0) {
-                    call_issue_ajax(issue_id, '', module_id, 0, 'move_up');
+                    call_issue_ajax(issue_id, '', module_id, 0, 'move_up','');
                 }
                 break;
             case "move_issue_down":                     // 下移
                 if (current_rowIndex <= row_count - 1) {
-                    call_issue_ajax(issue_id, '', module_id, 0, 'move_down');
+                    call_issue_ajax(issue_id, '', module_id, 0, 'move_down','');
                 }
                 break;
             case "move_issue_top":                      // 置顶
                 if (current_rowIndex > 0) {
-                    call_issue_ajax(issue_id, '', module_id, 0, 'move_issue_top');
+                    call_issue_ajax(issue_id, '', module_id, 0, 'move_issue_top','');
                 }
                 break;
             case "move_issue_bottom":                   // 置底
                 if (current_rowIndex <= row_count - 1) {
-                    call_issue_ajax(issue_id, '', module_id, 0, 'move_issue_bottom');
+                    call_issue_ajax(issue_id, '', module_id, 0, 'move_issue_bottom','');
                 }
                 break;
             case "move_module_to":  // 移动模块
@@ -583,11 +604,13 @@
         var obj = $('#edit_issue_name');
         var issue_id = obj.attr("attr-id");
         var issue_name = obj.val();
+        var issue_description = $('#edit_issue_description').val();
         if (issue_name == "") {    // 标题不能为空
             obj.focus();
             return;
         }
-        call_issue_ajax(issue_id, issue_name, 9999,9999, "update_issue_name");   // Ajax更新
+        call_issue_ajax(issue_id, issue_name, 9999, 9999, "update_issue_name", issue_description);   // Ajax更新
+        $('#edit_issue_description').val('');
         $('#lbl_issue_' + issue_id).text(issue_name);                               // Html界面更新
         $('#edit_issue_dialog')[0].close();                                            // 关闭module_edit_dialog()
     }
@@ -662,10 +685,10 @@
         });
     }
     // issue操作
-    function call_issue_ajax(issue_id, issue_subject, module_id, prev_issue_id, action) {
+    function call_issue_ajax(issue_id, issue_subject, module_id, prev_issue_id, action,issue_description) {
         var obj = {
             "action": action, "module_id": module_id, "prev_issue_id": prev_issue_id, "issue": {
-                "id": issue_id, "subject": issue_subject, "authorId":@user_id
+                "id": issue_id, "subject": issue_subject,"description":issue_description, "authorId":@user_id
             }
         };
 
@@ -728,7 +751,7 @@
             return;
         }
         var to_module_id = obj.val();
-        call_issue_ajax(issue_id, "", to_module_id, 9999, "move_to_module_" + type);
+        call_issue_ajax(issue_id, "", to_module_id, 9999, "move_to_module_" + type, "");
     }    
     function update_html_issue_name(issue_id,issue_name) {
         $('#lbl_issue_' + issue_id).text(issue_name);

@@ -5,6 +5,11 @@
     string user_id = User.Claims.FirstOrDefault(t => t.Type.Equals("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier")).Value;
     bool allow_edit = false;    // 是否也许提交form
     string submit_action = "";  // form action
+    var flowchart = HttpContext.Request.Query.ContainsKey("flowchart");
+    if (flowchart) {
+        Model.Issue.Description = "http://192.168.3.50:3399/";
+        Model.Issue.Subject = "输入流程图标题";
+    }
 
     if (Model.Issue_id < 0) {   // 新增，允许提交form
         allow_edit = true;
@@ -16,7 +21,7 @@
     }
 }
 <!DOCTYPE html>
-<html lang="en" dir="ltr">
+<html lang="en" dir="ltr" class="h-100">
 <head>
     <title>@Model.Issue.Subject</title>
     <meta charset="UTF-8">
@@ -28,12 +33,27 @@
 
     <script src="~/lib/jquery-3.6.0/dist/jquery.js"></script>
     <link rel="stylesheet" type="text/css" href="/lib/ckeditor5/sample/styles.css">
+    <style>
+        .row-editor {
+            max-height:none !important;
+        }
+        .editor {
+            padding:1.2cm !important;
+        }
+    </style>
 </head>
 <body style="overflow-x:hidden" class="h-100" data-editor="DecoupledDocumentEditor" data-collaboration="false" data-revision-history="false">
     <form action="" method="post" class="h-100" onsubmit="@submit_action">
         <input type="hidden" asp-for="Issue.Id" />
         <input type="hidden" asp-for="Issue.AuthorId" value="@user_id" />
         <input type="hidden" asp-for="Module_id" />
+        <div class="position-absolute fixed-top mt-1 end-0 top-0" style="z-index:999;">
+            @if (allow_edit) {
+                <button type="submit" class="btn btn-primary float-end end-0 top-0 mt-2 me-4 position-absolute">@Model.Issue.Author.Firstname - 保存</button>
+            } else {
+                <button type="button" class="btn btn-success float-end end-0 top-0 mt-2 me-4 position-absolute">仅 @Model.Issue.Author.Firstname 作者可编辑</button>
+            }
+        </div>
         <table class="w-100 h-100">
             <tr>
                 <td height="40px">
@@ -43,23 +63,18 @@
                                 <input type="text" class="form-control fs-5 fw-bold" asp-for="Issue.Subject" placeholder="name@example.com" value="@Model.Issue.Subject" autocomplete="off" onfocus="this.select();">
                                 <label for="floatingInputValue">@Model.Issue.Id - @Model.Issue.Status.Name</label>
                             </div>
-                            @if (allow_edit) {
-                            <button type="submit" class="btn btn-primary float-end end-0 top-0 mt-2 me-4 position-absolute">保存</button>
-                            } else {
-                            <button type="button" class="btn btn-success float-end end-0 top-0 mt-2 me-4 position-absolute">仅作者可编辑</button>
-                            }
                         </div>
                     </div>
                 </td>
             </tr>
             <tr>
                 <td valign="top">
-                    <main>
-                        <div class="centered">
-                            <div class="row">
+                    <main class="h-100">
+                        <div class="w-100 h-100">
+                            <div class="row m-0">
                                 <div class="document-editor__toolbar p-0"></div>
                             </div>
-                            <div class="row row-editor">
+                            <div class="row row-editor h-100 m-0">
                                 <div class="editor-container">
                                     <div class="editor">
 
@@ -71,14 +86,14 @@
 
                 </td>
             </tr>
-            <tr>
+            @*<tr>
                 <td height="18px">
                     <div class="mt-3 text-black-50">
                         Author:@Model.Issue.Author.Firstname
                         @Model.Issue.UpdatedOn
                     </div>
                 </td>
-            </tr>
+            </tr>*@
         </table>
         <textarea asp-for="Issue.Description" class="w-100 d-none"></textarea>
     </form>
