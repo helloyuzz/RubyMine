@@ -7,7 +7,7 @@
     string submit_action = "";  // form action
     var flowchart = HttpContext.Request.Query.ContainsKey("flowchart");
     if (flowchart) {
-        Model.Issue.Description = "http://192.168.3.50:3399/";
+        Model.Issue.Description = "http://server.logichealth.cn:3399/";
         Model.Issue.Subject = "输入流程图标题";
     }
 
