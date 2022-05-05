@@ -36,7 +36,7 @@ namespace RubyMine.Pages.Platform {
                 Issue = db.Issues.Include(t => t.Author).Include(t => t.Status).Select(t => new Issue() { Id = t.Id, Subject = t.Subject, Description = t.Description, Author = t.Author,AuthorId=t.AuthorId, UpdatedOn = t.UpdatedOn, Status = t.Status }).FirstOrDefault(t => t.Id == Issue_id);
                 if (string.IsNullOrEmpty(Issue.Description)) {
                     Issue.Description = "";
-                } else if (Issue.Description.StartsWith("http://192.168.3.50:3399/")) {
+                } else if (Issue.Description.StartsWith("http://server.logichealth.cn:3399/")) {
                     Response.Redirect(Issue.Description);
                 }
             } else {
