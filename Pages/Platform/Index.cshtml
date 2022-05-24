@@ -472,6 +472,11 @@
         var top = e.pageY + 5;                          // 菜单定位
         var left = e.pageX;
 
+        var divHeight = 416;
+        if (top + divHeight > screen.availHeight) {
+            top = screen.availHeight - divHeight;
+        }
+
         $("#module_menu").show(100).css({
             top: top + "px",
             left: left + "px"
